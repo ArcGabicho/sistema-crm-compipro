@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/core/">
+    <Project Path="core/server/server.csproj" />
+  </Folder>
+</Solution>

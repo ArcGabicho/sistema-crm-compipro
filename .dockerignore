@@ -1,0 +1,35 @@
+# Control de versiones / editores
+.git
+.github
+.vscode
+.vs
+docs
+
+# Node
+**/node_modules
+**/.next
+**/out
+npm-debug.log*
+yarn-error.log*
+
+# .NET
+**/bin
+**/obj
+*.user
+*.suo
+
+# Docker (no copiar el contexto de docker dentro de las imágenes)
+docker
+
+# Varios
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# Secretos locales (las imágenes reciben la config por variables de entorno)
+**/.env
+**/.env.*
+!**/.env.example
+core/server/appsettings.Development.json

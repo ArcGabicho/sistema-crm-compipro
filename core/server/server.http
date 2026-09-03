@@ -1,6 +1,21 @@
-@server_HostAddress = http://localhost:5008
+@host = http://localhost:5008
 
-GET {{server_HostAddress}}/weatherforecast/
+### Health
+GET {{host}}/
 Accept: application/json
+
+### Login (credenciales de demo)
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@compipro.net",
+  "password": "Compipro2025!"
+}
+
+### Usuario actual (usa el token del login anterior)
+GET {{host}}/api/auth/me
+Authorization: Bearer {{login.response.body.token}}
 
 ###

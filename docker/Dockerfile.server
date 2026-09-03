@@ -1,0 +1,21 @@
+# Imagen del backend (core/server) — una sola etapa, pensada para producción.
+# Contexto de build: la raíz del repositorio.
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+
+WORKDIR /src
+
+# Restaurar dependencias primero (cache de capas)
+COPY core/server/server.csproj ./
+RUN dotnet restore server.csproj
+
+# Publicar
+COPY core/server/ ./
+RUN dotnet publish server.csproj -c Release -o /app /p:UseAppHost=false
+
+WORKDIR /app
+ENV ASPNETCORE_ENVIRONMENT=Production \
+    ASPNETCORE_URLS=http://+:8080 \
+    DOTNET_gcServer=1
+
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "server.dll"]

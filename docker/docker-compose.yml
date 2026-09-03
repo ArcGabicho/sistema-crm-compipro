@@ -1,0 +1,85 @@
+# Stack completo del Sistema CRM Compina.
+#   docker compose -f docker/docker-compose.yml up --build
+#
+# Variables (con valores por defecto para desarrollo). Sobrescríbelas en
+# docker/.env o en el entorno para producción.
+
+name: sistema-crm-compipro
+
+services:
+  # ---------------------------------------------------------------------------
+  # Base de datos
+  # ---------------------------------------------------------------------------
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-Compipro2025!}"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Inicialización de la BD: crea SistemaCrmCompipro, el login crm_app y roles.
+  # Corre una sola vez y termina.
+  # ---------------------------------------------------------------------------
+  db-init:
+    image: mcr.microsoft.com/mssql-tools:latest
+    depends_on:
+      db:
+        condition: service_started
+    environment:
+      DB_HOST: db
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-Compipro2025!}"
+      CRM_APP_PASSWORD: "${CRM_APP_PASSWORD:-Compipro2025!}"
+    volumes:
+      - ./database:/database:ro
+    entrypoint: ["/bin/bash", "/database/init.sh"]
+    restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # Backend .NET (EF Core + SQL Server). Crea la tabla Users y siembra el admin.
+  # ---------------------------------------------------------------------------
+  server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.server
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__Default: "Server=db,1433;Database=SistemaCrmCompipro;User Id=crm_app;Password=${CRM_APP_PASSWORD:-Compipro2025!};Encrypt=True;TrustServerCertificate=True"
+      Jwt__Key: "${JWT_KEY:-fg9H65NPCIzoiY_4zmozOWfcVNmGZFsfSkp9EQUMNBw}"
+      Cors__AllowedOrigins__0: "http://localhost:3000"
+      Seed__Admin__Email: "${SEED_ADMIN_EMAIL:-admin@compipro.net}"
+      Seed__Admin__Name: "${SEED_ADMIN_NAME:-Administrador}"
+      Seed__Admin__Password: "${SEED_ADMIN_PASSWORD:-Compipro2025!}"
+    ports:
+      - "5008:8080"
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Frontend Next.js (BFF: fija la cookie HttpOnly, valida el JWT en proxy.ts)
+  # ---------------------------------------------------------------------------
+  client:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.client
+    depends_on:
+      server:
+        condition: service_started
+    environment:
+      NODE_ENV: "production"
+      BACKEND_URL: "http://server:8080"
+      AUTH_JWT_SECRET: "${JWT_KEY:-fg9H65NPCIzoiY_4zmozOWfcVNmGZFsfSkp9EQUMNBw}"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+volumes:
+  mssql-data:
