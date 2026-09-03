@@ -9,13 +9,13 @@ Este repositorio contiene el ecosistema de servicios y aplicaciones de Compipro.
 #### Clona el proyecto en local:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ArcGabicho/sistema-crm-compina/master/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ArcGabicho/sistema-crm-compipro/master/setup.sh | bash
 ```
 
 #### Deployar el proyecto en Azure:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ArcGabicho/sistema-crm-compina/master/deploy.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ArcGabicho/sistema-crm-compipro/master/deploy.sh | bash
 ```
 
 ----
