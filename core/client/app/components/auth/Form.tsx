@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { LoaderCircle } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -19,12 +19,14 @@ export default function Form() {
     setIsLoading(true);
     try {
       const session = await login(email, password);
-      toast.success(`Bienvenido, ${session.name || session.email}`);
+      sileo.success({ title: `Bienvenido, ${session.name || session.email}` });
       router.push("/dashboard");
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "No se pudo iniciar sesión.",
-      );
+      sileo.error({
+        title: "No se pudo iniciar sesión",
+        description:
+          error instanceof Error ? error.message : "Inténtalo de nuevo.",
+      });
       setIsLoading(false);
     }
   };

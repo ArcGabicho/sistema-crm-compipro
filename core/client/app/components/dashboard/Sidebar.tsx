@@ -105,7 +105,7 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
             className="h-6 w-auto shrink-0 brightness-0 invert"
           />
           {!collapsed && (
-            <span className="truncate font-semibold text-white">Sistema Compina</span>
+            <span className="truncate font-semibold text-white">Sistema Compipro</span>
           )}
         </div>
 
