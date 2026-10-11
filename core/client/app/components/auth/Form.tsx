@@ -47,35 +47,35 @@ export default function Form() {
           className="h-auto w-40"
         />
       </div>
-      <h1 className="text-2xl font-bold text-center text-gray-800">
+      <h1 className="text-3xl font-semibold tracking-tight text-center text-ink">
         ¡Bienvenido!
       </h1>
-      <span className="text-center text-gray-500 text-sm">
+      <span className="text-center text-neutral-500 text-sm">
         Ingrese sus credenciales para acceder al sistema CRM de Compina S.A.C.
       </span>
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-gray-700 font-medium">
+        <label htmlFor="email" className="text-neutral-700 text-sm font-medium pl-1">
           Correo Electrónico
         </label>
         <input
           id="email"
           type="email"
           placeholder="user123@gmail.com"
-          className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          className="rounded-full bg-white px-5 py-3 text-sm text-ink shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent"
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="password" className="text-gray-700 font-medium">
+        <label htmlFor="password" className="text-neutral-700 text-sm font-medium pl-1">
           Contraseña
         </label>
         <input
           id="password"
           type="password"
           placeholder="user123"
-          className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          className="rounded-full bg-white px-5 py-3 text-sm text-ink shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent"
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -84,7 +84,7 @@ export default function Form() {
       <button
         type="submit"
         disabled={isLoading}
-        className="bg-yellow-400 hover:bg-yellow-700 text-white font-semibold rounded-md py-2 transition-colors mt-2 shadow flex text-center items-center justify-center"
+        className="bg-ink hover:bg-neutral-800 disabled:opacity-60 text-white font-semibold rounded-full py-3 transition-colors mt-2 shadow-md flex text-center items-center justify-center"
       >
         {isLoading && <LoaderCircle className="mr-2 size-4 animate-spin" />}
         Ingresar

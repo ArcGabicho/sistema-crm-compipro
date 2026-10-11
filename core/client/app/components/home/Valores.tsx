@@ -46,7 +46,7 @@ const icons: Record<IconName, FC<{ className?: string }>> = {
 export default function Valores() {
   return (
     <div className="max-w-7xl mx-auto px-4 text-center py-16">
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12">
+      <h2 className="text-3xl md:text-4xl font-bold text-ink mb-12">
         POTENCIAMOS TU CRECIMIENTO
       </h2>
 
@@ -55,7 +55,7 @@ export default function Valores() {
           const Icon = icons[valor.icon];
           return (
             <div key={valor.title} className="group">
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 mb-8">
+              <div className="bg-panel rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 mb-8">
                 {/* Video Container */}
                 <div className="relative w-full h-48 overflow-hidden">
                   {valor.overlayText && (
@@ -88,10 +88,10 @@ export default function Valores() {
                   <div className="flex items-center justify-center mb-4">
                     <Icon />
                   </div>
-                  <h5 className="font-bold text-lg md:text-xl text-gray-800 mb-3">
+                  <h5 className="font-bold text-lg md:text-xl text-ink mb-3">
                     {valor.title}
                   </h5>
-                  <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                  <p className="text-neutral-600 text-sm md:text-base leading-relaxed">
                     {valor.text}
                   </p>
                 </div>

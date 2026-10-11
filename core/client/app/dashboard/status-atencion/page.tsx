@@ -35,7 +35,7 @@ const config: ResourceConfig<Ticket> = {
     { name: "prioridad", label: "Prioridad", options: PRIORIDADES },
   ],
   columns: [
-    { key: "asunto", label: "Asunto", className: "font-medium text-gray-900" },
+    { key: "asunto", label: "Asunto", className: "font-medium text-ink" },
     { key: "cliente", label: "Cliente", render: (r) => r.cliente?.nombre ?? "—" },
     {
       key: "prioridad",

@@ -63,7 +63,9 @@ export type ResourceConfig<T> = {
 type WithId = { id: number };
 
 const inputCls =
-  "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20";
+  "w-full rounded-2xl border border-neutral-200 bg-white px-3.5 py-2 text-sm text-ink focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25";
+const pillCls =
+  "rounded-full bg-panel px-4 py-2.5 text-sm text-ink shadow-sm ring-1 ring-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent/40";
 
 export default function ResourcePage<T extends WithId>({
   config,
@@ -166,16 +168,18 @@ export default function ResourcePage<T extends WithId>({
     <div>
       <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{config.title}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-ink">
+            {config.title}
+          </h1>
           {config.subtitle && (
-            <p className="text-sm text-gray-500">{config.subtitle}</p>
+            <p className="text-sm text-neutral-500">{config.subtitle}</p>
           )}
         </div>
         {canCreate && (
           <button
             type="button"
             onClick={() => setEditing("new")}
-            className="inline-flex items-center gap-1.5 rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-orange-600"
+            className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:brightness-95"
           >
             <Plus className="h-4 w-4" />
             Nuevo
@@ -192,7 +196,7 @@ export default function ResourcePage<T extends WithId>({
             setPage(1);
           }}
           placeholder={config.searchPlaceholder ?? "Buscar…"}
-          className={`${inputCls} w-full max-w-xs`}
+          className={`${pillCls} w-full max-w-xs`}
         />
         {config.filters?.map((f) => (
           <select
@@ -202,7 +206,7 @@ export default function ResourcePage<T extends WithId>({
               setFilterValues((prev) => ({ ...prev, [f.name]: e.target.value }));
               setPage(1);
             }}
-            className={`${inputCls} w-auto`}
+            className={`${pillCls} w-auto`}
           >
             <option value="">{f.label}: todos</option>
             {f.options.map((o) => (
@@ -215,9 +219,9 @@ export default function ResourcePage<T extends WithId>({
       </div>
 
       {/* Tabla */}
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-900/5">
+      <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white">
         <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="border-b border-gray-100 bg-gray-50/60 text-xs uppercase tracking-wide text-gray-500">
+          <thead className="border-b border-neutral-200/70 bg-frame/70 text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               {config.columns.map((c) => (
                 <th key={c.key} className="px-4 py-3 font-semibold">
@@ -227,12 +231,12 @@ export default function ResourcePage<T extends WithId>({
               <th className="px-4 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-neutral-200/60">
             {loading && (
               <tr>
                 <td
                   colSpan={config.columns.length + 1}
-                  className="px-4 py-10 text-center text-gray-400"
+                  className="px-4 py-10 text-center text-neutral-400"
                 >
                   <LoaderCircle className="mx-auto h-5 w-5 animate-spin" />
                 </td>
@@ -252,7 +256,7 @@ export default function ResourcePage<T extends WithId>({
               <tr>
                 <td
                   colSpan={config.columns.length + 1}
-                  className="px-4 py-10 text-center text-sm text-gray-400"
+                  className="px-4 py-10 text-center text-sm text-neutral-400"
                 >
                   Sin registros.
                 </td>
@@ -261,11 +265,11 @@ export default function ResourcePage<T extends WithId>({
             {!loading &&
               !error &&
               data?.items.map((row) => (
-                <tr key={row.id} className="hover:bg-orange-50/30">
+                <tr key={row.id} className="hover:bg-white/60">
                   {config.columns.map((c) => (
                     <td
                       key={c.key}
-                      className={`px-4 py-3 text-gray-700 ${c.className ?? ""}`}
+                      className={`px-4 py-3 text-neutral-700 ${c.className ?? ""}`}
                     >
                       {c.render
                         ? c.render(row)
@@ -281,7 +285,7 @@ export default function ResourcePage<T extends WithId>({
                           key={a.label}
                           type="button"
                           onClick={() => a.onClick(row, reload)}
-                          className="rounded-md px-2 py-1 text-xs font-medium text-orange-600 hover:bg-orange-100"
+                          className="rounded-full bg-white px-3 py-1 text-xs font-medium text-ink shadow-sm transition-colors hover:bg-ink hover:text-white"
                         >
                           {a.label}
                         </button>
@@ -291,7 +295,7 @@ export default function ResourcePage<T extends WithId>({
                           type="button"
                           onClick={() => setEditing(row)}
                           aria-label="Editar"
-                          className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                          className="rounded-full p-1.5 text-neutral-400 hover:bg-white hover:text-neutral-700"
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
@@ -301,7 +305,7 @@ export default function ResourcePage<T extends WithId>({
                           type="button"
                           onClick={() => handleDelete(row)}
                           aria-label="Eliminar"
-                          className="rounded-md p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                          className="rounded-full p-1.5 text-neutral-400 hover:bg-red-50 hover:text-red-600"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -315,7 +319,7 @@ export default function ResourcePage<T extends WithId>({
       </div>
 
       {/* Paginación */}
-      <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
+      <div className="mt-3 flex items-center justify-between text-sm text-neutral-500">
         <span>
           {from}–{to} de {total}
         </span>
@@ -324,7 +328,7 @@ export default function ResourcePage<T extends WithId>({
             type="button"
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
-            className="rounded-md border border-gray-200 px-3 py-1 disabled:opacity-40 enabled:hover:bg-gray-50"
+            className="rounded-full bg-panel px-4 py-1.5 shadow-sm ring-1 ring-white disabled:opacity-40 enabled:hover:bg-white"
           >
             Anterior
           </button>
@@ -332,7 +336,7 @@ export default function ResourcePage<T extends WithId>({
             type="button"
             disabled={page >= lastPage}
             onClick={() => setPage((p) => p + 1)}
-            className="rounded-md border border-gray-200 px-3 py-1 disabled:opacity-40 enabled:hover:bg-gray-50"
+            className="rounded-full bg-panel px-4 py-1.5 shadow-sm ring-1 ring-white disabled:opacity-40 enabled:hover:bg-white"
           >
             Siguiente
           </button>
@@ -413,22 +417,22 @@ function FormModal<T extends WithId>({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-2xl bg-white shadow-2xl"
+        className="w-full max-w-lg rounded-[1.75rem] bg-panel shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
-          <h2 className="text-lg font-bold text-gray-900">
+        <div className="flex items-center justify-between border-b border-neutral-200/70 px-5 py-4">
+          <h2 className="text-lg font-semibold text-ink">
             {record ? `Editar ${config.title}` : `Nuevo · ${config.title}`}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Cerrar"
-            className="rounded-md p-1 text-gray-400 hover:bg-gray-100"
+            className="rounded-full p-1 text-neutral-400 hover:bg-white"
           >
             <X className="h-5 w-5" />
           </button>
@@ -445,7 +449,7 @@ function FormModal<T extends WithId>({
             const span = f.colSpan === 1 ? "sm:col-span-1" : "sm:col-span-2";
             return (
               <div key={f.name} className={span}>
-                <label className="mb-1 block text-xs font-medium text-gray-600">
+                <label className="mb-1 block text-xs font-medium text-neutral-600">
                   {f.label}
                   {f.required && <span className="text-red-500"> *</span>}
                 </label>
@@ -473,12 +477,12 @@ function FormModal<T extends WithId>({
                     ))}
                   </select>
                 ) : f.type === "checkbox" ? (
-                  <label className="flex items-center gap-2 pt-1 text-sm text-gray-700">
+                  <label className="flex items-center gap-2 pt-1 text-sm text-neutral-700">
                     <input
                       type="checkbox"
                       checked={Boolean(form[f.name])}
                       onChange={(e) => set(f.name, e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500/30"
+                      className="h-4 w-4 rounded border-neutral-200 text-accent focus:ring-accent/25"
                     />
                     {f.placeholder ?? "Sí"}
                   </label>
@@ -501,14 +505,14 @@ function FormModal<T extends WithId>({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+              className="rounded-full px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-white"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:brightness-95 disabled:opacity-60"
             >
               {saving && <LoaderCircle className="h-4 w-4 animate-spin" />}
               Guardar

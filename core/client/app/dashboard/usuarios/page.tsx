@@ -26,7 +26,7 @@ const config: ResourceConfig<Usuario> = {
   searchPlaceholder: "Buscar por email o nombre…",
   filters: [{ name: "role", label: "Rol", options: ROLES }],
   columns: [
-    { key: "name", label: "Nombre", className: "font-medium text-gray-900" },
+    { key: "name", label: "Nombre", className: "font-medium text-ink" },
     { key: "email", label: "Email" },
     {
       key: "role",

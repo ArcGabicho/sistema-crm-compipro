@@ -39,7 +39,7 @@ const config: ResourceConfig<Cliente> = {
   searchPlaceholder: "Buscar por nombre o email…",
   filters: [{ name: "estado", label: "Estado", options: ESTADOS }],
   columns: [
-    { key: "nombre", label: "Empresa", className: "font-medium text-gray-900" },
+    { key: "nombre", label: "Empresa", className: "font-medium text-ink" },
     { key: "ruc", label: "RUC", className: "font-mono text-xs" },
     { key: "contacto", label: "Contacto" },
     { key: "rubro", label: "Rubro" },

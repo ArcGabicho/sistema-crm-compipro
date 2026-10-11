@@ -16,31 +16,31 @@ const images: HeroImage[] = [
     src: "/web/imagenhero1.webp",
     title: "Artículos impresión digital",
     description: "Producción de prendas y todo tipo de accesorios con el logo de marca.",
-    gradient: "from-amber-900/80 via-orange-900/60 to-transparent",
+    gradient: "from-neutral-950/80 via-neutral-900/45 to-transparent",
   },
   {
     src: "/web/imagenhero2.webp",
     title: "Impresión de alta calidad",
     description: "Soluciones avanzadas en impresión digital y offset con tecnología de vanguardia.",
-    gradient: "from-yellow-900/80 via-amber-900/60 to-transparent",
+    gradient: "from-neutral-950/80 via-neutral-900/45 to-transparent",
   },
   {
     src: "/web/imagenhero3.webp",
     title: "Innovación en diseño gráfico",
     description: "Diseño personalizado para publicidad y branding que impacta y conecta.",
-    gradient: "from-orange-900/80 via-yellow-800/60 to-transparent",
+    gradient: "from-neutral-950/80 via-neutral-900/45 to-transparent",
   },
   {
     src: "/web/imagenhero4.webp",
     title: "Merchandising Empresarial",
     description: "Diseño de artículos publicitarios para empresas que buscan diferenciarse.",
-    gradient: "from-amber-800/80 via-orange-800/60 to-transparent",
+    gradient: "from-neutral-950/80 via-neutral-900/45 to-transparent",
   },
   {
     src: "/web/imagenhero5.webp",
     title: "Soluciones Corporativas",
     description: "Productos promocionales que fortalecen la identidad de tu marca.",
-    gradient: "from-yellow-800/80 via-amber-800/60 to-transparent",
+    gradient: "from-neutral-950/80 via-neutral-900/45 to-transparent",
   },
 ];
 
@@ -71,7 +71,7 @@ function Hero() {
   };
 
   return (
-    <div className="relative w-full h-[85vh] mt-14 overflow-hidden">
+    <div className="relative mx-3 mt-24 h-[80vh] overflow-hidden rounded-[2rem] sm:mt-28">
       {/* Hero Background Images */}
       <div className="absolute inset-0">
         {images.map((image, index) => (
@@ -132,7 +132,7 @@ function Hero() {
             >
               <Link
                 href="/productos"
-                className="bg-white/10 backdrop-blur-lg border border-white/20 text-white px-8 py-3 rounded-full font-medium text-base hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-xl"
+                className="bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-95 hover:scale-105 transition-all duration-300 shadow-xl"
               >
                 Explorar Productos
               </Link>
@@ -150,7 +150,7 @@ function Hero() {
               onClick={() => goToSlide(index)}
               className={`h-2 rounded-full transition-all duration-300 hover:scale-110 ${
                 index === currentImage
-                  ? "w-8 bg-white shadow-md"
+                  ? "w-8 bg-accent shadow-md"
                   : "w-2 bg-white/40 hover:bg-white/60"
               }`}
             />

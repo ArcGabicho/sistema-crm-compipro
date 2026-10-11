@@ -29,24 +29,24 @@ const data: Valor[] = [
 
 export default function Valores() {
   return (
-    <section className="w-full py-15 bg-gray-50 flex justify-center items-center">
+    <section className="w-full py-15 bg-frame flex justify-center items-center">
       <div className="max-w-7xl w-full mx-auto px-4">
-        <h2 className="text-center mb-10 text-3xl sm:text-4xl text-gray-800">
+        <h2 className="text-center mb-10 text-3xl sm:text-4xl text-ink">
           Nuestros Valores
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl w-full mx-auto">
           {data.map((value) => (
             <div
               key={value.title}
-              className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-2 border border-gray-50"
+              className="bg-panel rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-2 border border-white"
             >
-              <div className="text-6xl mb-5 text-gray-600 opacity-80">
+              <div className="text-6xl mb-5 text-neutral-600 opacity-80">
                 {value.icon}
               </div>
-              <h3 className="mb-4 text-gray-800 text-xl font-semibold tracking-tight">
+              <h3 className="mb-4 text-ink text-xl font-semibold tracking-tight">
                 {value.title}
               </h3>
-              <p className="text-gray-600 leading-relaxed text-sm">
+              <p className="text-neutral-600 leading-relaxed text-sm">
                 {value.description}
               </p>
             </div>

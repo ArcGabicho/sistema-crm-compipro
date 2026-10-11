@@ -23,7 +23,7 @@ type Pedido = {
 
 const PROD = ["Pendiente", "EnProduccion", "ControlCalidad", "Listo", "Entregado"];
 const inp =
-  "rounded-lg border border-gray-300 bg-white px-2 py-1 text-xs focus:border-orange-500 focus:outline-none";
+  "rounded-2xl border border-neutral-200 bg-white px-2 py-1 text-xs focus:border-accent focus:outline-none";
 
 export default function PedidosPage() {
   const [data, setData] = useState<Paged<Pedido> | null>(null);
@@ -72,8 +72,8 @@ export default function PedidosPage() {
   return (
     <div>
       <header className="mb-5">
-        <h1 className="text-2xl font-bold text-gray-900">Pedidos</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-3xl font-semibold tracking-tight text-ink">Pedidos</h1>
+        <p className="text-sm text-neutral-500">
           Producción, fecha compromiso y cobranza (adelanto 50% / saldo contra
           entrega).
         </p>
@@ -84,32 +84,32 @@ export default function PedidosPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por código o cliente…"
-          className="w-full max-w-xs rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+          className="w-full max-w-xs rounded-full bg-panel px-4 py-2.5 text-sm text-ink shadow-sm ring-1 ring-white focus:outline-none focus:ring-2 focus:ring-accent/40"
         />
         <select
           value={estado}
           onChange={(e) => setEstado(e.target.value)}
-          className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+          className="rounded-full bg-panel px-4 py-2.5 text-sm text-ink shadow-sm ring-1 ring-white focus:outline-none focus:ring-2 focus:ring-accent/40"
         >
           <option value="">Producción: todos</option>
           {PROD.map((s) => (
             <option key={s}>{s}</option>
           ))}
         </select>
-        <label className="flex items-center gap-2 text-sm text-gray-600">
+        <label className="flex items-center gap-2 text-sm text-neutral-600">
           <input
             type="checkbox"
             checked={atrasados}
             onChange={(e) => setAtrasados(e.target.checked)}
-            className="h-4 w-4 rounded border-gray-300 text-orange-500"
+            className="h-4 w-4 rounded border-neutral-200 text-accent"
           />
           Solo atrasados
         </label>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-900/5">
+      <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white">
         <table className="w-full min-w-[820px] text-left text-sm">
-          <thead className="border-b border-gray-100 bg-gray-50/60 text-xs uppercase tracking-wide text-gray-500">
+          <thead className="border-b border-neutral-200/70 bg-frame/70 text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               {["Código", "Cliente", "Cotización", "Compromiso", "Producción", "Total", "Pagado", "Saldo", ""].map(
                 (h) => (
@@ -120,29 +120,29 @@ export default function PedidosPage() {
               )}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-neutral-200/60">
             {loading && (
               <tr>
-                <td colSpan={9} className="px-4 py-10 text-center text-gray-400">
+                <td colSpan={9} className="px-4 py-10 text-center text-neutral-400">
                   <LoaderCircle className="mx-auto h-5 w-5 animate-spin" />
                 </td>
               </tr>
             )}
             {!loading && data?.items.length === 0 && (
               <tr>
-                <td colSpan={9} className="px-4 py-10 text-center text-gray-400">
+                <td colSpan={9} className="px-4 py-10 text-center text-neutral-400">
                   Sin pedidos. Aprueba una cotización para generar uno.
                 </td>
               </tr>
             )}
             {!loading &&
               data?.items.map((p) => (
-                <tr key={p.id} className="hover:bg-orange-50/30">
-                  <td className="px-4 py-3 font-mono text-xs font-medium text-gray-900">
+                <tr key={p.id} className="hover:bg-white/60">
+                  <td className="px-4 py-3 font-mono text-xs font-medium text-ink">
                     {p.codigo}
                   </td>
                   <td className="px-4 py-3">{p.cliente?.nombre ?? "—"}</td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-500">
+                  <td className="px-4 py-3 font-mono text-xs text-neutral-500">
                     {p.cotizacion?.codigo ?? "—"}
                   </td>
                   <td className="px-4 py-3">
@@ -151,7 +151,7 @@ export default function PedidosPage() {
                         {date(p.fechaCompromiso)} ⚠
                       </span>
                     ) : (
-                      <span className="text-gray-500">
+                      <span className="text-neutral-500">
                         {date(p.fechaCompromiso)}
                       </span>
                     )}
@@ -168,7 +168,7 @@ export default function PedidosPage() {
                     </select>
                   </td>
                   <td className="px-4 py-3 font-medium">{money(p.total)}</td>
-                  <td className="px-4 py-3 text-gray-600">{money(p.pagado)}</td>
+                  <td className="px-4 py-3 text-neutral-600">{money(p.pagado)}</td>
                   <td className="px-4 py-3">
                     {badge(
                       p.saldo > 0 ? money(p.saldo) : p.estadoPago,
@@ -180,7 +180,7 @@ export default function PedidosPage() {
                       type="button"
                       onClick={() => setPago(p)}
                       disabled={p.saldo <= 0}
-                      className="rounded px-2 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-50 disabled:opacity-40"
+                      className="rounded-full px-2 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-50 disabled:opacity-40"
                     >
                       Registrar pago
                     </button>
@@ -232,18 +232,18 @@ function PagoModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <form
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
-        className="w-full max-w-sm space-y-4 rounded-2xl bg-white p-5 shadow-2xl"
+        className="w-full max-w-sm space-y-4 rounded-[1.75rem] bg-panel p-5 shadow-2xl"
       >
-        <h2 className="text-lg font-bold text-gray-900">
+        <h2 className="text-lg font-semibold text-ink">
           Pago · {pedido.codigo}
         </h2>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-neutral-500">
           Total {money(pedido.total)} · Pagado {money(pedido.pagado)} · Saldo{" "}
           {money(pedido.saldo)}
         </p>
@@ -254,20 +254,20 @@ function PagoModal({
           value={monto}
           onChange={(e) => setMonto(e.target.value)}
           required
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-2xl border border-neutral-200 px-3 py-2 text-sm"
         />
         <div className="flex justify-end gap-2">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
+            className="rounded-full px-4 py-2 text-sm text-neutral-600 hover:bg-white"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+            className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:brightness-95 disabled:opacity-60"
           >
             Registrar
           </button>

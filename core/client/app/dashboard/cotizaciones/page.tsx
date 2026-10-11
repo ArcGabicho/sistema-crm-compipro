@@ -43,7 +43,7 @@ type Producto = {
 const ESTADOS = ["Borrador", "Enviada", "Aprobada", "Rechazada", "Vencida"];
 const IGV = 0.18;
 const inp =
-  "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20";
+  "w-full rounded-2xl border border-neutral-200 bg-white px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25";
 
 export default function CotizacionesPage() {
   const [data, setData] = useState<Paged<Cotizacion> | null>(null);
@@ -97,8 +97,8 @@ export default function CotizacionesPage() {
     <div>
       <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Cotizaciones</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-3xl font-semibold tracking-tight text-ink">Cotizaciones</h1>
+          <p className="text-sm text-neutral-500">
             Producto + técnica de personalización + cantidad. Al aprobar se genera
             el pedido.
           </p>
@@ -106,7 +106,7 @@ export default function CotizacionesPage() {
         <button
           type="button"
           onClick={() => setEditing("new")}
-          className="inline-flex items-center gap-1.5 rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-600"
+          className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white hover:brightness-95"
         >
           <Plus className="h-4 w-4" /> Nueva cotización
         </button>
@@ -137,9 +137,9 @@ export default function CotizacionesPage() {
         </select>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-900/5">
+      <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white">
         <table className="w-full min-w-[720px] text-left text-sm">
-          <thead className="border-b border-gray-100 bg-gray-50/60 text-xs uppercase tracking-wide text-gray-500">
+          <thead className="border-b border-neutral-200/70 bg-frame/70 text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               {["Código", "Cliente", "Fecha", "Líneas", "Total", "Estado", ""].map(
                 (h) => (
@@ -150,29 +150,29 @@ export default function CotizacionesPage() {
               )}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-neutral-200/60">
             {loading && (
               <tr>
-                <td colSpan={7} className="px-4 py-10 text-center text-gray-400">
+                <td colSpan={7} className="px-4 py-10 text-center text-neutral-400">
                   <LoaderCircle className="mx-auto h-5 w-5 animate-spin" />
                 </td>
               </tr>
             )}
             {!loading && data?.items.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-10 text-center text-gray-400">
+                <td colSpan={7} className="px-4 py-10 text-center text-neutral-400">
                   Sin cotizaciones.
                 </td>
               </tr>
             )}
             {!loading &&
               data?.items.map((c) => (
-                <tr key={c.id} className="hover:bg-orange-50/30">
-                  <td className="px-4 py-3 font-mono text-xs font-medium text-gray-900">
+                <tr key={c.id} className="hover:bg-white/60">
+                  <td className="px-4 py-3 font-mono text-xs font-medium text-ink">
                     {c.codigo}
                   </td>
                   <td className="px-4 py-3">{c.cliente?.nombre ?? "—"}</td>
-                  <td className="px-4 py-3 text-gray-500">{date(c.fecha)}</td>
+                  <td className="px-4 py-3 text-neutral-500">{date(c.fecha)}</td>
                   <td className="px-4 py-3">{c.items?.length ?? 0}</td>
                   <td className="px-4 py-3 font-medium">{money(c.total)}</td>
                   <td className="px-4 py-3">
@@ -192,7 +192,7 @@ export default function CotizacionesPage() {
                               "Enviada al cliente",
                             )
                           }
-                          className="rounded px-2 py-1 text-blue-600 hover:bg-blue-50"
+                          className="rounded-full px-2 py-1 text-neutral-700 hover:bg-white"
                         >
                           Enviar
                         </button>
@@ -206,7 +206,7 @@ export default function CotizacionesPage() {
                               "Aprobada · pedido generado",
                             )
                           }
-                          className="rounded px-2 py-1 text-emerald-600 hover:bg-emerald-50"
+                          className="rounded-full px-2 py-1 text-emerald-600 hover:bg-emerald-50"
                         >
                           Aprobar
                         </button>
@@ -219,14 +219,14 @@ export default function CotizacionesPage() {
                             "Cotización duplicada",
                           )
                         }
-                        className="rounded px-2 py-1 text-gray-500 hover:bg-gray-100"
+                        className="rounded-full px-2 py-1 text-neutral-500 hover:bg-white"
                       >
                         Duplicar
                       </button>
                       <button
                         type="button"
                         onClick={() => setEditing(c)}
-                        className="rounded px-2 py-1 text-orange-600 hover:bg-orange-100"
+                        className="rounded-full px-2 py-1 text-orange-600 hover:bg-accent/15"
                       >
                         Editar
                       </button>
@@ -239,7 +239,7 @@ export default function CotizacionesPage() {
                             "Eliminada",
                           )
                         }
-                        className="rounded p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                        className="rounded-full p-1.5 text-neutral-400 hover:bg-red-50 hover:text-red-600"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -251,14 +251,14 @@ export default function CotizacionesPage() {
         </table>
       </div>
 
-      <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
+      <div className="mt-3 flex items-center justify-between text-sm text-neutral-500">
         <span>{total} cotizaciones</span>
         <div className="flex gap-1">
           <button
             type="button"
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
-            className="rounded-md border border-gray-200 px-3 py-1 disabled:opacity-40"
+            className="rounded-full border border-neutral-200/70 px-3 py-1 disabled:opacity-40"
           >
             Anterior
           </button>
@@ -266,7 +266,7 @@ export default function CotizacionesPage() {
             type="button"
             disabled={page >= lastPage}
             onClick={() => setPage((p) => p + 1)}
-            className="rounded-md border border-gray-200 px-3 py-1 disabled:opacity-40"
+            className="rounded-full border border-neutral-200/70 px-3 py-1 disabled:opacity-40"
           >
             Siguiente
           </button>
@@ -387,18 +387,18 @@ function CotizacionForm({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <div
-        className="flex max-h-[85vh] w-full max-w-3xl flex-col rounded-2xl bg-white shadow-2xl"
+        className="flex max-h-[85vh] w-full max-w-3xl flex-col rounded-[1.75rem] bg-panel shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
-          <h2 className="text-lg font-bold text-gray-900">
+        <div className="flex items-center justify-between border-b border-neutral-200/70 px-5 py-4">
+          <h2 className="text-lg font-semibold text-ink">
             {record ? `Editar ${record.codigo}` : "Nueva cotización"}
           </h2>
-          <button type="button" onClick={onClose} className="p-1 text-gray-400">
+          <button type="button" onClick={onClose} className="p-1 text-neutral-400">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -406,7 +406,7 @@ function CotizacionForm({
         <form onSubmit={submit} className="flex-1 overflow-y-auto p-5">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">
+              <label className="mb-1 block text-xs font-medium text-neutral-600">
                 Cliente *
               </label>
               <select
@@ -424,7 +424,7 @@ function CotizacionForm({
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">
+              <label className="mb-1 block text-xs font-medium text-neutral-600">
                 Vendedor
               </label>
               <select
@@ -441,7 +441,7 @@ function CotizacionForm({
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">
+              <label className="mb-1 block text-xs font-medium text-neutral-600">
                 Válida hasta
               </label>
               <input
@@ -455,7 +455,7 @@ function CotizacionForm({
 
           <div className="mt-5">
             <div className="mb-2 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-700">Líneas</h3>
+              <h3 className="text-sm font-semibold text-neutral-700">Líneas</h3>
               <button
                 type="button"
                 onClick={() =>
@@ -470,7 +470,7 @@ function CotizacionForm({
                     },
                   ])
                 }
-                className="inline-flex items-center gap-1 rounded-full border border-gray-200 px-3 py-1 text-xs font-medium hover:bg-gray-50"
+                className="inline-flex items-center gap-1 rounded-full border border-neutral-200/70 px-3 py-1 text-xs font-medium hover:bg-white/70"
               >
                 <Plus className="h-3.5 w-3.5" /> Línea
               </button>
@@ -485,7 +485,7 @@ function CotizacionForm({
                 return (
                   <div
                     key={idx}
-                    className="rounded-xl border border-gray-200 p-3"
+                    className="rounded-2xl border border-neutral-200/70 p-3"
                   >
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-12">
                       <select
@@ -539,7 +539,7 @@ function CotizacionForm({
                         onClick={() =>
                           setItems((prev) => prev.filter((_, i) => i !== idx))
                         }
-                        className="col-span-2 flex items-center justify-center gap-1 rounded-md py-1.5 text-xs text-gray-400 hover:bg-red-50 hover:text-red-600 sm:col-span-1 sm:py-0"
+                        className="col-span-2 flex items-center justify-center gap-1 rounded-full py-1.5 text-xs text-neutral-400 hover:bg-red-50 hover:text-red-600 sm:col-span-1 sm:py-0"
                       >
                         <Trash2 className="h-4 w-4" />
                         <span className="sm:hidden">Quitar línea</span>
@@ -554,7 +554,7 @@ function CotizacionForm({
                         placeholder="Descripción de la línea"
                         className={`${inp} flex-1`}
                       />
-                      <span className="whitespace-nowrap text-sm font-medium text-gray-700">
+                      <span className="whitespace-nowrap text-sm font-medium text-neutral-700">
                         {money(
                           (Number(it.cantidad) || 0) *
                             (Number(it.precioUnitario) || 0),
@@ -576,11 +576,11 @@ function CotizacionForm({
           />
 
           <div className="mt-4 flex flex-col items-end gap-0.5 text-sm">
-            <span className="text-gray-500">
-              Subtotal: <b className="text-gray-800">{money(totals.subtotal)}</b>
+            <span className="text-neutral-500">
+              Subtotal: <b className="text-ink">{money(totals.subtotal)}</b>
             </span>
-            <span className="text-gray-500">
-              IGV (18%): <b className="text-gray-800">{money(totals.igv)}</b>
+            <span className="text-neutral-500">
+              IGV (18%): <b className="text-ink">{money(totals.igv)}</b>
             </span>
             <span className="text-base">
               Total: <b className="text-orange-600">{money(totals.total)}</b>
@@ -591,14 +591,14 @@ function CotizacionForm({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
+              className="rounded-full px-4 py-2 text-sm text-neutral-600 hover:bg-white"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:brightness-95 disabled:opacity-60"
             >
               {saving && <LoaderCircle className="h-4 w-4 animate-spin" />}
               Guardar

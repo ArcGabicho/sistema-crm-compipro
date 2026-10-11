@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X, Phone, Mail } from "lucide-react";
 
 const navLinks = [
@@ -15,6 +16,7 @@ const navLinks = [
 function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,18 +31,21 @@ function Navbar() {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/50 backdrop-blur-md shadow-md border-b border-white/20"
-          : "bg-white border-b border-gray-200"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-14">
+    <nav className="fixed inset-x-0 top-4 z-50 px-4 sm:top-6">
+      <div
+        className={`mx-auto max-w-6xl rounded-full px-3 ring-1 ring-white backdrop-blur-md transition-all duration-300 sm:px-4 ${
+          isScrolled
+            ? "bg-panel/70 shadow-lg"
+            : "bg-panel/95 shadow-md"
+        }`}
+      >
+        <div className="flex h-14 items-center justify-between">
           {/* Logo */}
-          <div className="shrink-0">
+          <div className="shrink-0 pl-2">
             <Link href="/" className="flex items-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -52,32 +57,35 @@ function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:block">
-            <div className="ml-10 flex items-baseline space-x-6">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-gray-600 hover:text-orange-500 px-2 py-1 text-sm font-medium transition-colors duration-200"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+          <div className="hidden lg:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={isActive(link.href) ? "page" : undefined}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                  isActive(link.href)
+                    ? "bg-white text-ink shadow-sm"
+                    : "text-neutral-500 hover:text-ink"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
 
           {/* Contact Info - Desktop */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center gap-2 pr-1">
             <a
               href="tel:+51932230880"
-              className="flex items-center text-gray-800 hover:text-orange-500 text-xs font-medium transition-colors duration-200"
+              className="flex items-center rounded-full bg-white px-3 py-2 text-xs font-medium text-ink shadow-sm transition-colors duration-200 hover:bg-ink hover:text-white"
             >
               <Phone className="w-3 h-3 mr-2 shrink-0" />
               (51) 932 230 880
             </a>
             <a
               href="mailto:ventas@compipro.net"
-              className="flex items-center text-gray-800 hover:text-orange-500 text-xs font-medium transition-colors duration-200"
+              className="flex items-center rounded-full bg-accent px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:brightness-95"
             >
               <Mail className="w-3 h-3 mr-2 shrink-0" />
               ventas@compipro.net
@@ -90,7 +98,7 @@ function Navbar() {
               type="button"
               aria-label="Abrir menú"
               onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-800 hover:text-orange-500 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-orange-400 transition-colors duration-200"
+              className="grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition-colors duration-200 hover:bg-ink hover:text-white focus:outline-none focus:ring-2 focus:ring-accent/50"
             >
               {isMobileMenuOpen ? (
                 <X className="block h-5 w-5" />
@@ -104,18 +112,23 @@ function Navbar() {
 
       {/* Mobile menu */}
       <div
-        className={`lg:hidden transition-all duration-300 ease-in-out ${
+        className={`mx-auto max-w-6xl lg:hidden transition-all duration-300 ease-in-out ${
           isMobileMenuOpen
-            ? "max-h-96 opacity-100"
+            ? "mt-2 max-h-[28rem] opacity-100"
             : "max-h-0 opacity-0 overflow-hidden"
         }`}
       >
-        <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 backdrop-blur-sm border-t border-gray-200">
+        <div className="space-y-1 rounded-[1.75rem] bg-panel/95 p-3 shadow-lg ring-1 ring-white backdrop-blur-md">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
+              aria-current={isActive(link.href) ? "page" : undefined}
+              className={`block rounded-full px-4 py-2.5 text-base font-medium transition-colors duration-200 ${
+                isActive(link.href)
+                  ? "bg-white text-ink shadow-sm"
+                  : "text-neutral-600 hover:bg-white/70 hover:text-ink"
+              }`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {link.label}
@@ -123,10 +136,10 @@ function Navbar() {
           ))}
 
           {/* Contact Info - Mobile */}
-          <div className="pt-4 border-t border-gray-200 space-y-2">
+          <div className="space-y-1 border-t border-neutral-200/70 pt-3">
             <a
               href="tel:+51932230880"
-              className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:text-orange-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
+              className="flex items-center rounded-full px-4 py-2.5 text-sm font-medium text-ink transition-colors duration-200 hover:bg-white/70"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <Phone className="w-4 h-4 mr-3 shrink-0" />
@@ -134,7 +147,7 @@ function Navbar() {
             </a>
             <a
               href="mailto:ventas@compipro.net"
-              className="flex items-center px-3 py-2 text-sm font-medium text-gray-800 hover:text-orange-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
+              className="flex items-center rounded-full px-4 py-2.5 text-sm font-medium text-ink transition-colors duration-200 hover:bg-white/70"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <Mail className="w-4 h-4 mr-3 shrink-0" />

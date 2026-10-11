@@ -99,8 +99,8 @@ export default function PipelinePage() {
   return (
     <div>
       <header className="mb-5">
-        <h1 className="text-2xl font-bold text-gray-900">Pipeline comercial</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-3xl font-semibold tracking-tight text-ink">Pipeline comercial</h1>
+        <p className="text-sm text-neutral-500">
           Arrastra el embudo moviendo cada cuenta de etapa. Total{" "}
           {columnas.reduce((a, c) => a + (porEtapa[c.etapa]?.length ?? 0), 0)}{" "}
           cuentas.
@@ -108,7 +108,7 @@ export default function PipelinePage() {
       </header>
 
       {loading ? (
-        <div className="flex justify-center py-20 text-gray-400">
+        <div className="flex justify-center py-20 text-neutral-400">
           <LoaderCircle className="h-6 w-6 animate-spin" />
         </div>
       ) : (
@@ -118,31 +118,31 @@ export default function PipelinePage() {
             return (
               <div
                 key={col.etapa}
-                className="flex w-72 shrink-0 flex-col rounded-2xl bg-gray-100/70 p-3"
+                className="flex w-72 shrink-0 flex-col rounded-[1.75rem] bg-panel p-3 shadow-sm ring-1 ring-white"
               >
                 <div className="mb-2 flex items-center justify-between px-1">
-                  <span className="text-sm font-semibold text-gray-700">
+                  <span className="text-sm font-semibold text-neutral-700">
                     {col.etapa}
                   </span>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-xs font-medium text-gray-500">
+                  <span className="rounded-full bg-white px-2 py-0.5 text-xs font-medium text-neutral-500">
                     {items.length}
                   </span>
                 </div>
                 <div className="flex flex-col gap-2 overflow-y-auto">
                   {items.length === 0 && (
-                    <p className="px-1 py-6 text-center text-xs text-gray-400">
+                    <p className="px-1 py-6 text-center text-xs text-neutral-400">
                       Sin cuentas
                     </p>
                   )}
                   {items.map((cli) => (
                     <div
                       key={cli.id}
-                      className="rounded-xl bg-white p-3 shadow-sm ring-1 ring-gray-900/5"
+                      className="rounded-3xl bg-white p-3 shadow-sm ring-1 ring-white"
                     >
-                      <p className="truncate text-sm font-medium text-gray-900">
+                      <p className="truncate text-sm font-medium text-ink">
                         {cli.razonSocial || cli.nombre}
                       </p>
-                      <p className="mt-0.5 truncate text-xs text-gray-500">
+                      <p className="mt-0.5 truncate text-xs text-neutral-500">
                         {[cli.rubro, cli.vendedor].filter(Boolean).join(" · ") ||
                           "—"}
                       </p>
@@ -150,7 +150,7 @@ export default function PipelinePage() {
                         value={cli.etapa ?? ""}
                         disabled={moving === cli.id}
                         onChange={(e) => mover(cli, e.target.value)}
-                        className="mt-2 w-full rounded-lg border border-gray-200 bg-gray-50 px-2 py-1 text-xs focus:border-orange-500 focus:outline-none disabled:opacity-50"
+                        className="mt-2 w-full rounded-2xl border border-neutral-200/70 bg-frame px-2 py-1 text-xs focus:border-accent focus:outline-none disabled:opacity-50"
                       >
                         {!opciones.includes(cli.etapa ?? "") && (
                           <option value={cli.etapa ?? ""}>

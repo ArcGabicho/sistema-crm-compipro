@@ -51,18 +51,18 @@ export default function Carrusel() {
     <section className="mx-auto max-w-7xl px-4 py-20 sm:py-24">
       {/* Encabezado */}
       <div className="mx-auto max-w-2xl text-center">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-amber-700">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-700">
           <LayoutGrid className="h-3.5 w-3.5" />
           Portafolio
         </span>
-        <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
           Proyectos Desarrollados
         </h2>
-        <p className="mt-3 text-base leading-relaxed text-gray-500">
+        <p className="mt-3 text-base leading-relaxed text-neutral-500">
           Una muestra de los trabajos que hemos realizado para marcas de
           distintos sectores.
         </p>
-        <div className="mx-auto mt-6 h-1 w-16 rounded-full bg-linear-to-r from-amber-400 to-orange-500" />
+        <div className="mx-auto mt-6 h-1.5 w-16 rounded-full hatch-accent" />
       </div>
 
       {/* Grid de proyectos */}
@@ -71,7 +71,7 @@ export default function Carrusel() {
           <article
             key={proyecto.id}
             style={{ animationDelay: `${index * 80}ms` }}
-            className="animate-fade-in-up group relative flex aspect-4/3 flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 shadow-sm ring-1 ring-gray-900/5 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:ring-amber-300/60"
+            className="animate-fade-in-up group relative flex aspect-4/3 flex-col justify-end overflow-hidden rounded-2xl bg-ink shadow-sm ring-1 ring-white transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:ring-amber-300/60"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

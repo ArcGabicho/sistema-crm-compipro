@@ -30,7 +30,7 @@ const config: ResourceConfig<Config> = {
   searchPlaceholder: "Buscar parámetro…",
   columns: [
     { key: "clave", label: "Clave", className: "font-mono text-xs" },
-    { key: "valor", label: "Valor", className: "font-medium text-gray-900" },
+    { key: "valor", label: "Valor", className: "font-medium text-ink" },
     { key: "descripcion", label: "Descripción" },
   ],
   fields: [
@@ -63,10 +63,10 @@ function AuditPanel() {
 
   return (
     <section>
-      <h2 className="mb-3 text-lg font-bold text-gray-900">Auditoría del sistema</h2>
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-900/5">
+      <h2 className="mb-3 text-lg font-semibold text-ink">Auditoría del sistema</h2>
+      <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white">
         <table className="w-full min-w-[560px] text-left text-sm">
-          <thead className="border-b border-gray-100 bg-gray-50/60 text-xs uppercase tracking-wide text-gray-500">
+          <thead className="border-b border-neutral-200/70 bg-frame/70 text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               <th className="px-4 py-3 font-semibold">Fecha</th>
               <th className="px-4 py-3 font-semibold">Usuario</th>
@@ -74,30 +74,30 @@ function AuditPanel() {
               <th className="px-4 py-3 font-semibold">Entidad</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-neutral-200/60">
             {loading ? (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={4} className="px-4 py-8 text-center text-neutral-400">
                   Cargando…
                 </td>
               </tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={4} className="px-4 py-8 text-center text-neutral-400">
                   Sin registros.
                 </td>
               </tr>
             ) : (
               rows.map((r) => (
                 <tr key={r.id}>
-                  <td className="px-4 py-2.5 text-gray-500">
+                  <td className="px-4 py-2.5 text-neutral-500">
                     {date(r.createdAt)}
                   </td>
-                  <td className="px-4 py-2.5 text-gray-700">
+                  <td className="px-4 py-2.5 text-neutral-700">
                     {r.userEmail ?? "—"}
                   </td>
-                  <td className="px-4 py-2.5 text-gray-700">{r.accion}</td>
-                  <td className="px-4 py-2.5 text-gray-700">
+                  <td className="px-4 py-2.5 text-neutral-700">{r.accion}</td>
+                  <td className="px-4 py-2.5 text-neutral-700">
                     {r.entidad}
                     {r.entidadId ? ` #${r.entidadId}` : ""}
                   </td>

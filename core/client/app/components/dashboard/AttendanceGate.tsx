@@ -127,14 +127,14 @@ function TardanzaModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/40 backdrop-blur-sm p-4">
       <form
         onSubmit={submit}
-        className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow-2xl"
+        className="w-full max-w-md space-y-4 rounded-[1.75rem] bg-panel p-6 shadow-2xl"
       >
         <div>
-          <h2 className="text-lg font-bold text-gray-900">Justificar tardanza</h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <h2 className="text-lg font-semibold text-ink">Justificar tardanza</h2>
+          <p className="mt-1 text-sm text-neutral-500">
             Registraste tu ingreso a las {hhmm(registro.horaIngreso)}, con{" "}
             <span className="font-semibold text-red-600">
               {registro.minutosTardanza} min
@@ -151,21 +151,21 @@ function TardanzaModal({
           required
           minLength={5}
           placeholder="Explica el motivo de la tardanza…"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+          className="w-full rounded-2xl border border-neutral-200 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
         />
 
         <div className="flex justify-end gap-2">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
+            className="rounded-full px-4 py-2 text-sm text-neutral-600 hover:bg-white"
           >
             Ahora no
           </button>
           <button
             type="submit"
             disabled={saving || texto.trim().length < 5}
-            className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:brightness-95 disabled:opacity-60"
           >
             {saving && <LoaderCircle className="h-4 w-4 animate-spin" />}
             Enviar justificación

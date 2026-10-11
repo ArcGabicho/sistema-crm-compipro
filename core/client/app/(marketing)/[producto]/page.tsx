@@ -30,7 +30,7 @@ export default async function ProductoPage({
 
   if (!catData) {
     return (
-      <p className="max-w-7xl mx-auto px-4 py-32 text-center text-lg text-gray-600">
+      <p className="max-w-7xl mx-auto px-4 py-32 text-center text-lg text-neutral-600">
         Categoría no encontrada.
       </p>
     );

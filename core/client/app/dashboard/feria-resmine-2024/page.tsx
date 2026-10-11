@@ -26,7 +26,7 @@ const config: ResourceConfig<Participante> = {
   searchPlaceholder: "Buscar participante…",
   filters: [{ name: "rol", label: "Rol", options: ROLES }],
   columns: [
-    { key: "nombre", label: "Participante", className: "font-medium text-gray-900" },
+    { key: "nombre", label: "Participante", className: "font-medium text-ink" },
     { key: "rol", label: "Rol", render: (r) => badge(r.rol, "blue") },
     { key: "stand", label: "Stand" },
     {

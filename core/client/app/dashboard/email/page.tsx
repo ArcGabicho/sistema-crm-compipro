@@ -31,7 +31,7 @@ const config: ResourceConfig<Campana> = {
   searchPlaceholder: "Buscar campaña…",
   filters: [{ name: "estado", label: "Estado", options: ESTADOS }],
   columns: [
-    { key: "nombre", label: "Campaña", className: "font-medium text-gray-900" },
+    { key: "nombre", label: "Campaña", className: "font-medium text-ink" },
     {
       key: "plantilla",
       label: "Plantilla",

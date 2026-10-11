@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+@theme {
+  --color-canvas: #cdd3d6;
+  --color-frame: #eceeee;
+  --color-panel: #f4f6f6;
+  --color-ink: #151515;
+  --color-accent: #ffa62b;
+}
+
+/* Relleno rayado naranja (acento de la UI del dashboard) */
+.hatch-accent {
+  background-color: #fff0d9;
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgb(255 166 43 / 0.75) 0 1px,
+    transparent 1px 5px
+  );
+  border: 1px solid rgb(255 166 43 / 0.7);
+}
+
 /* ----- Animaciones migradas desde los <style> de los componentes .astro ----- */
 
 @keyframes fade-in-up {

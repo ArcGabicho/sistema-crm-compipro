@@ -44,27 +44,27 @@ const Acordeon = () => {
   };
 
   return (
-    <section className="w-full py-15 bg-gray-100 flex justify-center items-center">
+    <section className="w-full py-15 bg-frame flex justify-center items-center">
       <div className="max-w-7xl w-full mx-auto px-4">
-        <h2 className="text-center mb-10 text-3xl sm:text-4xl text-gray-800">
+        <h2 className="text-center mb-10 text-3xl sm:text-4xl text-ink">
           Preguntas Frecuentes
         </h2>
         <div className="max-w-4xl mx-auto w-full">
           {faqsData.map((faq, index) => (
             <div
               key={faq.question}
-              className="bg-white rounded-lg mb-4 shadow-md overflow-hidden transition-all duration-300 ease-in-out"
+              className="bg-panel rounded-2xl mb-4 shadow-md overflow-hidden transition-all duration-300 ease-in-out"
             >
               <button
                 type="button"
-                className="w-full flex justify-between items-center py-4 px-5 bg-gray-100 cursor-pointer transition-colors duration-300 hover:bg-gray-200 text-left"
+                className="w-full flex justify-between items-center py-4 px-5 bg-frame cursor-pointer transition-colors duration-300 hover:bg-white text-left"
                 onClick={() => toggleFAQ(index)}
                 aria-expanded={openIndex === index}
               >
-                <h3 className="m-0 text-lg text-gray-800 font-medium">
+                <h3 className="m-0 text-lg text-ink font-medium">
                   {faq.question}
                 </h3>
-                <span className="text-gray-600 transition-transform duration-300">
+                <span className="text-neutral-600 transition-transform duration-300">
                   {openIndex === index ? (
                     <ChevronUp size={24} />
                   ) : (
@@ -73,14 +73,14 @@ const Acordeon = () => {
                 </span>
               </button>
               <div
-                className={`overflow-hidden transition-all duration-300 ease-in-out bg-white ${
+                className={`overflow-hidden transition-all duration-300 ease-in-out bg-panel ${
                   openIndex === index
                     ? "max-h-40 opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >
                 <div className="py-4 px-5">
-                  <p className="m-0 text-gray-600 leading-relaxed">
+                  <p className="m-0 text-neutral-600 leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>

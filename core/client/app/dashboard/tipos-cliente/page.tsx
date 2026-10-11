@@ -29,7 +29,7 @@ const config: ResourceConfig<TipoCliente> = {
       ),
       className: "w-10",
     },
-    { key: "nombre", label: "Nombre", className: "font-medium text-gray-900" },
+    { key: "nombre", label: "Nombre", className: "font-medium text-ink" },
     { key: "descripcion", label: "Descripción" },
     {
       key: "descuentoPct",

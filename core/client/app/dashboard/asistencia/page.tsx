@@ -82,8 +82,8 @@ export default function AsistenciaPage() {
   return (
     <div>
       <header className="mb-5">
-        <h1 className="text-2xl font-bold text-gray-900">Asistencia</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-3xl font-semibold tracking-tight text-ink">Asistencia</h1>
+        <p className="text-sm text-neutral-500">
           Ingreso registrado al entrar al sistema frente a la hora programada de
           cada trabajador (tolerancia 5 min).
           {tardanzas > 0 && (
@@ -96,12 +96,12 @@ export default function AsistenciaPage() {
       </header>
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <label className="flex items-center gap-2 text-sm text-gray-600">
+        <label className="flex items-center gap-2 text-sm text-neutral-600">
           <input
             type="checkbox"
             checked={soloTarde}
             onChange={(e) => setSoloTarde(e.target.checked)}
-            className="h-4 w-4 rounded border-gray-300 text-orange-500"
+            className="h-4 w-4 rounded border-neutral-200 text-accent"
           />
           Solo tardanzas
         </label>
@@ -109,7 +109,7 @@ export default function AsistenciaPage() {
           <select
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+            className="rounded-full bg-panel px-4 py-2.5 text-sm text-ink shadow-sm ring-1 ring-white focus:outline-none focus:ring-2 focus:ring-accent/40"
           >
             <option value="">Todo el personal</option>
             {usuarios.map((u) => (
@@ -121,9 +121,9 @@ export default function AsistenciaPage() {
         )}
       </div>
 
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-900/5">
+      <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white">
         <table className="w-full min-w-[760px] text-left text-sm">
-          <thead className="border-b border-gray-100 bg-gray-50/60 text-xs uppercase tracking-wide text-gray-500">
+          <thead className="border-b border-neutral-200/70 bg-frame/70 text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               {["Fecha", "Trabajador", "Programada", "Ingreso", "Desvío", "Estado", "Justificación", ""].map(
                 (h) => (
@@ -134,31 +134,31 @@ export default function AsistenciaPage() {
               )}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-neutral-200/60">
             {loading && (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-gray-400">
+                <td colSpan={8} className="px-4 py-10 text-center text-neutral-400">
                   <LoaderCircle className="mx-auto h-5 w-5 animate-spin" />
                 </td>
               </tr>
             )}
             {!loading && data?.items.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-gray-400">
+                <td colSpan={8} className="px-4 py-10 text-center text-neutral-400">
                   Sin registros de asistencia.
                 </td>
               </tr>
             )}
             {!loading &&
               data?.items.map((r) => (
-                <tr key={r.id} className="align-top hover:bg-orange-50/30">
-                  <td className="px-4 py-3 whitespace-nowrap text-gray-500">
+                <tr key={r.id} className="align-top hover:bg-white/60">
+                  <td className="px-4 py-3 whitespace-nowrap text-neutral-500">
                     {date(r.fecha)}
                   </td>
-                  <td className="px-4 py-3 font-medium text-gray-900">
+                  <td className="px-4 py-3 font-medium text-ink">
                     {r.user?.name ?? `#${r.userId}`}
                   </td>
-                  <td className="px-4 py-3 text-gray-500">
+                  <td className="px-4 py-3 text-neutral-500">
                     {hhmm(r.horaProgramada)}
                   </td>
                   <td className="px-4 py-3">{hhmm(r.horaIngreso)}</td>
@@ -168,17 +168,17 @@ export default function AsistenciaPage() {
                         +{r.minutosTardanza} min
                       </span>
                     ) : r.minutosAnticipacion > 0 ? (
-                      <span className="text-gray-400">
+                      <span className="text-neutral-400">
                         −{r.minutosAnticipacion} min
                       </span>
                     ) : (
-                      <span className="text-gray-400">—</span>
+                      <span className="text-neutral-400">—</span>
                     )}
                   </td>
                   <td className="px-4 py-3">
                     {badge(r.estado, estadoTone(r.estado))}
                   </td>
-                  <td className="max-w-[220px] px-4 py-3 text-xs text-gray-600">
+                  <td className="max-w-[220px] px-4 py-3 text-xs text-neutral-600">
                     {r.justificacion ?? "—"}
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -186,7 +186,7 @@ export default function AsistenciaPage() {
                       <button
                         type="button"
                         onClick={() => setJustificar(r)}
-                        className="rounded px-2 py-1 text-xs font-medium text-orange-600 hover:bg-orange-50"
+                        className="rounded-full px-2 py-1 text-xs font-medium text-orange-600 hover:bg-accent/15"
                       >
                         Justificar
                       </button>
@@ -242,17 +242,17 @@ function JustificarModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <form
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
-        className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow-2xl"
+        className="w-full max-w-md space-y-4 rounded-[1.75rem] bg-panel p-6 shadow-2xl"
       >
         <div>
-          <h2 className="text-lg font-bold text-gray-900">Justificar tardanza</h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <h2 className="text-lg font-semibold text-ink">Justificar tardanza</h2>
+          <p className="mt-1 text-sm text-neutral-500">
             {registro.user?.name} · {date(registro.fecha)} ·{" "}
             <span className="font-semibold text-red-600">
               +{registro.minutosTardanza} min
@@ -267,20 +267,20 @@ function JustificarModal({
           required
           minLength={5}
           placeholder="Motivo de la tardanza…"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+          className="w-full rounded-2xl border border-neutral-200 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
         />
         <div className="flex justify-end gap-2">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
+            className="rounded-full px-4 py-2 text-sm text-neutral-600 hover:bg-white"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={saving || texto.trim().length < 5}
-            className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:brightness-95 disabled:opacity-60"
           >
             {saving && <LoaderCircle className="h-4 w-4 animate-spin" />}
             Guardar

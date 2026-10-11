@@ -86,7 +86,7 @@ const initialForm: FormState = {
 };
 
 const inputClass =
-  "w-full rounded-lg border border-gray-200 bg-gray-50/60 px-4 py-2.5 text-sm text-gray-900 transition-colors placeholder:text-gray-400 focus:border-orange-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20";
+  "w-full rounded-2xl border border-neutral-200/70 bg-frame/60 px-4 py-2.5 text-sm text-ink transition-colors placeholder:text-neutral-400 focus:border-orange-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20";
 
 export default function ProductoView({ catData, productos }: ProductoViewProps) {
   const [form, setForm] = useState<FormState>(initialForm);
@@ -153,13 +153,13 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-linear-to-br from-orange-50 via-white to-white">
+      <section className="relative overflow-hidden bg-frame">
         {/* Forma decorativa */}
         <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-orange-200/40 blur-3xl" />
 
         <div className="relative mx-auto grid max-w-7xl items-stretch gap-8 px-4 pt-24 pb-16 sm:px-6 md:pt-28 md:pb-20 lg:grid-cols-2 lg:gap-10 lg:px-8">
           {/* Showcase: portada con contenido superpuesto */}
-          <div className="relative flex min-h-96 flex-col justify-end overflow-hidden rounded-3xl bg-gray-900 p-8 shadow-xl ring-1 ring-gray-900/5">
+          <div className="relative flex min-h-96 flex-col justify-end overflow-hidden rounded-3xl bg-ink p-8 shadow-xl ring-1 ring-white">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={catData.portada}
@@ -192,7 +192,7 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
 
               <a
                 href="#productos"
-                className="group mt-6 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                className="group mt-6 inline-flex items-center gap-2 rounded-full bg-panel px-5 py-2.5 text-sm font-semibold text-ink shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
               >
                 Ver {productos.length} productos
                 <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
@@ -201,16 +201,16 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
           </div>
 
           {/* Formulario de cotización */}
-          <div className="rounded-3xl bg-white p-6 shadow-xl ring-1 ring-gray-900/5 sm:p-8">
+          <div className="rounded-3xl bg-panel p-6 shadow-xl ring-1 ring-white sm:p-8">
             <div className="flex items-center gap-3">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600">
                 <FileText className="h-5 w-5" />
               </span>
               <div>
-                <h2 className="text-lg font-bold text-gray-900">
+                <h2 className="text-lg font-bold text-ink">
                   Solicita una cotización
                 </h2>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-neutral-500">
                   {form.productoNombre
                     ? `Sobre: ${form.productoNombre}`
                     : "Un asesor comercial te responde a la brevedad"}
@@ -222,10 +222,10 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
               <div className="mt-6 flex flex-col items-center gap-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-10 text-center">
                 <CheckCircle2 className="h-12 w-12 text-emerald-500" />
                 <div>
-                  <p className="text-base font-semibold text-gray-900">
+                  <p className="text-base font-semibold text-ink">
                     ¡Recibimos tu solicitud!
                   </p>
-                  <p className="mt-1 text-sm text-gray-600">
+                  <p className="mt-1 text-sm text-neutral-600">
                     Nuestro equipo comercial te contactará muy pronto con la
                     cotización.
                   </p>
@@ -303,7 +303,7 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-linear-to-r from-orange-500 to-orange-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:from-orange-600 hover:to-orange-700 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:opacity-60 disabled:hover:translate-y-0"
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:brightness-95 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:opacity-60 disabled:hover:translate-y-0"
               >
                 {status === "sending" ? "Enviando…" : "Enviar cotización"}
                 {status === "sending" ? (
@@ -328,8 +328,8 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
       </section>
 
       {/* Descripción */}
-      <section className="bg-white py-14">
-        <p className="mx-auto max-w-3xl px-4 text-center text-lg leading-relaxed text-gray-500">
+      <section className="bg-panel py-14">
+        <p className="mx-auto max-w-3xl px-4 text-center text-lg leading-relaxed text-neutral-500">
           Obtenga los artículos más novedosos relacionados al Merchandising y
           personalice estos productos para que pueda generar un impacto hacia sus
           colaboradores como hacia sus clientes.
@@ -337,24 +337,24 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
       </section>
 
       {/* Products Section */}
-      <section id="productos" className="scroll-mt-20 bg-gray-50 py-16 sm:py-20">
+      <section id="productos" className="scroll-mt-20 bg-frame py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           {/* Encabezado */}
           <div className="mx-auto max-w-2xl text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-600">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-600">
               {catData.nombre}
             </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
               Nuestros Productos
             </h2>
-            <p className="mt-3 text-base leading-relaxed text-gray-500">
+            <p className="mt-3 text-base leading-relaxed text-neutral-500">
               {productos.length}{" "}
               {productos.length === 1
                 ? "artículo disponible"
                 : "artículos disponibles"}{" "}
               en esta línea, listos para personalizar con tu marca.
             </p>
-            <div className="mx-auto mt-6 h-1 w-16 rounded-full bg-linear-to-r from-yellow-400 to-orange-500" />
+            <div className="mx-auto mt-6 h-1.5 w-16 rounded-full hatch-accent" />
           </div>
 
           {/* Grid de productos */}
@@ -363,9 +363,9 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
               <article
                 key={producto.id}
                 style={{ animationDelay: `${Math.min(index, 10) * 60}ms` }}
-                className="animate-fade-in-up group flex flex-col overflow-hidden rounded-2xl bg-white text-center shadow-sm ring-1 ring-gray-900/5 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:ring-orange-300/60"
+                className="animate-fade-in-up group flex flex-col overflow-hidden rounded-2xl bg-panel text-center shadow-sm ring-1 ring-white transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:ring-accent/50"
               >
-                <div className="relative aspect-square overflow-hidden bg-gray-100">
+                <div className="relative aspect-square overflow-hidden bg-frame">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={producto.imagen}
@@ -376,10 +376,10 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
                 </div>
 
                 <div className="flex flex-1 flex-col p-4">
-                  <h3 className="text-sm font-bold leading-snug text-gray-900 transition-colors duration-300 group-hover:text-orange-600">
+                  <h3 className="text-sm font-bold leading-snug text-ink transition-colors duration-300 group-hover:text-orange-600">
                     {producto.nombre}
                   </h3>
-                  <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-gray-500">
+                  <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-neutral-500">
                     {producto.descripcion}
                   </p>
 
@@ -387,7 +387,7 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
                     <button
                       type="button"
                       onClick={() => handleProductQuote(producto.nombre)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-linear-to-r from-orange-500 to-orange-600 px-4 py-2 text-xs font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:from-orange-600 hover:to-orange-700 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:brightness-95 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
                       <MessageCircle className="h-3.5 w-3.5" />
                       Cotizar
@@ -401,16 +401,16 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
       </section>
 
       {/* FAQ */}
-      <section className="bg-white py-16 sm:py-20">
+      <section className="bg-panel py-16 sm:py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-600">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-600">
               Ayuda
             </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
               Preguntas Frecuentes
             </h2>
-            <div className="mx-auto mt-6 h-1 w-16 rounded-full bg-linear-to-r from-yellow-400 to-orange-500" />
+            <div className="mx-auto mt-6 h-1.5 w-16 rounded-full hatch-accent" />
           </div>
 
           <div className="mt-12 space-y-4">
@@ -419,13 +419,13 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
               return (
                 <div
                   key={faq.question}
-                  className="overflow-hidden rounded-2xl bg-gray-50 ring-1 ring-gray-900/5 transition-shadow duration-300 hover:shadow-md"
+                  className="overflow-hidden rounded-2xl bg-frame ring-1 ring-white transition-shadow duration-300 hover:shadow-md"
                 >
                   <button
                     type="button"
                     onClick={() => toggleFaq(index)}
                     aria-expanded={isActive}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-base font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-orange-500 sm:text-lg"
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-base font-semibold text-ink transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent sm:text-lg"
                   >
                     {faq.question}
                     <ChevronDown
@@ -442,7 +442,7 @@ export default function ProductoView({ catData, productos }: ProductoViewProps) 
                     }`}
                   >
                     <div className="min-h-0">
-                      <p className="px-5 pb-5 text-sm leading-relaxed text-gray-600">
+                      <p className="px-5 pb-5 text-sm leading-relaxed text-neutral-600">
                         {faq.answer}
                       </p>
                     </div>

@@ -28,7 +28,7 @@ const config: ResourceConfig<Proveedor> = {
     },
   ],
   columns: [
-    { key: "nombre", label: "Nombre", className: "font-medium text-gray-900" },
+    { key: "nombre", label: "Nombre", className: "font-medium text-ink" },
     { key: "contacto", label: "Contacto" },
     { key: "email", label: "Email" },
     { key: "ciudad", label: "Ciudad" },

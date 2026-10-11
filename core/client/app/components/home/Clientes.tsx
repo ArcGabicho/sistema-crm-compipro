@@ -20,14 +20,14 @@ const loopClientes = [...clientes, ...clientes];
 export default function Clientes() {
   return (
     <div className="max-w-7xl mx-auto px-4 text-center py-16">
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12">
+      <h2 className="text-3xl md:text-4xl font-bold text-ink mb-12">
         NUESTROS CLIENTES
       </h2>
 
       {/* Slider infinito */}
       <div className="group relative overflow-hidden w-full h-24 md:h-32">
         {/* Gradiente para fade effect */}
-        <div className="absolute inset-0 z-10 pointer-events-none bg-linear-to-r from-white via-transparent to-white" />
+        <div className="absolute inset-0 z-10 pointer-events-none bg-linear-to-r from-frame via-transparent to-frame" />
 
         {/* Contenedor del slider */}
         <div className="flex animate-scroll group-hover:[animation-play-state:paused]">

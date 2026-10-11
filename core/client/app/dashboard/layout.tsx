@@ -26,32 +26,36 @@ export default function DashboardLayout({
 
   if (status !== "authenticated") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-amber-50">
-        <LoaderCircle className="h-8 w-8 animate-spin text-yellow-500" />
+      <div className="flex min-h-screen items-center justify-center bg-canvas">
+        <LoaderCircle className="h-8 w-8 animate-spin text-accent" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-amber-50 md:flex">
-      {/* Barra superior (solo móvil) */}
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-amber-200 bg-white px-4 md:hidden">
-        <button
-          type="button"
-          onClick={() => setNavOpen(true)}
-          aria-label="Abrir menú"
-          className="rounded-md p-1.5 text-neutral-700 hover:bg-neutral-100"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
-        <span className="font-semibold text-neutral-800">Sistema Compina</span>
-      </header>
+    <div className="min-h-screen bg-canvas md:p-4">
+      <div className="min-h-screen bg-frame md:flex md:h-[calc(100dvh-2rem)] md:min-h-0 md:gap-4 md:rounded-[2.25rem] md:p-4 md:shadow-xl md:ring-4 md:ring-white/60">
+        {/* Barra superior (solo móvil) */}
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 bg-frame/90 px-4 backdrop-blur md:hidden">
+          <button
+            type="button"
+            onClick={() => setNavOpen(true)}
+            aria-label="Abrir menú"
+            className="grid size-9 place-items-center rounded-full bg-panel text-ink shadow-sm ring-1 ring-white"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <span className="font-semibold text-ink">Sistema Compipro</span>
+        </header>
 
-      <Sidebar mobileOpen={navOpen} onClose={() => setNavOpen(false)} />
+        <Sidebar mobileOpen={navOpen} onClose={() => setNavOpen(false)} />
 
-      <main className="min-w-0 flex-1 p-4 sm:p-6 md:p-8">{children}</main>
-      <WelcomeModal />
-      <AttendanceGate />
+        <main className="min-w-0 flex-1 p-4 sm:p-6 md:overflow-y-auto md:rounded-[1.75rem] md:p-2">
+          {children}
+        </main>
+        <WelcomeModal />
+        <AttendanceGate />
+      </div>
     </div>
   );
 }

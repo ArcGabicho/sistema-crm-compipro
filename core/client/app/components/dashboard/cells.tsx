@@ -21,17 +21,17 @@ export function date(value: unknown): string {
 
 const TONES: Record<string, string> = {
   green: "bg-emerald-100 text-emerald-700",
-  yellow: "bg-amber-100 text-amber-700",
+  yellow: "hatch-accent text-orange-800",
   red: "bg-red-100 text-red-700",
-  blue: "bg-blue-100 text-blue-700",
-  gray: "bg-gray-100 text-gray-600",
-  purple: "bg-violet-100 text-violet-700",
+  blue: "bg-ink text-white",
+  gray: "bg-neutral-200/70 text-neutral-600",
+  purple: "bg-neutral-700 text-white",
 };
 
 export function badge(label: unknown, tone: keyof typeof TONES = "gray"): ReactNode {
   return (
     <span
-      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${TONES[tone]}`}
+      className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${TONES[tone]}`}
     >
       {String(label ?? "—")}
     </span>

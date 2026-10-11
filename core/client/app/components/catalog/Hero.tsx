@@ -8,7 +8,7 @@ const stats = [
 
 export default function Hero() {
   return (
-    <section className="relative mt-16 overflow-hidden rounded-br-[80px] bg-linear-to-br from-orange-500 to-orange-600 text-white md:rounded-br-[120px]">
+    <section className="relative mx-3 mt-24 overflow-hidden sm:mt-28 rounded-[2rem] bg-accent text-white md:rounded-[2.5rem]">
       {/* Formas decorativas */}
       <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
       <div className="pointer-events-none absolute -bottom-16 left-1/3 h-56 w-56 rounded-full bg-orange-300/20 blur-3xl" />
@@ -17,7 +17,7 @@ export default function Hero() {
         {/* Texto */}
         <div>
           <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 text-sm font-semibold ring-1 ring-white/25 backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span className="h-1.5 w-1.5 rounded-full bg-panel" />
             Agencia de merchandising
           </span>
 
@@ -35,7 +35,7 @@ export default function Hero() {
             href="https://agenciadigitalnet.net"
             target="_blank"
             rel="noopener noreferrer"
-            className="group mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-base font-semibold text-orange-600 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-orange-50 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-orange-500"
+            className="group mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3 text-base font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-neutral-800 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-orange-500"
           >
             Conócenos
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />

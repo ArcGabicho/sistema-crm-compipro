@@ -50,21 +50,21 @@ const WHATSAPP_URL = "https://wa.me/973644878";
 
 export default function Cards() {
   return (
-    <section className="bg-linear-to-br from-gray-50 to-gray-100 py-20 sm:py-24">
+    <section className="bg-frame py-20 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Encabezado */}
         <div className="mx-auto max-w-2xl text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-600">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-600">
             Destacados
           </span>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             Productos Importados
           </h2>
-          <p className="mt-3 text-base leading-relaxed text-gray-500">
+          <p className="mt-3 text-base leading-relaxed text-neutral-500">
             Una selección de artículos listos para personalizar con la identidad
             de tu marca.
           </p>
-          <div className="mx-auto mt-6 h-1 w-16 rounded-full bg-linear-to-r from-yellow-400 to-orange-500" />
+          <div className="mx-auto mt-6 h-1.5 w-16 rounded-full hatch-accent" />
         </div>
 
         {/* Grid de productos */}
@@ -73,9 +73,9 @@ export default function Cards() {
             <article
               key={product.id}
               style={{ animationDelay: `${index * 80}ms` }}
-              className="animate-fade-in-up group flex flex-col overflow-hidden rounded-2xl bg-white text-center shadow-sm ring-1 ring-gray-900/5 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:ring-orange-300/60"
+              className="animate-fade-in-up group flex flex-col overflow-hidden rounded-2xl bg-panel text-center shadow-sm ring-1 ring-white transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:ring-accent/50"
             >
-              <div className="relative aspect-square overflow-hidden bg-gray-100">
+              <div className="relative aspect-square overflow-hidden bg-frame">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={product.image}
@@ -85,10 +85,10 @@ export default function Cards() {
               </div>
 
               <div className="flex flex-1 flex-col p-6">
-                <h3 className="text-lg font-bold text-gray-900 transition-colors duration-300 group-hover:text-orange-600">
+                <h3 className="text-lg font-bold text-ink transition-colors duration-300 group-hover:text-orange-600">
                   {product.name}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-gray-500">
+                <p className="mt-2 text-sm leading-relaxed text-neutral-500">
                   {product.description}
                 </p>
 
@@ -97,7 +97,7 @@ export default function Cards() {
                     href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-orange-500 to-orange-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:from-orange-600 hover:to-orange-700 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:brightness-95 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                   >
                     <MessageCircle className="h-4 w-4" />
                     Cotizar ahora

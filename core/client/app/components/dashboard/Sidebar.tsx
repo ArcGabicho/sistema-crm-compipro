@@ -77,6 +77,8 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
     }
   };
 
+  const displayName = user?.name || user?.email || "Usuario";
+
   return (
     <>
       {/* Fondo oscuro al abrir el menú en móvil */}
@@ -90,88 +92,112 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen w-64 flex-col bg-neutral-800 text-neutral-300 transition-transform duration-300 md:sticky md:top-0 md:z-30 md:shrink-0 md:translate-x-0 md:transition-[width] ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col gap-3 bg-frame p-3 transition-transform duration-300 md:static md:z-auto md:h-full md:shrink-0 md:translate-x-0 md:bg-transparent md:p-0 md:transition-[width] ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
-        } ${collapsed ? "md:w-16" : "md:w-64"}`}
+        } ${collapsed ? "md:w-[4.5rem]" : "md:w-64"}`}
       >
-        {/* Encabezado */}
-        <div className="flex h-16 items-center gap-3 border-b border-white/10 px-4">
-          <Image
-            src="/images/logocompina.webp"
-            alt="Compipro"
-            width={412}
-            height={117}
-            priority
-            className="h-6 w-auto shrink-0 brightness-0 invert"
-          />
-          {!collapsed && (
-            <span className="truncate font-semibold text-white">Sistema Compipro</span>
-          )}
-        </div>
-
-        {/* Botón de colapso (solo escritorio) */}
-        <button
-          type="button"
-          onClick={() => setCollapsed((c) => !c)}
-          aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
-          className="absolute -right-3 top-14 hidden h-7 w-7 items-center justify-center rounded-full bg-yellow-400 text-neutral-900 shadow-md transition-colors hover:bg-yellow-300 md:flex"
+        {/* Usuario */}
+        <div
+          className={`flex items-center gap-3 rounded-full bg-panel p-1.5 shadow-sm ring-1 ring-white ${
+            collapsed ? "md:justify-center" : ""
+          }`}
         >
-          <ChevronsLeft
-            className={`h-4 w-4 transition-transform duration-300 ${
-              collapsed ? "rotate-180" : ""
-            }`}
+          <Image
+            src="/images/Avatar.webp"
+            alt=""
+            width={36}
+            height={36}
+            className="size-9 shrink-0 rounded-full object-cover"
           />
-        </button>
+          <span
+            className={`truncate pr-3 text-sm font-medium text-ink ${
+              collapsed ? "md:hidden" : ""
+            }`}
+          >
+            {displayName}
+          </span>
+        </div>
 
         {/* Navegación */}
-        <nav className="flex-1 space-y-0.5 overflow-y-auto py-3">
-          {NAV.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href;
-            return (
-              <Link
-                key={href}
-                href={href}
-                onClick={onClose}
-                title={collapsed ? label : undefined}
-                aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-3 border-l-2 px-4 py-2.5 text-sm transition-colors ${
-                  active
-                    ? "border-yellow-400 bg-white/10 text-white"
-                    : "border-transparent hover:bg-white/5 hover:text-white"
+        <div className="relative flex min-h-0 flex-1 flex-col rounded-[1.75rem] bg-panel p-3 shadow-sm ring-1 ring-white">
+          <div className="flex h-10 items-center gap-3 px-1.5 pb-2">
+            <Image
+              src="/images/logocompina.webp"
+              alt="Compipro"
+              width={412}
+              height={117}
+              priority
+              className={`h-5 w-auto shrink-0 ${collapsed ? "md:hidden" : ""}`}
+            />
+            <button
+              type="button"
+              onClick={() => setCollapsed((c) => !c)}
+              aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
+              className="ml-auto hidden size-8 shrink-0 items-center justify-center rounded-full bg-white text-neutral-500 shadow-sm transition-colors hover:text-ink md:flex"
+            >
+              <ChevronsLeft
+                className={`size-4 transition-transform duration-300 ${
+                  collapsed ? "rotate-180" : ""
                 }`}
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                {!collapsed && <span className="truncate">{label}</span>}
-              </Link>
-            );
-          })}
-        </nav>
+              />
+            </button>
+          </div>
 
-        {/* Pie: usuario / cerrar sesión */}
-        <div className="border-t border-white/10 p-3">
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={loggingOut}
-            title={collapsed ? "Cerrar sesión" : undefined}
-            className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm text-neutral-300 transition-colors hover:bg-white/5 hover:text-white disabled:cursor-wait disabled:opacity-60"
-          >
-            {loggingOut ? (
-              <LoaderCircle className="h-5 w-5 shrink-0 animate-spin" />
-            ) : (
-              <LogOut className="h-5 w-5 shrink-0" />
-            )}
-            {!collapsed && (
-              <span className="truncate">
-                {loggingOut
-                  ? "Cerrando sesión…"
-                  : user
-                    ? `Salir · ${user.name || user.email}`
-                    : "Cerrar sesión"}
-              </span>
-            )}
-          </button>
+          <nav className="-mx-1 flex-1 space-y-1 overflow-y-auto px-1 py-1">
+            {NAV.map(({ href, label, icon: Icon }) => {
+              const active = pathname === href;
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={onClose}
+                  title={collapsed ? label : undefined}
+                  aria-current={active ? "page" : undefined}
+                  className={`group flex items-center gap-3 rounded-full p-1.5 text-sm transition-all ${
+                    active
+                      ? "bg-white font-medium text-ink shadow-sm"
+                      : "text-neutral-500 hover:text-ink"
+                  }`}
+                >
+                  <span
+                    className={`grid size-9 shrink-0 place-items-center rounded-full transition-colors ${
+                      active
+                        ? "bg-ink text-white"
+                        : "group-hover:bg-white/80"
+                    }`}
+                  >
+                    <Icon className="size-[18px]" />
+                  </span>
+                  <span
+                    className={`truncate pr-3 ${collapsed ? "md:hidden" : ""}`}
+                  >
+                    {label}
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
         </div>
+
+        {/* Cerrar sesión */}
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={loggingOut}
+          title={collapsed ? "Cerrar sesión" : undefined}
+          className="group flex items-center gap-3 rounded-full bg-panel p-1.5 text-sm text-neutral-500 shadow-sm ring-1 ring-white transition-colors hover:text-ink disabled:cursor-wait disabled:opacity-60"
+        >
+          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white">
+            {loggingOut ? (
+              <LoaderCircle className="size-[18px] animate-spin" />
+            ) : (
+              <LogOut className="size-[18px]" />
+            )}
+          </span>
+          <span className={`truncate pr-3 ${collapsed ? "md:hidden" : ""}`}>
+            {loggingOut ? "Cerrando sesión…" : "Cerrar sesión"}
+          </span>
+        </button>
       </aside>
     </>
   );

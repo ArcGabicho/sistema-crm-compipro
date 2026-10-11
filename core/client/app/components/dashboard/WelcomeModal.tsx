@@ -56,7 +56,7 @@ export default function WelcomeModal() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
+        className="relative w-full max-w-lg overflow-hidden rounded-[1.75rem] bg-panel shadow-2xl"
       >
         <button
           type="button"
@@ -79,17 +79,17 @@ export default function WelcomeModal() {
         </div>
 
         <div className="p-6 text-center">
-          <h2 id="welcome-title" className="text-xl font-bold text-gray-900">
+          <h2 id="welcome-title" className="text-xl font-semibold text-ink">
             ¡Bienvenido al Sistema CRM!
           </h2>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-neutral-500">
             Nos alegra tenerte de vuelta. Usa el menú lateral para navegar entre
             los módulos.
           </p>
           <button
             type="button"
             onClick={close}
-            className="mt-5 rounded-full bg-yellow-400 px-6 py-2 text-sm font-semibold text-neutral-900 transition-colors hover:bg-yellow-300"
+            className="mt-5 rounded-full bg-accent px-6 py-2 text-sm font-semibold text-neutral-900 transition-colors hover:brightness-95"
           >
             Comenzar
           </button>

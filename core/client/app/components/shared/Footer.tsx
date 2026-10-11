@@ -21,7 +21,7 @@ const redesSociales = [Facebook, Instagram, Linkedin, Pinterest];
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white py-16">
+    <footer className="mx-3 mb-3 mt-12 rounded-[2rem] bg-ink py-16 text-white">
       <div className="max-w-7xl mx-auto px-4">
         {/* Logo y botón */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 text-center">
@@ -33,14 +33,14 @@ export default function Footer() {
           />
           <Link
             href="/auth"
-            className="bg-white text-black font-bold px-8 py-3 rounded-full hover:bg-gray-100 transition-colors duration-300"
+            className="bg-accent text-white font-semibold px-8 py-3 rounded-full hover:brightness-95 transition-colors duration-300"
           >
             Sistema CRM
           </Link>
         </div>
 
         {/* Línea divisoria */}
-        <hr className="border-white border-t mb-8" />
+        <hr className="border-white/20 border-t mb-8" />
 
         {/* Sección de widgets */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">

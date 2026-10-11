@@ -83,30 +83,30 @@ const Formulario = () => {
   };
 
   return (
-    <section className="bg-gray-50 py-16 px-4 flex items-center flex-col justify-center">
+    <section className="bg-frame py-16 px-4 flex items-center flex-col justify-center">
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-3">
+        <h2 className="text-3xl font-semibold text-ink mb-3">
           POTENCIAMOS TU CRECIMIENTO
         </h2>
-        <div className="w-16 h-0.5 bg-linear-to-r from-amber-400 to-amber-600 mx-auto rounded-full" />
+        <div className="w-16 h-1.5 hatch-accent mx-auto rounded-full" />
       </div>
 
-      <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 overflow-hidden max-w-6xl w-full flex flex-col lg:flex-row relative">
+      <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-neutral-200/70 overflow-hidden max-w-6xl w-full flex flex-col lg:flex-row relative">
         {/* Decorative amber background */}
-        <div className="absolute top-0 right-0 w-1/5 h-full bg-linear-to-br from-amber-500/90 to-amber-600/90 rounded-r-2xl hidden lg:block" />
+        <div className="absolute top-0 right-0 w-1/5 h-full bg-accent rounded-r-2xl hidden lg:block" />
 
         {/* Form section */}
         <div className="p-8 bg-white/90 backdrop-blur-sm rounded-l-2xl flex-1 relative z-10">
           <div className="mb-6">
-            <h4 className="text-xl font-semibold text-gray-800 mb-2">
+            <h4 className="text-xl font-semibold text-ink mb-2">
               ¿Solicita una <span className="text-emerald-600">cotización</span>?
             </h4>
-            <p className="text-gray-600 text-sm flex items-center gap-2">
+            <p className="text-neutral-600 text-sm flex items-center gap-2">
               <Mail size={14} />
               Contacta con nosotros en{" "}
               <a
                 href="mailto:ventas@compipro.net"
-                className="text-amber-600 hover:text-amber-700 font-medium transition-colors duration-200"
+                className="text-orange-600 hover:text-orange-700 font-medium transition-colors duration-200"
               >
                 ventas@compipro.net
               </a>
@@ -117,10 +117,10 @@ const Formulario = () => {
             <div className="flex flex-col items-center gap-4 rounded-xl border border-emerald-200 bg-emerald-50 px-6 py-10 text-center">
               <CheckCircle2 className="h-12 w-12 text-emerald-500" />
               <div>
-                <p className="text-lg font-semibold text-gray-800">
+                <p className="text-lg font-semibold text-ink">
                   ¡Recibimos tu solicitud!
                 </p>
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm text-neutral-600">
                   Un asesor comercial de Compipro se pondrá en contacto contigo a
                   la brevedad.
                 </p>
@@ -128,7 +128,7 @@ const Formulario = () => {
               <button
                 type="button"
                 onClick={() => setStatus("idle")}
-                className="text-sm font-medium text-amber-600 hover:text-amber-700"
+                className="text-sm font-medium text-orange-600 hover:text-orange-700"
               >
                 Enviar otra solicitud
               </button>
@@ -142,10 +142,10 @@ const Formulario = () => {
                   value={formData.nombre}
                   onChange={handleInputChange}
                   placeholder="Nombre de contacto"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 pl-9 text-sm bg-gray-50/50 focus:bg-white"
+                  className="w-full px-4 py-2.5 border border-neutral-200/70 rounded-2xl focus:ring-1 focus:ring-accent focus:border-accent transition-all duration-200 pl-9 text-sm bg-white/70 focus:bg-white"
                   required
                 />
-                <Phone size={16} className="absolute left-3 top-3 text-gray-400" />
+                <Phone size={16} className="absolute left-3 top-3 text-neutral-400" />
               </div>
 
               <div className="relative">
@@ -155,11 +155,11 @@ const Formulario = () => {
                   value={formData.calle}
                   onChange={handleInputChange}
                   placeholder="Calle"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 pl-9 text-sm bg-gray-50/50 focus:bg-white"
+                  className="w-full px-4 py-2.5 border border-neutral-200/70 rounded-2xl focus:ring-1 focus:ring-accent focus:border-accent transition-all duration-200 pl-9 text-sm bg-white/70 focus:bg-white"
                 />
                 <MapPin
                   size={16}
-                  className="absolute left-3 top-3 text-gray-400"
+                  className="absolute left-3 top-3 text-neutral-400"
                 />
               </div>
 
@@ -171,11 +171,11 @@ const Formulario = () => {
                     value={formData.ciudad}
                     onChange={handleInputChange}
                     placeholder="Ciudad"
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 pl-9 text-sm bg-gray-50/50 focus:bg-white"
+                    className="w-full px-4 py-2.5 border border-neutral-200/70 rounded-2xl focus:ring-1 focus:ring-accent focus:border-accent transition-all duration-200 pl-9 text-sm bg-white/70 focus:bg-white"
                   />
                   <MapPin
                     size={16}
-                    className="absolute left-3 top-3 text-gray-400"
+                    className="absolute left-3 top-3 text-neutral-400"
                   />
                 </div>
                 <div>
@@ -185,7 +185,7 @@ const Formulario = () => {
                     value={formData.codigoPostal}
                     onChange={handleInputChange}
                     placeholder="Código postal"
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 text-sm bg-gray-50/50 focus:bg-white"
+                    className="w-full px-4 py-2.5 border border-neutral-200/70 rounded-2xl focus:ring-1 focus:ring-accent focus:border-accent transition-all duration-200 text-sm bg-white/70 focus:bg-white"
                   />
                 </div>
               </div>
@@ -197,7 +197,7 @@ const Formulario = () => {
                   value={formData.telefono}
                   onChange={handleInputChange}
                   placeholder="Teléfono de contacto"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 text-sm bg-gray-50/50 focus:bg-white"
+                  className="w-full px-4 py-2.5 border border-neutral-200/70 rounded-2xl focus:ring-1 focus:ring-accent focus:border-accent transition-all duration-200 text-sm bg-white/70 focus:bg-white"
                   required
                 />
               </div>
@@ -209,10 +209,10 @@ const Formulario = () => {
                   value={formData.correo}
                   onChange={handleInputChange}
                   placeholder="Correo electrónico"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 pl-9 text-sm bg-gray-50/50 focus:bg-white"
+                  className="w-full px-4 py-2.5 border border-neutral-200/70 rounded-2xl focus:ring-1 focus:ring-accent focus:border-accent transition-all duration-200 pl-9 text-sm bg-white/70 focus:bg-white"
                   required
                 />
-                <Mail size={16} className="absolute left-3 top-3 text-gray-400" />
+                <Mail size={16} className="absolute left-3 top-3 text-neutral-400" />
               </div>
 
               <div className="relative">
@@ -222,19 +222,19 @@ const Formulario = () => {
                   onChange={handleInputChange}
                   rows={3}
                   placeholder="Háblenos de su idea (producto, cantidad, técnica, fecha)"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 pl-9 text-sm resize-none bg-gray-50/50 focus:bg-white"
+                  className="w-full px-4 py-2.5 border border-neutral-200/70 rounded-2xl focus:ring-1 focus:ring-accent focus:border-accent transition-all duration-200 pl-9 text-sm resize-none bg-white/70 focus:bg-white"
                   required
                 />
                 <FileText
                   size={16}
-                  className="absolute left-3 top-3 text-gray-400"
+                  className="absolute left-3 top-3 text-neutral-400"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="w-full bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-amber-300/50 text-sm disabled:opacity-60 disabled:hover:translate-y-0"
+                className="w-full bg-accent hover:brightness-95 text-white font-medium py-3 px-6 rounded-2xl transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-accent/40 text-sm disabled:opacity-60 disabled:hover:translate-y-0"
               >
                 {status === "sending" ? (
                   <Loader2 size={18} className="animate-spin" />
@@ -258,7 +258,7 @@ const Formulario = () => {
 
         {/* Map section */}
         <div className="flex-1 relative lg:pr-8 lg:py-8 p-4">
-          <div className="w-full h-80 lg:h-full rounded-lg lg:rounded-r-2xl overflow-hidden shadow-md border border-gray-100">
+          <div className="w-full h-80 lg:h-full rounded-2xl lg:rounded-r-2xl overflow-hidden shadow-md border border-neutral-200/70">
             <iframe
               title="Ubicación Compipro"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d975.7269537248984!2d-76.95927815022243!3d-12.016348448532601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c60cf36f8e9b%3A0x3f232688d4085c1b!2sAv.%20Las%20Flores%20de%20Primavera%20184%2C%20San%20Juan%20de%20Lurigancho%2C%20Per%C3%BA!5e0!3m2!1ses-419!2s!4v1708000000000!5m2!1ses-419!2s"
@@ -268,7 +268,7 @@ const Formulario = () => {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="rounded-lg lg:rounded-r-2xl"
+              className="rounded-2xl lg:rounded-r-2xl"
             />
           </div>
         </div>

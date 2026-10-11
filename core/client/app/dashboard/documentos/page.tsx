@@ -41,7 +41,7 @@ const config: ResourceConfig<Documento> = {
     },
   ],
   columns: [
-    { key: "nombre", label: "Nombre", className: "font-medium text-gray-900" },
+    { key: "nombre", label: "Nombre", className: "font-medium text-ink" },
     { key: "carpeta", label: "Carpeta" },
     { key: "tipo", label: "Tipo" },
     { key: "version", label: "Versión", render: (r) => `v${r.version}` },

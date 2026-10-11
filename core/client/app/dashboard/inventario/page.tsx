@@ -32,7 +32,7 @@ const config: ResourceConfig<Producto> = {
   ],
   columns: [
     { key: "sku", label: "SKU", className: "font-mono text-xs" },
-    { key: "nombre", label: "Producto", className: "font-medium text-gray-900" },
+    { key: "nombre", label: "Producto", className: "font-medium text-ink" },
     { key: "categoria", label: "Categoría" },
     { key: "precio", label: "Precio", render: (r) => money(r.precio) },
     {
@@ -124,22 +124,22 @@ function MovimientoModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <form
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
-        className="w-full max-w-sm space-y-4 rounded-2xl bg-white p-5 shadow-2xl"
+        className="w-full max-w-sm space-y-4 rounded-[1.75rem] bg-panel p-5 shadow-2xl"
       >
-        <h2 className="text-lg font-bold text-gray-900">
+        <h2 className="text-lg font-semibold text-ink">
           Movimiento · {producto.nombre}
         </h2>
-        <p className="text-xs text-gray-500">Stock actual: {producto.stock}</p>
+        <p className="text-xs text-neutral-500">Stock actual: {producto.stock}</p>
         <select
           value={tipo}
           onChange={(e) => setTipo(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-2xl border border-neutral-200 px-3 py-2 text-sm"
         >
           <option value="Entrada">Entrada</option>
           <option value="Salida">Salida</option>
@@ -151,27 +151,27 @@ function MovimientoModal({
           value={cantidad}
           onChange={(e) => setCantidad(e.target.value)}
           required
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-2xl border border-neutral-200 px-3 py-2 text-sm"
           placeholder="Cantidad"
         />
         <input
           value={motivo}
           onChange={(e) => setMotivo(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-2xl border border-neutral-200 px-3 py-2 text-sm"
           placeholder="Motivo (opcional)"
         />
         <div className="flex justify-end gap-2">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
+            className="rounded-full px-4 py-2 text-sm text-neutral-600 hover:bg-white"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+            className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:brightness-95 disabled:opacity-60"
           >
             Registrar
           </button>

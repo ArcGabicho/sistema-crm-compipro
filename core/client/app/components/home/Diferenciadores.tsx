@@ -26,7 +26,7 @@ export default function Diferenciadores() {
   return (
     <>
       {/* Sección de texto descriptivo */}
-      <div className="w-full bg-gray-500 flex justify-center items-center py-6 px-4 mt-5">
+      <div className="mx-3 flex justify-center items-center rounded-[2rem] bg-ink py-8 px-6 mt-5">
         <p className="text-white text-center max-w-4xl font-normal text-lg leading-relaxed">
           Todos nuestros artículos son personalizables para incluir el logotipo
           de tu empresa, tu eslogan, los nombres de tus empleados, clientes,
@@ -49,7 +49,7 @@ export default function Diferenciadores() {
                 alt={diferenciador.alt}
               />
               <p
-                className="text-gray-600 text-base md:text-lg max-w-48 leading-relaxed"
+                className="text-neutral-600 text-base md:text-lg max-w-48 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: diferenciador.text }}
               />
             </div>
