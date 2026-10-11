@@ -94,7 +94,7 @@ export default function CotizacionesPage() {
   const lastPage = Math.max(1, Math.ceil(total / pageSize));
 
   return (
-    <div>
+    <div className="lg:flex lg:h-full lg:flex-col">
       <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-ink">Cotizaciones</h1>
@@ -137,9 +137,9 @@ export default function CotizacionesPage() {
         </select>
       </div>
 
-      <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white">
+      <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
         <table className="w-full min-w-[720px] text-left text-sm">
-          <thead className="border-b border-neutral-200/70 bg-frame/70 text-xs uppercase tracking-wide text-neutral-500">
+          <thead className="sticky top-0 z-10 border-b border-neutral-200/70 bg-frame text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               {["Código", "Cliente", "Fecha", "Líneas", "Total", "Estado", ""].map(
                 (h) => (
@@ -251,7 +251,7 @@ export default function CotizacionesPage() {
         </table>
       </div>
 
-      <div className="mt-3 flex items-center justify-between text-sm text-neutral-500">
+      <div className="mt-3 flex shrink-0 items-center justify-between text-sm text-neutral-500">
         <span>{total} cotizaciones</span>
         <div className="flex gap-1">
           <button

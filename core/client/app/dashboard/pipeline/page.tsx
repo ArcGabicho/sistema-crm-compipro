@@ -97,7 +97,7 @@ export default function PipelinePage() {
   const opciones = columnas.map((c) => c.etapa);
 
   return (
-    <div>
+    <div className="lg:flex lg:h-full lg:flex-col">
       <header className="mb-5">
         <h1 className="text-3xl font-semibold tracking-tight text-ink">Pipeline comercial</h1>
         <p className="text-sm text-neutral-500">
@@ -112,13 +112,13 @@ export default function PipelinePage() {
           <LoaderCircle className="h-6 w-6 animate-spin" />
         </div>
       ) : (
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-4 overflow-x-auto pb-4 lg:min-h-0 lg:flex-1">
           {columnas.map((col) => {
             const items = porEtapa[col.etapa] ?? [];
             return (
               <div
                 key={col.etapa}
-                className="flex w-72 shrink-0 flex-col rounded-[1.75rem] bg-panel p-3 shadow-sm ring-1 ring-white"
+                className="flex min-h-0 w-72 shrink-0 flex-col rounded-[1.75rem] bg-panel p-3 shadow-sm ring-1 ring-white"
               >
                 <div className="mb-2 flex items-center justify-between px-1">
                   <span className="text-sm font-semibold text-neutral-700">
@@ -128,7 +128,7 @@ export default function PipelinePage() {
                     {items.length}
                   </span>
                 </div>
-                <div className="flex flex-col gap-2 overflow-y-auto">
+                <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
                   {items.length === 0 && (
                     <p className="px-1 py-6 text-center text-xs text-neutral-400">
                       Sin cuentas

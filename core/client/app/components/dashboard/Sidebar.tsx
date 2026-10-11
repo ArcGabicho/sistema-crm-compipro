@@ -87,19 +87,19 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
           type="button"
           aria-label="Cerrar menú"
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-black/40 md:hidden"
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col gap-3 bg-frame p-3 transition-transform duration-300 md:static md:z-auto md:h-full md:shrink-0 md:translate-x-0 md:bg-transparent md:p-0 md:transition-[width] ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col gap-3 bg-frame p-3 transition-transform duration-300 lg:static lg:z-auto lg:h-full lg:shrink-0 lg:translate-x-0 lg:bg-transparent lg:p-0 lg:transition-[width] ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
-        } ${collapsed ? "md:w-[4.5rem]" : "md:w-64"}`}
+        } ${collapsed ? "lg:w-[4.5rem]" : "lg:w-64"}`}
       >
         {/* Usuario */}
         <div
           className={`flex items-center gap-3 rounded-full bg-panel p-1.5 shadow-sm ring-1 ring-white ${
-            collapsed ? "md:justify-center" : ""
+            collapsed ? "lg:justify-center" : ""
           }`}
         >
           <Image
@@ -111,7 +111,7 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
           />
           <span
             className={`truncate pr-3 text-sm font-medium text-ink ${
-              collapsed ? "md:hidden" : ""
+              collapsed ? "lg:hidden" : ""
             }`}
           >
             {displayName}
@@ -122,18 +122,18 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
         <div className="relative flex min-h-0 flex-1 flex-col rounded-[1.75rem] bg-panel p-3 shadow-sm ring-1 ring-white">
           <div className="flex h-10 items-center gap-3 px-1.5 pb-2">
             <Image
-              src="/images/logocompina.webp"
+              src="/images/Compipro_Logo.webp"
               alt="Compipro"
               width={412}
               height={117}
               priority
-              className={`h-5 w-auto shrink-0 ${collapsed ? "md:hidden" : ""}`}
+              className={`h-6 w-auto shrink-0 ${collapsed ? "lg:hidden" : ""}`}
             />
             <button
               type="button"
               onClick={() => setCollapsed((c) => !c)}
               aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
-              className="ml-auto hidden size-8 shrink-0 items-center justify-center rounded-full bg-white text-neutral-500 shadow-sm transition-colors hover:text-ink md:flex"
+              className="ml-auto hidden size-8 shrink-0 items-center justify-center rounded-full bg-white text-neutral-500 shadow-sm transition-colors hover:text-ink lg:flex"
             >
               <ChevronsLeft
                 className={`size-4 transition-transform duration-300 ${
@@ -143,7 +143,7 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
             </button>
           </div>
 
-          <nav className="-mx-1 flex-1 space-y-1 overflow-y-auto px-1 py-1">
+          <nav className="-mx-1 flex-1 overflow-y-auto px-1 py-1">
             {NAV.map(({ href, label, icon: Icon }) => {
               const active = pathname === href;
               return (
@@ -153,23 +153,23 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
                   onClick={onClose}
                   title={collapsed ? label : undefined}
                   aria-current={active ? "page" : undefined}
-                  className={`group flex items-center gap-3 rounded-full p-1.5 text-sm transition-all ${
+                  className={`group flex items-center gap-3 rounded-full p-[var(--nav-pad)] text-[13px] transition-all [@media(min-height:850px)]:text-sm ${
                     active
                       ? "bg-white font-medium text-ink shadow-sm"
                       : "text-neutral-500 hover:text-ink"
                   }`}
                 >
                   <span
-                    className={`grid size-9 shrink-0 place-items-center rounded-full transition-colors ${
+                    className={`grid size-[var(--nav-icon)] shrink-0 place-items-center rounded-full transition-colors ${
                       active
                         ? "bg-ink text-white"
                         : "group-hover:bg-white/80"
                     }`}
                   >
-                    <Icon className="size-[18px]" />
+                    <Icon className="size-[clamp(1rem,calc(var(--nav-icon)*0.55),1.25rem)]" />
                   </span>
                   <span
-                    className={`truncate pr-3 ${collapsed ? "md:hidden" : ""}`}
+                    className={`truncate pr-3 ${collapsed ? "lg:hidden" : ""}`}
                   >
                     {label}
                   </span>
@@ -194,7 +194,7 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
               <LogOut className="size-[18px]" />
             )}
           </span>
-          <span className={`truncate pr-3 ${collapsed ? "md:hidden" : ""}`}>
+          <span className={`truncate pr-3 ${collapsed ? "lg:hidden" : ""}`}>
             {loggingOut ? "Cerrando sesión…" : "Cerrar sesión"}
           </span>
         </button>

@@ -80,7 +80,7 @@ export default function AsistenciaPage() {
   const tardanzas = data?.items.filter((r) => r.tarde).length ?? 0;
 
   return (
-    <div>
+    <div className="lg:flex lg:h-full lg:flex-col">
       <header className="mb-5">
         <h1 className="text-3xl font-semibold tracking-tight text-ink">Asistencia</h1>
         <p className="text-sm text-neutral-500">
@@ -121,9 +121,9 @@ export default function AsistenciaPage() {
         )}
       </div>
 
-      <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white">
+      <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
         <table className="w-full min-w-[760px] text-left text-sm">
-          <thead className="border-b border-neutral-200/70 bg-frame/70 text-xs uppercase tracking-wide text-neutral-500">
+          <thead className="sticky top-0 z-10 border-b border-neutral-200/70 bg-frame text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               {["Fecha", "Trabajador", "Programada", "Ingreso", "Desvío", "Estado", "Justificación", ""].map(
                 (h) => (

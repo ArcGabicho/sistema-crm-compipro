@@ -8,6 +8,43 @@
   --color-accent: #ffa62b;
 }
 
+/* Tamaño de los ítems de la sidebar según la altura disponible, para que los 17 quepan sin scroll */
+:root {
+  --nav-icon: 1.75rem;
+  --nav-pad: 2px;
+}
+@media (max-height: 759px) {
+  :root {
+    --nav-icon: 1.5rem;
+    --nav-pad: 2px;
+  }
+}
+@media (min-height: 850px) {
+  :root {
+    --nav-icon: 2rem;
+    --nav-pad: 3px;
+  }
+}
+@media (min-height: 1000px) {
+  :root {
+    --nav-icon: 2.25rem;
+    --nav-pad: 4px;
+  }
+}
+@media (min-height: 1060px) {
+  :root {
+    --nav-icon: 2.25rem;
+    --nav-pad: 6px;
+  }
+}
+/* En móvil/tablet el menú es un cajón con scroll: botones táctiles cómodos */
+@media (max-width: 1023px) {
+  :root {
+    --nav-icon: 2.25rem;
+    --nav-pad: 6px;
+  }
+}
+
 /* Relleno rayado naranja (acento de la UI del dashboard) */
 .hatch-accent {
   background-color: #fff0d9;

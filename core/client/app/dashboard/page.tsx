@@ -38,7 +38,7 @@ type CotMesPunto = {
 };
 
 const card =
-  "rounded-[1.75rem] bg-panel p-5 shadow-sm ring-1 ring-white";
+  "rounded-[1.75rem] bg-panel p-4 shadow-sm ring-1 ring-white";
 
 const compactNf = new Intl.NumberFormat("es-PE", {
   notation: "compact",
@@ -106,9 +106,9 @@ export default function EstadisticasPage() {
   }));
 
   return (
-    <div>
-      <header className="mb-6 px-1">
-        <h1 className="text-3xl font-semibold tracking-tight text-ink">
+    <div className="flex flex-col xl:h-full xl:min-h-[38rem]">
+      <header className="mb-3 flex flex-wrap items-baseline gap-x-4 px-1">
+        <h1 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
           Estadísticas
         </h1>
         <p className="text-sm text-neutral-500">
@@ -116,65 +116,92 @@ export default function EstadisticasPage() {
         </p>
       </header>
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-        {/* Columna izquierda: métricas en píldora */}
-        <div className="space-y-5">
-          <MetricRow
-            label="Ingresos"
-            caption="del mes"
-            value={money(ov?.ingresosMes)}
-            sub={ov ? `12m: ${money(ov.ingresosTotales)}` : undefined}
-            progress={ov ? ratio(ov.ingresosMes, Math.max(ov.ingresosMes, ov.ingresosMesAnterior)) : 0}
-            chip={
-              ov
-                ? `${ov.variacionMensualPct >= 0 ? "+" : ""}${ov.variacionMensualPct}%`
-                : "—"
-            }
-            chipTone={ov && ov.variacionMensualPct < 0 ? "ink" : "accent"}
-          />
-          <MetricRow
-            label="Cotizaciones"
-            caption="aprobadas / emitidas"
-            value={ov ? `${ov.cotizacionesAprobadasMes}/${ov.cotizacionesMes}` : "—"}
-            progress={ov ? ratio(ov.cotizacionesAprobadasMes, ov.cotizacionesMes) : 0}
-            chip={ov ? `${ov.tasaConversionPct}%` : "—"}
-            chipTone="ink"
-          />
-          <MetricRow
-            label="Pedidos"
-            caption="en producción"
-            value={ov?.pedidosEnProduccion ?? "—"}
-            sub={ov ? (ov.pedidosAtrasados > 0 ? "requieren atención" : "todo a tiempo") : undefined}
-            progress={ov ? ratio(ov.pedidosAtrasados, ov.pedidosEnProduccion) : 0}
-            chip={ov ? `${ov.pedidosAtrasados} atrasados` : "—"}
-            chipTone={ov && ov.pedidosAtrasados > 0 ? "ink" : "gray"}
-          />
-          <MetricRow
-            label="Solicitudes web"
-            caption="nuevas"
-            value={ov?.solicitudesNuevas ?? "—"}
-            sub={ov && ov.solicitudesNuevas > 0 ? "pendientes de revisar" : undefined}
-            chip={ov ? (ov.solicitudesNuevas > 0 ? "Revisar" : "Al día") : "—"}
-            chipTone={ov && ov.solicitudesNuevas > 0 ? "accent" : "gray"}
-          />
-          <MetricRow
-            label="Tickets"
-            caption="abiertos"
-            value={ov?.ticketsAbiertos ?? "—"}
-            chip={ov ? `${ov.enviosEnCurso} envíos` : "—"}
-            chipTone="gray"
-          />
+      <div className="grid gap-3 xl:min-h-0 xl:flex-1 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        {/* Columna izquierda: métricas en píldora + KPIs */}
+        <div className="flex flex-col gap-3 xl:min-h-0">
+          <div className="flex flex-col gap-2.5 xl:min-h-0 xl:flex-[5] xl:gap-1">
+            <MetricRow
+              label="Ingresos"
+              caption="del mes"
+              value={money(ov?.ingresosMes)}
+              sub={ov ? `12m: ${money(ov.ingresosTotales)}` : undefined}
+              progress={ov ? ratio(ov.ingresosMes, Math.max(ov.ingresosMes, ov.ingresosMesAnterior)) : 0}
+              chip={
+                ov
+                  ? `${ov.variacionMensualPct >= 0 ? "+" : ""}${ov.variacionMensualPct}%`
+                  : "—"
+              }
+              chipTone={ov && ov.variacionMensualPct < 0 ? "ink" : "accent"}
+            />
+            <MetricRow
+              label="Cotizaciones"
+              caption="aprobadas / emitidas"
+              value={ov ? `${ov.cotizacionesAprobadasMes}/${ov.cotizacionesMes}` : "—"}
+              progress={ov ? ratio(ov.cotizacionesAprobadasMes, ov.cotizacionesMes) : 0}
+              chip={ov ? `${ov.tasaConversionPct}%` : "—"}
+              chipTone="ink"
+            />
+            <MetricRow
+              label="Pedidos"
+              caption="en producción"
+              value={ov?.pedidosEnProduccion ?? "—"}
+              sub={ov ? (ov.pedidosAtrasados > 0 ? "requieren atención" : "todo a tiempo") : undefined}
+              progress={ov ? ratio(ov.pedidosAtrasados, ov.pedidosEnProduccion) : 0}
+              chip={ov ? `${ov.pedidosAtrasados} atrasados` : "—"}
+              chipTone={ov && ov.pedidosAtrasados > 0 ? "ink" : "gray"}
+            />
+            <MetricRow
+              label="Solicitudes web"
+              caption="nuevas"
+              value={ov?.solicitudesNuevas ?? "—"}
+              sub={ov && ov.solicitudesNuevas > 0 ? "pendientes de revisar" : undefined}
+              chip={ov ? (ov.solicitudesNuevas > 0 ? "Revisar" : "Al día") : "—"}
+              chipTone={ov && ov.solicitudesNuevas > 0 ? "accent" : "gray"}
+            />
+            <MetricRow
+              label="Tickets"
+              caption="abiertos"
+              value={ov?.ticketsAbiertos ?? "—"}
+              chip={ov ? `${ov.enviosEnCurso} envíos` : "—"}
+              chipTone="gray"
+            />
+          </div>
+
+          <div className="grid auto-rows-fr grid-cols-2 gap-3 xl:min-h-0 xl:flex-[2]">
+            <MiniKpi
+              icon={<Package className="size-5" />}
+              label="Productos"
+              value={ov?.productos ?? "—"}
+              hint={ov ? `${ov.productosBajoStock} bajo mínimo` : undefined}
+              alert={!!ov && ov.productosBajoStock > 0}
+            />
+            <MiniKpi
+              icon={<Truck className="size-5" />}
+              label="Envíos en curso"
+              value={ov?.enviosEnCurso ?? "—"}
+            />
+            <MiniKpi
+              icon={<Factory className="size-5" />}
+              label="Proveedores"
+              value={ov?.proveedores ?? "—"}
+            />
+            <MiniKpi
+              icon={<FileText className="size-5" />}
+              label="Documentos"
+              value={ov?.documentos ?? "—"}
+            />
+          </div>
         </div>
 
         {/* Columna derecha */}
-        <div className="space-y-5">
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-            <section className={card}>
+        <div className="flex flex-col gap-3 xl:min-h-0">
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:flex-none">
+            <section className={`${card} flex min-w-0 flex-col`}>
               <h2 className="text-sm font-medium text-neutral-500">
                 Clientes{" "}
                 <span className="text-xs text-neutral-400">por estado</span>
               </h2>
-              <div className="mt-4 flex items-center gap-5">
+              <div className="my-auto flex items-center gap-4 pt-2">
                 <Donut
                   data={clientesEstado}
                   center={ov ? `${ov.clientesActivos}/${ov.clientes}` : "—"}
@@ -184,19 +211,17 @@ export default function EstadisticasPage() {
               </div>
             </section>
 
-            <div className="grid gap-5">
-              <section className="rounded-[1.75rem] bg-accent p-5 text-white shadow-sm">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-white/85">
-                      Tasa de conversión
-                    </p>
-                    <p className="mt-1 text-4xl font-semibold tracking-tight">
-                      {ov ? `${ov.tasaConversionPct}%` : "—"}
-                    </p>
-                  </div>
+            <div className="grid min-w-0 gap-3">
+              <section className="flex items-center justify-between gap-3 rounded-[1.75rem] bg-accent p-4 text-white shadow-sm">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-white/85">
+                    Tasa de conversión
+                  </p>
+                  <p className="text-3xl font-semibold leading-tight tracking-tight">
+                    {ov ? `${ov.tasaConversionPct}%` : "—"}
+                  </p>
                 </div>
-                <div className="mt-4 flex h-14 items-end gap-2">
+                <div className="flex h-12 w-24 shrink-0 items-end gap-1.5">
                   {cotSerie.slice(-5).map((d) => {
                     const r = d.enviadas ? d.aprobadas / d.enviadas : 0;
                     return (
@@ -212,10 +237,10 @@ export default function EstadisticasPage() {
               </section>
 
               <section className={card}>
-                <h2 className="mb-3 text-sm font-medium text-neutral-500">
+                <h2 className="mb-2 text-sm font-medium text-neutral-500">
                   Cobranza
                 </h2>
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <MiniPill
                     label="Pipeline"
                     value={money(ov?.valorPipeline)}
@@ -231,13 +256,13 @@ export default function EstadisticasPage() {
             </div>
           </div>
 
-          <section className={card}>
+          <section className={`${card} flex min-w-0 flex-col xl:min-h-[15rem] xl:flex-1`}>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs text-neutral-400">
                   {tab === "ventas" ? "Últimos 12 meses" : "Emitidas vs aprobadas"}
                 </p>
-                <h2 className="text-2xl font-light text-ink">
+                <h2 className="text-xl font-light text-ink sm:text-2xl">
                   {tab === "ventas" ? "Ventas por mes" : "Cotizaciones por mes"}
                 </h2>
               </div>
@@ -247,7 +272,7 @@ export default function EstadisticasPage() {
                     key={t}
                     type="button"
                     onClick={() => setTab(t)}
-                    className={`rounded-full px-4 py-1.5 capitalize transition-all ${
+                    className={`rounded-full px-4 py-1 capitalize transition-all ${
                       tab === t
                         ? "bg-white font-medium text-ink shadow-sm"
                         : "text-neutral-500 hover:text-ink"
@@ -258,10 +283,10 @@ export default function EstadisticasPage() {
                 ))}
               </div>
             </div>
-            <div className="mt-6">
+            <div className="mt-3 xl:min-h-0 xl:flex-1">
               <PillChart bars={tab === "ventas" ? ventasBars : cotBars} />
             </div>
-            <div className="mt-5 flex flex-wrap items-center gap-4 text-xs text-neutral-500">
+            <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-neutral-500">
               {tab === "ventas" ? (
                 <>
                   <LegendDot swatch="hatch-accent" label="Mejor mes" />
@@ -276,40 +301,15 @@ export default function EstadisticasPage() {
               )}
             </div>
           </section>
+
+          <section className={card}>
+            <h2 className="mb-2 text-sm font-medium text-neutral-500">
+              Tickets <span className="text-xs text-neutral-400">por estado</span>
+            </h2>
+            <Distribucion data={ticketsEstado} />
+          </section>
         </div>
       </div>
-
-      <div className="mt-5 grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
-        <MiniKpi
-          icon={<Package className="size-5" />}
-          label="Productos"
-          value={ov?.productos ?? "—"}
-          hint={ov ? `${ov.productosBajoStock} bajo mínimo` : undefined}
-          alert={!!ov && ov.productosBajoStock > 0}
-        />
-        <MiniKpi
-          icon={<Truck className="size-5" />}
-          label="Envíos en curso"
-          value={ov?.enviosEnCurso ?? "—"}
-        />
-        <MiniKpi
-          icon={<Factory className="size-5" />}
-          label="Proveedores"
-          value={ov?.proveedores ?? "—"}
-        />
-        <MiniKpi
-          icon={<FileText className="size-5" />}
-          label="Documentos"
-          value={ov?.documentos ?? "—"}
-        />
-      </div>
-
-      <section className={`${card} mt-5`}>
-        <h2 className="mb-4 text-sm font-medium text-neutral-500">
-          Tickets <span className="text-xs text-neutral-400">por estado</span>
-        </h2>
-        <Distribucion data={ticketsEstado} />
-      </section>
     </div>
   );
 }
@@ -340,14 +340,14 @@ function MetricRow({
   chipTone: Tone;
 }) {
   return (
-    <div>
-      <h3 className="mb-2 px-2 text-xl font-light text-neutral-400">
-        {label} <span className="text-xs">{caption}</span>
+    <div className="flex flex-col xl:min-h-0 xl:flex-1 xl:justify-center">
+      <h3 className="mb-1 px-3 text-sm font-medium text-neutral-400 xl:text-base xl:font-light">
+        {label} <span className="text-xs font-normal">{caption}</span>
       </h3>
-      <div className="flex items-stretch gap-2 rounded-full bg-panel p-1.5 shadow-sm ring-1 ring-white">
+      <div className="flex items-stretch gap-2 rounded-full bg-panel p-1.5 shadow-sm ring-1 ring-white xl:max-h-[4.5rem] xl:min-h-[2.75rem] xl:flex-1">
         <div className="flex min-w-0 flex-1 items-center gap-4 pl-4">
-          <div className="min-w-0 shrink-0">
-            <p className="truncate text-2xl font-semibold leading-tight text-ink">
+          <div className="flex min-w-0 shrink-0 flex-col justify-center xl:flex-row xl:items-baseline xl:gap-2">
+            <p className="truncate text-xl font-semibold leading-tight text-ink">
               {value}
             </p>
             {sub && (
@@ -355,7 +355,7 @@ function MetricRow({
             )}
           </div>
           {progress !== undefined && (
-            <div className="hidden h-9 min-w-0 flex-1 sm:block">
+            <div className="hidden h-7 min-w-0 flex-1 self-center sm:block">
               <div
                 className="hatch-accent h-full rounded-full transition-[width] duration-500"
                 style={{ width: `${Math.max(progress * 100, 8)}%` }}
@@ -364,7 +364,7 @@ function MetricRow({
           )}
         </div>
         <div
-          className={`flex shrink-0 items-center rounded-full px-5 text-sm font-semibold ${CHIP[chipTone]}`}
+          className={`flex shrink-0 items-center rounded-full px-4 text-sm font-semibold ${CHIP[chipTone]}`}
         >
           {chip}
         </div>
@@ -388,7 +388,7 @@ function MiniPill({
         className="hatch-accent absolute inset-y-0 left-0 rounded-full"
         style={{ width: `${Math.max(progress * 100, 10)}%` }}
       />
-      <div className="relative flex items-center justify-between px-4 py-2 text-sm">
+      <div className="relative flex items-center justify-between px-3 py-1.5 text-xs sm:text-sm">
         <span className="text-neutral-600">{label}</span>
         <span className="font-semibold text-ink">{value}</span>
       </div>
@@ -410,13 +410,13 @@ function MiniKpi({
   alert?: boolean;
 }) {
   return (
-    <div className={`${card} flex items-center gap-4`}>
-      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-ink text-white">
+    <div className={`${card} flex items-center gap-3 !p-3`}>
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-ink text-white">
         {icon}
       </span>
       <div className="min-w-0">
         <p className="truncate text-xs text-neutral-500">{label}</p>
-        <p className="text-2xl font-semibold leading-tight text-ink">{value}</p>
+        <p className="text-xl font-semibold leading-tight text-ink">{value}</p>
         {hint && (
           <p
             className={`truncate text-[11px] font-medium ${
@@ -448,7 +448,7 @@ function Donut({
   const C = 2 * Math.PI * R;
   let offset = 0;
   return (
-    <div className="relative size-36 shrink-0">
+    <div className="relative size-32 shrink-0 xl:size-28">
       <svg viewBox="0 0 100 100" className="size-full -rotate-90">
         <defs>
           <pattern
@@ -560,7 +560,7 @@ function PillChart({ bars }: { bars: Bar[] }) {
   const stacked = bars.some((b) => b.fill !== undefined);
 
   return (
-    <div className="flex h-64 flex-col">
+    <div className="flex h-56 flex-col sm:h-64 xl:h-full xl:min-h-[9rem]">
       <div className="relative flex-1">
         <div className="absolute inset-0 flex items-end gap-1.5 sm:gap-3">
           {bars.map((b, i) => {
@@ -639,7 +639,7 @@ function Distribucion({ data }: { data: EstadoPunto[] }) {
     return <p className="text-sm text-neutral-400">Sin datos.</p>;
   const max = Math.max(...data.map((d) => d.cantidad));
   return (
-    <div className="grid gap-2 md:grid-cols-2">
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-[repeat(auto-fit,minmax(8.5rem,1fr))]">
       {data.map((d) => (
         <div
           key={d.estado}
@@ -651,11 +651,11 @@ function Distribucion({ data }: { data: EstadoPunto[] }) {
             }`}
             style={{ width: `${Math.max((d.cantidad / total) * 100, 6)}%` }}
           />
-          <div className="relative flex items-center justify-between px-4 py-2 text-sm">
-            <span className="text-neutral-700">{d.estado}</span>
-            <span className="font-semibold text-ink">
+          <div className="relative flex items-center justify-between gap-1 px-3 py-1.5 text-xs">
+            <span className="truncate text-neutral-700">{d.estado}</span>
+            <span className="shrink-0 font-semibold text-ink">
               {d.cantidad}{" "}
-              <span className="text-xs font-normal text-neutral-500">
+              <span className="text-[10px] font-normal text-neutral-500">
                 ({Math.round((d.cantidad / total) * 100)}%)
               </span>
             </span>

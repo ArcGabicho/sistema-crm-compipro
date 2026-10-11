@@ -33,9 +33,9 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-frame md:flex md:h-screen md:min-h-0 md:gap-4 md:p-4">
+    <div className="min-h-screen bg-frame lg:flex lg:h-dvh lg:min-h-0 lg:gap-4 lg:p-4">
       {/* Barra superior (solo móvil) */}
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 bg-frame/90 px-4 backdrop-blur md:hidden">
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 bg-frame/90 px-4 backdrop-blur lg:hidden">
         <button
           type="button"
           onClick={() => setNavOpen(true)}
@@ -49,7 +49,7 @@ export default function DashboardLayout({
 
       <Sidebar mobileOpen={navOpen} onClose={() => setNavOpen(false)} />
 
-      <main className="min-w-0 flex-1 p-4 sm:p-6 md:overflow-y-auto md:rounded-[1.75rem] md:p-2">
+      <main className="min-w-0 flex-1 p-4 sm:p-6 lg:overflow-y-auto lg:rounded-[1.75rem] lg:p-2">
         {children}
       </main>
       <WelcomeModal />
