@@ -45,6 +45,8 @@ const compactNf = new Intl.NumberFormat("es-PE", {
   maximumFractionDigits: 1,
 });
 
+const intNf = new Intl.NumberFormat("es-PE");
+
 const monthLabel = (periodo: string) => {
   const d = new Date(`${periodo}-01T00:00:00`);
   return Number.isNaN(d.getTime())
@@ -199,12 +201,15 @@ export default function EstadisticasPage() {
             <section className={`${card} flex min-w-0 flex-col`}>
               <h2 className="text-sm font-medium text-neutral-500">
                 Clientes{" "}
-                <span className="text-xs text-neutral-400">por estado</span>
+                <span className="text-xs text-neutral-400">
+                  por estado
+                  {ov && ` · ${intNf.format(ov.clientesActivos)} de ${intNf.format(ov.clientes)} activos`}
+                </span>
               </h2>
               <div className="my-auto flex items-center gap-4 pt-2">
                 <Donut
                   data={clientesEstado}
-                  center={ov ? `${ov.clientesActivos}/${ov.clientes}` : "—"}
+                  center={ov ? `${ov.clientes ? Math.round((ov.clientesActivos / ov.clientes) * 100) : 0}%` : "—"}
                   caption="activos"
                 />
                 <Legend data={clientesEstado} />
@@ -485,10 +490,10 @@ function Donut({
             return seg;
           })}
       </svg>
-      <div className="absolute inset-0 grid place-items-center text-center">
-        <div>
-          <p className="text-lg font-semibold leading-tight text-ink">{center}</p>
-          <p className="text-[10px] text-neutral-400">{caption}</p>
+      <div className="absolute inset-[20%] grid place-items-center overflow-hidden text-center">
+        <div className="min-w-0">
+          <p className="truncate text-lg font-semibold leading-tight text-ink">{center}</p>
+          <p className="truncate text-[10px] text-neutral-400">{caption}</p>
         </div>
       </div>
     </div>
@@ -511,7 +516,7 @@ function Legend({ data }: { data: EstadoPunto[] }) {
             />
             <span className="truncate text-neutral-600">{d.estado}</span>
           </span>
-          <span className="font-semibold text-ink">{d.cantidad}</span>
+          <span className="font-semibold text-ink">{intNf.format(d.cantidad)}</span>
         </li>
       ))}
     </ul>
