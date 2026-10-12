@@ -49,7 +49,7 @@ fi
 
 echo "==> Compilando imágenes en ACR (tag $IMAGE_TAG)..."
 az acr build -r "$AZ_ACR_NAME" -t "sistema-crm-compina-server:$IMAGE_TAG" -f "docker/Dockerfile.server" "$ROOT" -o none
-az acr build -r "$AZ_ACR_NAME" -t "sistema-crm-compina-client:$IMAGE_TAG" -f "docker/Dockerfile.client" "$ROOT" -o none
+az acr build -r "$AZ_ACR_NAME" -t "sistema-crm-compina-client:$IMAGE_TAG" -f "docker/Dockerfile.client" --build-arg "SITE_URL=${SITE_URL:-https://compipro.net}" "$ROOT" -o none
 
 echo "==> Desplegando infra/main.bicep..."
 az deployment group create \

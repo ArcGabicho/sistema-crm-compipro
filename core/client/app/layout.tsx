@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { Toaster as SileoToaster } from "sileo";
 
 import { AuthProvider } from "./hooks/useAuth";
+import { EMPRESA, SITE_URL } from "./lib/site";
 import "./styles/globals.css";
 import "sileo/styles.css";
 
@@ -17,37 +18,40 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const description = "Compipro S.A.C. es una agencia de marketing peruana especializada en diseño y produccion de productos de merchadising con miles de clientes.";
-const image = "https://i.imgur.com/RYfsVS9.png";
-const url = "https://astro-compipro-page.dev/";
+const tituloBase = "Compipro S.A.C. | Agencia de merchandising en Perú";
 
 export const metadata: Metadata = {
-  title: "Compipro S.A.C.",
-  description,
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: tituloBase,
+    template: "%s | Compipro S.A.C.",
+  },
+  description: EMPRESA.descripcion,
+  applicationName: EMPRESA.nombre,
   keywords: [
     "compipro",
     "merchandising",
-    "marketing",
-    "agencia de marketing",
-    "productos personalizados",
+    "merchandising Perú",
+    "agencia de merchandising Lima",
+    "artículos publicitarios",
     "productos promocionales",
-    "productos publicitarios",
-    "productos de merchandising",
+    "regalos corporativos",
+    "productos personalizados con logo",
   ],
   authors: [{ name: "Gabriel Polack" }],
   openGraph: {
     type: "website",
-    url,
-    title: "Compipro S.A.C.",
-    description,
-    images: [image],
+    locale: "es_PE",
+    siteName: EMPRESA.nombre,
+    title: tituloBase,
+    description: EMPRESA.descripcion,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Compipro S.A.C.",
-    description,
-    images: [image],
+    title: tituloBase,
+    description: EMPRESA.descripcion,
   },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
@@ -63,7 +67,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="es"
+      lang="es-PE"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">

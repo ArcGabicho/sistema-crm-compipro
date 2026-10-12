@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
+import { metaPagina } from "@/app/lib/site";
 import Hero from "../../components/about/Hero";
 import Valores from "../../components/about/Valores";
 import Acordeon from "../../components/about/Acordeon";
 import Cta from "../../components/shared/Cta";
 
-export const metadata: Metadata = {
-  title: "Nosotros | Compipro S.A.C.",
-};
+export const metadata: Metadata = metaPagina({
+  path: "/nosotros",
+  title: "Nosotros",
+  description:
+    "Conoce a Compipro: empresa peruana de merchandising con más de 5 años de experiencia, infraestructura propia y partners estratégicos a nivel nacional e internacional.",
+});
 
 export default function NosotrosPage() {
   return (

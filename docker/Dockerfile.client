@@ -10,6 +10,9 @@ RUN npm ci
 
 # Código y build de producción
 COPY core/client/ ./
+# URL pública del sitio (canónicas, sitemap, vistas previas). Se fija en el build.
+ARG SITE_URL=https://compipro.net
+ENV SITE_URL=$SITE_URL
 RUN npm run build
 
 ENV NODE_ENV=production \

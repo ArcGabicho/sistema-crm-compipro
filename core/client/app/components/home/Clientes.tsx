@@ -4,14 +4,14 @@ type Cliente = {
 };
 
 const clientes: Cliente[] = [
-  { src: "/web/imagencliente1.svg", alt: "Cliente 1" },
-  { src: "/web/imagencliente2.svg", alt: "Cliente 2" },
-  { src: "/web/imagencliente3.svg", alt: "Cliente 3" },
-  { src: "/web/imagencliente4.svg", alt: "Cliente 4" },
-  { src: "/web/imagencliente5.svg", alt: "Cliente 5" },
-  { src: "/web/imagencliente6.svg", alt: "Cliente 6" },
-  { src: "/web/imagencliente7.svg", alt: "Cliente 7" },
-  { src: "/web/imagencliente8.svg", alt: "Cliente 8" },
+  { src: "/web/imagencliente1.svg", alt: "Logo de Depsa" },
+  { src: "/web/imagencliente2.svg", alt: "Logo de EFC" },
+  { src: "/web/imagencliente3.svg", alt: "Logo de Mary Kay" },
+  { src: "/web/imagencliente4.svg", alt: "Logo de Ransa" },
+  { src: "/web/imagencliente5.svg", alt: "Logo de Sacyr" },
+  { src: "/web/imagencliente6.svg", alt: "Logo de Sanmarco" },
+  { src: "/web/imagencliente7.svg", alt: "Logo de Statkraft" },
+  { src: "/web/imagencliente8.svg", alt: "Logo de SGI" },
 ];
 
 // Se duplica la lista para lograr un loop infinito sin cortes.
@@ -44,7 +44,7 @@ export default function Clientes() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={cliente.src}
-                alt={cliente.alt}
+                alt={index < clientes.length ? cliente.alt : ""}
                 className="max-h-full max-w-full object-contain opacity-60 transition-opacity duration-500 hover:opacity-100"
               />
             </div>

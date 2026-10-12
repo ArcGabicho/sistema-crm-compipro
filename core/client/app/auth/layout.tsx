@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Iniciar sesión | Compipro S.A.C.",
+  title: "Iniciar sesión",
   description: "Accede al sistema CRM de Compipro S.A.C.",
   robots: { index: false, follow: false },
 };

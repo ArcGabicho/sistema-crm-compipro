@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { categorias, getCategoriaById } from "@/app/api/products/data";
+import { metaPagina } from "@/app/lib/site";
 import ProductoView from "./ProductoView";
 
 export function generateStaticParams() {
@@ -13,11 +14,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { producto } = await params;
   const catData = getCategoriaById(producto);
-  return {
-    title: catData
-      ? `${catData.nombre} | Compipro S.A.C.`
-      : "Categoría no encontrada | Compipro S.A.C.",
-  };
+  if (!catData) {
+    return { title: "Categoría no encontrada", robots: { index: false, follow: true } };
+  }
+  const total = catData.productos.length;
+  return metaPagina({
+    path: `/${catData.id}`,
+    title: catData.nombre,
+    description: `${catData.descripcion}: ${total} productos listos para personalizar con el logo de tu empresa. Cotiza tu pedido con Compipro.`,
+  });
 }
 
 export default async function ProductoPage({
