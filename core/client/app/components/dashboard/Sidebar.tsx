@@ -143,17 +143,18 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
             </button>
           </div>
 
-          <nav className="-mx-1 flex-1 overflow-y-auto px-1 py-1">
+          {/* Cada ítem crece para repartir el alto libre del panel (con tope), sin generar scroll */}
+          <nav className="-mx-1 flex flex-1 flex-col overflow-y-auto px-1 py-1">
             {NAV.map(({ href, label, icon: Icon }) => {
               const active = pathname === href;
               return (
+                <div key={href} className="flex max-h-16 flex-[1_0_auto] items-center">
                 <Link
-                  key={href}
                   href={href}
                   onClick={onClose}
                   title={collapsed ? label : undefined}
                   aria-current={active ? "page" : undefined}
-                  className={`group flex items-center gap-3 rounded-full p-[var(--nav-pad)] text-[13px] transition-all [@media(min-height:850px)]:text-sm ${
+                  className={`group flex w-full items-center gap-3 rounded-full p-[var(--nav-pad)] text-[13px] transition-all [@media(min-height:850px)]:text-sm ${
                     active
                       ? "bg-white font-medium text-ink shadow-sm"
                       : "text-neutral-500 hover:text-ink"
@@ -174,6 +175,7 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
                     {label}
                   </span>
                 </Link>
+                </div>
               );
             })}
           </nav>
