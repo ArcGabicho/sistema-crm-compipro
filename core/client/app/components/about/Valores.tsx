@@ -1,27 +1,29 @@
+import { BadgeCheck, Clock, HeartHandshake, Palette, type LucideIcon } from "lucide-react";
+
 type Valor = {
-  icon: string;
+  icon: LucideIcon;
   title: string;
   description: string;
 };
 
 const data: Valor[] = [
   {
-    icon: "🎨",
+    icon: Palette,
     title: "Creatividad",
     description: "Buscamos soluciones innovadoras y únicas para cada desafío.",
   },
   {
-    icon: "⏰",
+    icon: Clock,
     title: "Puntualidad",
     description: "Cumplimos con nuestros compromisos en el tiempo acordado.",
   },
   {
-    icon: "✅",
+    icon: BadgeCheck,
     title: "Calidad",
     description: "Nos comprometemos con la excelencia en cada servicio.",
   },
   {
-    icon: "👥",
+    icon: HeartHandshake,
     title: "Atención",
     description: "Brindamos un servicio personalizado y cercano.",
   },
@@ -29,29 +31,58 @@ const data: Valor[] = [
 
 export default function Valores() {
   return (
-    <section className="w-full py-15 bg-frame flex justify-center items-center">
-      <div className="max-w-7xl w-full mx-auto px-4">
-        <h2 className="text-center mb-10 text-3xl sm:text-4xl text-ink">
-          Nuestros Valores
+    <section className="mx-auto max-w-7xl px-4 py-20 sm:py-24">
+      <div className="mx-auto max-w-2xl text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-600">
+          Lo que nos mueve
+        </span>
+        <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+          Nuestros valores
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl w-full mx-auto">
-          {data.map((value) => (
-            <div
-              key={value.title}
-              className="bg-panel rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-2 border border-white"
+        <p className="mt-3 text-base leading-relaxed text-neutral-500">
+          Los principios con los que acompañamos cada proyecto de nuestros
+          clientes.
+        </p>
+        <div className="mx-auto mt-6 h-1.5 w-16 rounded-full hatch-accent" />
+      </div>
+
+      <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {data.map(({ icon: Icon, title, description }, index) => {
+          const destacado = index === 0;
+          return (
+            <article
+              key={title}
+              className={`group flex flex-col rounded-[1.75rem] p-6 shadow-sm ring-1 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl ${
+                destacado
+                  ? "bg-accent ring-accent"
+                  : "bg-panel ring-white hover:ring-accent/50"
+              }`}
             >
-              <div className="text-6xl mb-5 text-neutral-600 opacity-80">
-                {value.icon}
+              <div className="flex items-center justify-between">
+                <span className="grid size-12 place-items-center rounded-full bg-ink text-white">
+                  <Icon className="size-5" />
+                </span>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                    destacado ? "bg-white/30 text-ink" : "hatch-accent text-orange-800"
+                  }`}
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
               </div>
-              <h3 className="mb-4 text-ink text-xl font-semibold tracking-tight">
-                {value.title}
+              <h3 className="mt-8 text-xl font-semibold tracking-tight text-ink">
+                {title}
               </h3>
-              <p className="text-neutral-600 leading-relaxed text-sm">
-                {value.description}
+              <p
+                className={`mt-2 text-sm leading-relaxed ${
+                  destacado ? "text-ink/75" : "text-neutral-500"
+                }`}
+              >
+                {description}
               </p>
-            </div>
-          ))}
-        </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

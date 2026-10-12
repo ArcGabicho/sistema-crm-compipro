@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Hero from "../../components/shared/Hero";
-import Nosotros from "../../components/about/Nosotros";
+import Hero from "../../components/about/Hero";
 import Valores from "../../components/about/Valores";
-import FAQS from "../../components/about/FAQS";
 import Acordeon from "../../components/about/Acordeon";
+import Cta from "../../components/shared/Cta";
 
 export const metadata: Metadata = {
   title: "Nosotros | Compipro S.A.C.",
@@ -13,10 +12,12 @@ export default function NosotrosPage() {
   return (
     <>
       <Hero />
-      <Nosotros />
       <Valores />
-      <FAQS />
       <Acordeon />
+      <Cta
+        title="¿Listo para potenciar tu marca?"
+        description="Cuéntanos qué necesitas y te ayudamos a elegir los artículos ideales para tu empresa, con entrega en todo el Perú."
+      />
     </>
   );
 }

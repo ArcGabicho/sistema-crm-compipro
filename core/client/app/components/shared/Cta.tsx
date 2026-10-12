@@ -1,18 +1,25 @@
 import Link from "next/link";
 import { ArrowRight, MessageCircle } from "lucide-react";
 
-export default function Cta() {
+type CtaProps = {
+  title?: string;
+  description?: string;
+};
+
+export default function Cta({
+  title = "¿No encuentras lo que buscas?",
+  description = "Cuéntanos tu idea y cotizamos el artículo ideal para tu marca, con entrega en todo el Perú.",
+}: CtaProps) {
   return (
     <section className="mx-3 mb-12 overflow-hidden rounded-[2rem] bg-accent text-ink md:rounded-[2.5rem]">
       <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 py-12 text-center sm:px-6 md:flex-row md:justify-between md:py-14 md:text-left lg:px-8">
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/15 blur-2xl" />
         <div className="relative max-w-xl">
           <h2 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-            ¿No encuentras lo que buscas?
+            {title}
           </h2>
           <p className="mt-2 text-base leading-relaxed text-ink/75">
-            Cuéntanos tu idea y cotizamos el artículo ideal para tu marca, con
-            entrega en todo el Perú.
+            {description}
           </p>
         </div>
         <div className="relative flex flex-col gap-3 sm:flex-row">
