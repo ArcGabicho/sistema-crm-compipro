@@ -71,7 +71,7 @@ function Hero() {
   };
 
   return (
-    <div className="relative mx-3 mt-24 h-[80vh] overflow-hidden rounded-[2rem] sm:mt-28">
+    <div className="relative mx-3 mt-24 h-[80dvh] min-h-[26rem] overflow-hidden rounded-[2rem] sm:mt-28">
       {/* Hero Background Images */}
       <div className="absolute inset-0">
         {images.map((image, index) => (

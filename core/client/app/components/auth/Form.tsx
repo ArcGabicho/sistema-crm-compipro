@@ -33,7 +33,7 @@ export default function Form() {
 
   return (
     <form
-      className="px-10 py-8 flex flex-col gap-6 min-w-85 max-w-100"
+      className="px-10 py-8 flex flex-col gap-6 min-w-85 max-w-100 [@media(max-height:620px)]:gap-3 [@media(max-height:620px)]:py-4"
       autoComplete="off"
       onSubmit={handleSubmit}
     >
@@ -44,13 +44,13 @@ export default function Form() {
           width={412}
           height={117}
           priority
-          className="h-auto w-40"
+          className="h-auto w-40 [@media(max-height:620px)]:w-28"
         />
       </div>
-      <h1 className="text-3xl font-semibold tracking-tight text-center text-ink">
+      <h1 className="text-3xl font-semibold tracking-tight text-center text-ink [@media(max-height:620px)]:text-2xl">
         ¡Bienvenido!
       </h1>
-      <span className="text-center text-neutral-500 text-sm">
+      <span className="text-center text-neutral-500 text-sm [@media(max-height:620px)]:hidden">
         Ingrese sus credenciales para acceder al sistema CRM de Compina S.A.C.
       </span>
       <div className="flex flex-col gap-1">
@@ -61,7 +61,7 @@ export default function Form() {
           id="email"
           type="email"
           placeholder="user123@gmail.com"
-          className="rounded-full bg-white px-5 py-3 text-sm text-ink shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent"
+          className="rounded-full bg-white px-5 py-3 [@media(max-height:620px)]:py-2 text-sm text-ink shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent"
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -75,7 +75,7 @@ export default function Form() {
           id="password"
           type="password"
           placeholder="user123"
-          className="rounded-full bg-white px-5 py-3 text-sm text-ink shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent"
+          className="rounded-full bg-white px-5 py-3 [@media(max-height:620px)]:py-2 text-sm text-ink shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent"
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -84,7 +84,7 @@ export default function Form() {
       <button
         type="submit"
         disabled={isLoading}
-        className="bg-ink hover:bg-neutral-800 disabled:opacity-60 text-white font-semibold rounded-full py-3 transition-colors mt-2 shadow-md flex text-center items-center justify-center"
+        className="bg-ink hover:bg-neutral-800 disabled:opacity-60 text-white font-semibold rounded-full py-3 [@media(max-height:620px)]:py-2 transition-colors mt-2 shadow-md flex text-center items-center justify-center"
       >
         {isLoading && <LoaderCircle className="mr-2 size-4 animate-spin" />}
         Ingresar

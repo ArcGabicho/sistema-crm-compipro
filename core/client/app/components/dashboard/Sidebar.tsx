@@ -92,7 +92,7 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col gap-3 bg-frame p-3 transition-transform duration-300 lg:static lg:z-auto lg:h-full lg:shrink-0 lg:translate-x-0 lg:bg-transparent lg:p-0 lg:transition-[width] ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col gap-3 bg-frame p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pl-[max(0.75rem,env(safe-area-inset-left))] pt-[max(0.75rem,env(safe-area-inset-top))] transition-transform duration-300 lg:static lg:z-auto lg:h-full lg:shrink-0 lg:translate-x-0 lg:bg-transparent lg:p-0 lg:transition-[width] ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         } ${collapsed ? "lg:w-[4.5rem]" : "lg:w-64"}`}
       >

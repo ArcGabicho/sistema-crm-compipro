@@ -8,32 +8,33 @@
   --color-accent: #ffa62b;
 }
 
-/* Tamaño de los ítems de la sidebar según la altura disponible, para que los 17 quepan sin scroll */
+/* Tamaño de los ítems de la sidebar según la altura útil de la ventana: cada nivel garantiza
+   que los 17 ítems quepan (alto de fila x 17 + 224px de marco) sin scroll interno. */
 :root {
-  --nav-icon: 1.75rem;
+  --nav-icon: 1.75rem; /* fila 32px, entra desde 768px */
   --nav-pad: 2px;
 }
-@media (max-height: 759px) {
+@media (max-height: 779px) {
   :root {
-    --nav-icon: 1.5rem;
+    --nav-icon: 1.5rem; /* fila 28px, entra desde 700px */
     --nav-pad: 2px;
   }
 }
-@media (min-height: 850px) {
+@media (min-height: 880px) {
   :root {
-    --nav-icon: 2rem;
+    --nav-icon: 2rem; /* fila 38px, entra desde 870px */
     --nav-pad: 3px;
   }
 }
-@media (min-height: 1000px) {
+@media (min-height: 980px) {
   :root {
-    --nav-icon: 2.25rem;
+    --nav-icon: 2.25rem; /* fila 44px, entra desde 972px */
     --nav-pad: 4px;
   }
 }
-@media (min-height: 1060px) {
+@media (min-height: 1040px) {
   :root {
-    --nav-icon: 2.25rem;
+    --nav-icon: 2.25rem; /* fila 48px, entra desde 1040px */
     --nav-pad: 6px;
   }
 }
