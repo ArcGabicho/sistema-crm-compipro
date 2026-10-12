@@ -9,7 +9,7 @@ Este repositorio contiene el ecosistema de servicios y aplicaciones de Compipro.
 #### Clona el proyecto en local:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ArcGabicho/sistema-crm-compipro/master/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ArcGabicho/sistema-crm-compipro/master/scripts/setup.sh | bash
 ```
 
 ----

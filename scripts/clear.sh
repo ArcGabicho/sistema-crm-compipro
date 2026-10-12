@@ -18,9 +18,9 @@ DB_CONNECTION_STRING="${DB_CONNECTION_STRING:-no-se-usa-al-limpiar}" \
 # Volumen de la versión anterior con SQL Server local (hoy la base está en Azure SQL).
 docker volume rm sistema-crm-compipro_mssql-data >/dev/null 2>&1 || true
 
-docker image rm -f sistema-crm-compina-server sistema-crm-compina-client >/dev/null 2>&1 || true
+docker image rm -f sistema-crm-compipro-server sistema-crm-compipro-client >/dev/null 2>&1 || true
 
-# Archivos de entorno generados por dev.sh (no toca el .env de la raíz)
+# Archivos de entorno generados por run.sh (no toca el .env de la raíz)
 rm -f "$ROOT/core/client/.env.local" "$ROOT/core/server/appsettings.Development.json"
 
 echo "==> Limpieza completada."

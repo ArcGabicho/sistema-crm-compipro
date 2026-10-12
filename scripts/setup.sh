@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Bootstrap remoto: clona el repositorio y ejecuta scripts/dev.sh.
+# Bootstrap remoto: clona el repositorio y ejecuta scripts/run.sh.
 #
-#   curl -fsSL https://raw.githubusercontent.com/ArcGabicho/sistema-crm-compina/master/scripts/setup.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/ArcGabicho/sistema-crm-compipro/master/scripts/setup.sh | bash
 #
 # Variables opcionales: REPO_URL, BRANCH, TARGET_DIR
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/ArcGabicho/sistema-crm-compina.git}"
+REPO_URL="${REPO_URL:-https://github.com/ArcGabicho/sistema-crm-compipro.git}"
 BRANCH="${BRANCH:-master}"
-TARGET_DIR="${TARGET_DIR:-sistema-crm-compina}"
+TARGET_DIR="${TARGET_DIR:-sistema-crm-compipro}"
 
 command -v git    >/dev/null 2>&1 || { echo "Falta 'git'."   >&2; exit 1; }
 command -v docker >/dev/null 2>&1 || { echo "Falta 'docker'." >&2; exit 1; }
@@ -24,5 +24,5 @@ else
 fi
 
 cd "$TARGET_DIR"
-echo "==> Ejecutando scripts/dev.sh..."
-exec bash scripts/dev.sh
+echo "==> Ejecutando scripts/run.sh..."
+exec bash scripts/run.sh
