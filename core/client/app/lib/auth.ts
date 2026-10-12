@@ -51,13 +51,26 @@ export async function logout(): Promise<void> {
   }
 }
 
-/** Devuelve el usuario de la sesión vigente, o null. */
-export async function getCurrentUser(): Promise<CurrentUser | null> {
-  try {
-    const response = await fetch("/api/auth-me", { cache: "no-store" });
-    if (!response.ok) return null;
-    return (await response.json()) as CurrentUser;
-  } catch {
-    return null;
+/** El backend no respondió (arrancando, caído o con la base de datos en pausa). */
+export class ServidorNoDisponible extends Error {
+  constructor() {
+    super("No se pudo conectar con el servidor.");
   }
+}
+
+/**
+ * Devuelve el usuario de la sesión vigente, o null si no hay sesión.
+ * Lanza ServidorNoDisponible si el backend no responde: eso no significa que
+ * la sesión sea inválida, así que no hay que mandar al usuario al login.
+ */
+export async function getCurrentUser(): Promise<CurrentUser | null> {
+  let response: Response;
+  try {
+    response = await fetch("/api/auth-me", { cache: "no-store" });
+  } catch {
+    throw new ServidorNoDisponible();
+  }
+  if (response.status >= 500) throw new ServidorNoDisponible();
+  if (!response.ok) return null;
+  return (await response.json()) as CurrentUser;
 }

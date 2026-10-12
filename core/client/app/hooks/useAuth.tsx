@@ -16,7 +16,11 @@ import {
   type CurrentUser,
 } from "../lib/auth";
 
-type AuthStatus = "loading" | "authenticated" | "unauthenticated";
+// "unavailable": el backend no responde; la sesión se vuelve a consultar sola.
+type AuthStatus = "loading" | "authenticated" | "unauthenticated" | "unavailable";
+
+// Pausa entre consultas mientras el backend arranca o Azure SQL sale de pausa.
+const REINTENTO_MS = 3000;
 
 type AuthContextValue = {
   user: CurrentUser | null;
@@ -33,22 +37,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>("loading");
 
   const refresh = useCallback(async () => {
-    const current = await getCurrentUser();
-    setUser(current);
-    setStatus(current ? "authenticated" : "unauthenticated");
+    try {
+      const current = await getCurrentUser();
+      setUser(current);
+      setStatus(current ? "authenticated" : "unauthenticated");
+    } catch {
+      /* servidor no disponible: se conserva el estado actual */
+    }
   }, []);
 
   // Hidrata la sesión al montar (consulta /api/auth-me, que lee la cookie).
+  // Si el backend aún no responde, reintenta hasta que lo haga.
   useEffect(() => {
     let active = true;
-    void (async () => {
-      const current = await getCurrentUser();
-      if (!active) return;
-      setUser(current);
-      setStatus(current ? "authenticated" : "unauthenticated");
-    })();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const hydrate = async () => {
+      try {
+        const current = await getCurrentUser();
+        if (!active) return;
+        setUser(current);
+        setStatus(current ? "authenticated" : "unauthenticated");
+      } catch {
+        if (!active) return;
+        setStatus("unavailable");
+        timer = setTimeout(hydrate, REINTENTO_MS);
+      }
+    };
+    void hydrate();
     return () => {
       active = false;
+      clearTimeout(timer);
     };
   }, []);
 

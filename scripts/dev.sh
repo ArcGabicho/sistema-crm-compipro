@@ -59,5 +59,21 @@ echo "==> Construyendo y levantando el stack..."
 docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build
 docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" ps
 
+# El backend escucha recién después de crear el esquema y sembrar la demo en
+# Azure SQL: el primer arranque, o con la base en pausa, tarda ~1 min.
+if command -v curl >/dev/null 2>&1; then
+  printf '==> Esperando al backend'
+  listo=""
+  for _ in $(seq 1 90); do
+    code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 http://localhost:5008/api/auth/me || true)
+    if [ "$code" != "000" ]; then listo=1; break; fi
+    printf '.'
+    sleep 2
+  done
+  echo
+  [ -n "$listo" ] && echo "==> Backend listo." \
+    || echo "!! El backend no respondió en 3 min. Revisa: docker compose -f docker/docker-compose.yml logs -f server" >&2
+fi
+
 echo "==> Cliente:  http://localhost:3000     Backend: http://localhost:5008"
 echo "==> Admin de demo: ${SEED_ADMIN_EMAIL} / (SEED_ADMIN_PASSWORD del .env)"

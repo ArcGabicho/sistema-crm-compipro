@@ -59,6 +59,8 @@ export default function DashboardLayout({
     }
   }, [status, router]);
 
+  if (status === "unavailable") return <Reconectando />;
+
   if (status !== "authenticated") {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-frame">
@@ -94,6 +96,30 @@ export default function DashboardLayout({
       </div>
       <WelcomeModal />
       <AttendanceGate />
+    </div>
+  );
+}
+
+// El backend no responde (arrancando o con la base de datos saliendo de pausa).
+// useAuth reintenta solo; al responder, el panel aparece sin recargar.
+function Reconectando() {
+  return (
+    <div className="flex min-h-dvh items-center justify-center bg-frame p-4">
+      <div
+        role="status"
+        className="max-w-md rounded-[1.75rem] bg-panel p-8 text-center shadow-sm ring-1 ring-white"
+      >
+        <span className="mx-auto grid size-14 place-items-center rounded-full bg-ink text-white">
+          <LoaderCircle className="size-6 animate-spin" />
+        </span>
+        <h1 className="mt-5 text-2xl font-semibold tracking-tight text-ink">
+          Conectando con el servidor…
+        </h1>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-500">
+          El servidor está arrancando o la base de datos se está activando.
+          Puede tardar hasta un minuto; seguimos intentando automáticamente.
+        </p>
+      </div>
     </div>
   );
 }
