@@ -8,7 +8,7 @@ const sitioPaginas = [
   { name: "Inicio", href: "/" },
   { name: "Nosotros", href: "/nosotros" },
   { name: "Productos", href: "/productos" },
-  { name: "Catalogo", href: "/catalogo" }
+  { name: "Catálogo", href: "/catalogo" }
 ];
 
 const contactoInfo = [
