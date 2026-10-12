@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 const stats = [
@@ -31,15 +32,13 @@ export default function Hero() {
             personalizados para miles de clientes.
           </p>
 
-          <a
-            href="https://agenciadigitalnet.net"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/nosotros"
             className="group mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3 text-base font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-neutral-800 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-orange-500"
           >
             Conócenos
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-          </a>
+          </Link>
 
           {/* Métricas */}
           <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-ink/15 pt-6">
