@@ -4,11 +4,11 @@ import Instagram from "../../icons/Instagram";
 import Linkedin from "../../icons/Linkedin";
 import Pinterest from "../../icons/Pinterest";
 
-const lineasPrincipales = [
-  { name: "Línea Madera", href: "#" },
-  { name: "Publicidad Exterior", href: "#" },
-  { name: "Uniformes Corporativos", href: "#" },
-  { name: "Accesorios Tecnológicos", href: "#" },
+const sitioPaginas = [
+  { name: "Inicio", href: "/" },
+  { name: "Nosotros", href: "/nosotros" },
+  { name: "Productos", href: "/productos" },
+  { name: "Catalogo", href: "/catalogo" }
 ];
 
 const contactoInfo = [
@@ -24,7 +24,7 @@ const redesSociales = [Facebook, Instagram, Linkedin, Pinterest];
 
 export default function Footer() {
   return (
-    <footer className="mx-3 mb-3 mt-12 rounded-[2rem] bg-ink py-16 text-white">
+    <footer className="mx-3 mb-3 mt-12 rounded-4xl bg-ink py-16 text-white">
       <div className="max-w-7xl mx-auto px-4">
         {/* Logo y botón */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 text-center">
@@ -85,15 +85,15 @@ export default function Footer() {
 
           {/* Widget 2: Líneas Principales */}
           <div className="hidden md:block">
-            <h5 className="font-bold text-lg mb-4">Líneas Principales</h5>
+            <h5 className="font-bold text-lg mb-4">Páginas</h5>
             <div className="text-sm space-y-2">
-              {lineasPrincipales.map((linea) => (
+              {sitioPaginas.map((pagina) => (
                 <a
-                  key={linea.name}
-                  href={linea.href}
+                  key={pagina.name}
+                  href={pagina.href}
                   className="block text-white hover:text-blue-400 hover:underline transition-colors duration-200"
                 >
-                  {linea.name}
+                  {pagina.name}
                 </a>
               ))}
             </div>
