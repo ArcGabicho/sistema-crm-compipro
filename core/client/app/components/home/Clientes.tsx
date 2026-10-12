@@ -19,33 +19,38 @@ const loopClientes = [...clientes, ...clientes];
 
 export default function Clientes() {
   return (
-    <div className="max-w-7xl mx-auto px-4 text-center py-16">
-      <h2 className="text-3xl md:text-4xl font-bold text-ink mb-12">
-        NUESTROS CLIENTES
-      </h2>
+    <section className="mx-auto max-w-7xl px-4 pb-20 sm:pb-24">
+      <div className="mx-auto max-w-2xl text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-600">
+          Confían en nosotros
+        </span>
+        <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+          Nuestros clientes
+        </h2>
+        <div className="mx-auto mt-6 h-1.5 w-16 rounded-full hatch-accent" />
+      </div>
 
       {/* Slider infinito */}
-      <div className="group relative overflow-hidden w-full h-24 md:h-32">
-        {/* Gradiente para fade effect */}
-        <div className="absolute inset-0 z-10 pointer-events-none bg-linear-to-r from-frame via-transparent to-frame" />
+      <div className="group relative mt-12 overflow-hidden rounded-[1.75rem] bg-panel py-6 shadow-sm ring-1 ring-white">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-linear-to-r from-panel to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-linear-to-l from-panel to-transparent" />
 
-        {/* Contenedor del slider */}
         <div className="flex animate-scroll group-hover:[animation-play-state:paused]">
           {loopClientes.map((cliente, index) => (
             <div
               key={`${cliente.alt}-${index}`}
-              className="shrink-0 w-32 md:w-40 h-24 md:h-32 flex items-center justify-center mx-4 grayscale hover:grayscale-0 transition-all duration-500"
+              className="mx-4 flex h-20 w-32 shrink-0 items-center justify-center grayscale transition-all duration-500 hover:grayscale-0 md:h-24 md:w-40"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={cliente.src}
                 alt={cliente.alt}
-                className="max-w-full max-h-full object-contain opacity-60 hover:opacity-100 transition-opacity duration-500"
+                className="max-h-full max-w-full object-contain opacity-60 transition-opacity duration-500 hover:opacity-100"
               />
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Hero from "../../components/shared/Hero";
+import Hero from "../../components/contact/Hero";
 import Formulario from "../../components/contact/Formulario";
 
 export const metadata: Metadata = {

@@ -8,7 +8,7 @@ const stats = [
 
 export default function Hero() {
   return (
-    <section className="relative mx-3 mt-24 overflow-hidden sm:mt-28 rounded-[2rem] bg-accent text-white md:rounded-[2.5rem]">
+    <section className="relative mx-3 mt-24 overflow-hidden sm:mt-28 rounded-[2rem] bg-accent text-ink md:rounded-[2.5rem]">
       {/* Formas decorativas */}
       <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
       <div className="pointer-events-none absolute -bottom-16 left-1/3 h-56 w-56 rounded-full bg-orange-300/20 blur-3xl" />
@@ -16,17 +16,17 @@ export default function Hero() {
       <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 md:py-20 lg:grid-cols-2 lg:gap-12 lg:px-8 lg:py-24">
         {/* Texto */}
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 text-sm font-semibold ring-1 ring-white/25 backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-panel" />
+          <span className="inline-flex items-center gap-2 rounded-full bg-ink px-3.5 py-1.5 text-sm font-semibold text-white">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
             Agencia de merchandising
           </span>
 
           <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
             Descubre la agencia de merchandising{" "}
-            <span className="text-orange-100">Compipro</span>
+            <span className="text-white">Compipro</span>
           </h1>
 
-          <p className="mt-5 max-w-lg text-base leading-relaxed text-orange-50/90 sm:text-lg">
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-ink/75 sm:text-lg">
             Una de las agencias más confiables del Perú: más de 10.000 productos
             personalizados para miles de clientes.
           </p>
@@ -42,11 +42,11 @@ export default function Hero() {
           </a>
 
           {/* Métricas */}
-          <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-white/20 pt-6">
+          <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-ink/15 pt-6">
             {stats.map((stat) => (
               <div key={stat.label}>
                 <dt className="text-xl font-bold sm:text-3xl">{stat.value}</dt>
-                <dd className="mt-1 text-xs leading-snug text-orange-50/80">
+                <dd className="mt-1 text-xs leading-snug text-ink/65">
                   {stat.label}
                 </dd>
               </div>

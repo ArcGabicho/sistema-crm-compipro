@@ -4,6 +4,7 @@ import Valores from "@/app/components/home/Valores";
 import Clientes from "@/app/components/home/Clientes";
 import Carrusel from "@/app/components/home/Carrusel";
 import Diferenciadores from "@/app/components/home/Diferenciadores";
+import Cta from "@/app/components/shared/Cta";
 
 export default function HomePage() {
   return (
@@ -14,6 +15,10 @@ export default function HomePage() {
       <Clientes />
       <Carrusel />
       <Diferenciadores />
+      <Cta
+        title="Cotiza tu próximo pedido"
+        description="Cuéntanos qué necesitas y te ayudamos a elegir los artículos ideales para tu marca, con entrega en todo el Perú."
+      />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { categorias as lineas } from "@/app/api/products/data";
 
 type Categoria = {
   id: string;
@@ -74,7 +75,7 @@ export default function Productos() {
             href={`/${categoria.id}`}
             aria-label={`Ver categoría ${categoria.nombre}`}
             style={{ animationDelay: `${index * 80}ms` }}
-            className="animate-fade-in-up group flex flex-col overflow-hidden rounded-2xl bg-panel shadow-sm ring-1 ring-white transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:ring-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            className="animate-fade-in-up group flex flex-col overflow-hidden rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:ring-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
           >
             {/* Imagen + nombre superpuesto */}
             <div className="relative aspect-16/10 overflow-hidden bg-frame">
@@ -97,7 +98,7 @@ export default function Productos() {
               </p>
 
               <div className="mt-auto flex items-center gap-2 pt-5 text-sm font-semibold text-orange-600">
-                Solicitar cotización
+                Ver productos
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/15 transition-colors duration-300 group-hover:bg-accent group-hover:text-white">
                   <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                 </span>
@@ -105,6 +106,16 @@ export default function Productos() {
             </div>
           </Link>
         ))}
+      </div>
+
+      <div className="mt-12 flex justify-center">
+        <Link
+          href="/catalogo"
+          className="group inline-flex items-center gap-2 rounded-full bg-ink px-8 py-3 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-neutral-800 hover:shadow-lg"
+        >
+          Ver las {lineas.length} líneas del catálogo
+          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+        </Link>
       </div>
     </section>
   );

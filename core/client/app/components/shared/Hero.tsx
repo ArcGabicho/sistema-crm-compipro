@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 type HeroImage = {
   src: string;
   title: string;
   description: string;
-  gradient: string;
 };
 
 const images: HeroImage[] = [
@@ -16,31 +15,26 @@ const images: HeroImage[] = [
     src: "/web/imagenhero1.webp",
     title: "Artículos impresión digital",
     description: "Producción de prendas y todo tipo de accesorios con el logo de marca.",
-    gradient: "from-neutral-950/80 via-neutral-900/45 to-transparent",
   },
   {
     src: "/web/imagenhero2.webp",
     title: "Impresión de alta calidad",
     description: "Soluciones avanzadas en impresión digital y offset con tecnología de vanguardia.",
-    gradient: "from-neutral-950/80 via-neutral-900/45 to-transparent",
   },
   {
     src: "/web/imagenhero3.webp",
     title: "Innovación en diseño gráfico",
     description: "Diseño personalizado para publicidad y branding que impacta y conecta.",
-    gradient: "from-neutral-950/80 via-neutral-900/45 to-transparent",
   },
   {
     src: "/web/imagenhero4.webp",
     title: "Merchandising Empresarial",
     description: "Diseño de artículos publicitarios para empresas que buscan diferenciarse.",
-    gradient: "from-neutral-950/80 via-neutral-900/45 to-transparent",
   },
   {
     src: "/web/imagenhero5.webp",
     title: "Soluciones Corporativas",
     description: "Productos promocionales que fortalecen la identidad de tu marca.",
-    gradient: "from-neutral-950/80 via-neutral-900/45 to-transparent",
   },
 ];
 
@@ -70,114 +64,104 @@ function Hero() {
     }
   };
 
+  const fade = isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0";
+
   return (
-    <div className="relative mx-3 mt-24 h-[80dvh] min-h-[26rem] overflow-hidden rounded-[2rem] sm:mt-28">
-      {/* Hero Background Images */}
-      <div className="absolute inset-0">
-        {images.map((image, index) => (
-          <div
-            key={image.src}
-            className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
-              index === currentImage
-                ? `opacity-100 scale-100 ${
-                    isTransitioning ? "blur-sm" : "blur-0"
-                  }`
-                : "opacity-0 scale-105"
-            }`}
+    <section className="relative mx-3 mt-24 h-[80dvh] min-h-[26rem] overflow-hidden rounded-[2rem] bg-ink sm:mt-28 md:rounded-[2.5rem]">
+      {/* Fondos */}
+      {images.map((image, index) => (
+        <div
+          key={image.src}
+          className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
+            index === currentImage
+              ? `scale-100 opacity-100 ${isTransitioning ? "blur-sm" : "blur-0"}`
+              : "scale-105 opacity-0"
+          }`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={image.src}
+            alt={image.title}
+            className="h-full w-full object-cover object-center"
+          />
+        </div>
+      ))}
+      <div className="absolute inset-0 bg-linear-to-r from-neutral-950/85 via-neutral-950/45 to-neutral-950/10" />
+      <div className="absolute inset-0 bg-linear-to-t from-neutral-950/70 via-transparent to-transparent" />
+
+      {/* Contenido */}
+      <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-8 sm:px-10 sm:pb-10 lg:px-14 lg:pb-14">
+        <div className="max-w-2xl">
+          <span
+            className={`inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 text-sm font-semibold text-white ring-1 ring-white/25 backdrop-blur-sm transition-all duration-700 ${fade}`}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={image.src}
-              alt={image.title}
-              className="w-full h-full object-cover object-center"
-            />
-            <div
-              className={`absolute inset-0 bg-linear-to-br ${image.gradient}`}
-            />
-          </div>
-        ))}
-      </div>
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+            Agencia de merchandising
+          </span>
+          <h1
+            className={`mt-4 text-4xl font-bold leading-tight tracking-tight text-white transition-all duration-700 sm:text-5xl lg:text-6xl ${fade}`}
+          >
+            {images[currentImage].title}
+          </h1>
+          <p
+            className={`mt-4 max-w-xl text-base leading-relaxed text-white/80 transition-all delay-100 duration-700 sm:text-lg ${fade}`}
+          >
+            {images[currentImage].description}
+          </p>
 
-      {/* Content Container */}
-      <div className="relative z-10 flex flex-col justify-between h-full">
-        {/* Header Text */}
-        <div className="flex-1 flex items-center justify-center text-center px-4 pt-12">
-          <div className="max-w-5xl mx-auto">
-            <h1
-              className={`text-white font-bold leading-tight transition-all duration-700 transform ${
-                isTransitioning
-                  ? "opacity-0 translate-y-4"
-                  : "opacity-100 translate-y-0"
-              } text-3xl sm:text-4xl lg:text-6xl xl:text-7xl mb-4`}
+          <div
+            className={`mt-7 flex flex-col gap-3 transition-all delay-200 duration-700 sm:flex-row ${fade}`}
+          >
+            <Link
+              href="/productos"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-accent px-7 py-3 text-base font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:brightness-95 hover:shadow-lg"
             >
-              {images[currentImage].title}
-            </h1>
-            <p
-              className={`text-white/90 font-medium max-w-3xl mx-auto transition-all duration-700 delay-100 transform ${
-                isTransitioning
-                  ? "opacity-0 translate-y-4"
-                  : "opacity-100 translate-y-0"
-              } text-base sm:text-lg lg:text-xl xl:text-2xl leading-relaxed`}
+              Explorar productos
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+            </Link>
+            <Link
+              href="/contacto"
+              className="inline-flex items-center justify-center rounded-full bg-white/15 px-7 py-3 text-base font-semibold text-white ring-1 ring-white/25 backdrop-blur-sm transition-colors duration-300 hover:bg-white/25"
             >
-              {images[currentImage].description}
-            </p>
-
-            {/* CTA Button */}
-            <div
-              className={`mt-6 transition-all duration-700 delay-200 transform ${
-                isTransitioning
-                  ? "opacity-0 translate-y-4"
-                  : "opacity-100 translate-y-0"
-              }`}
-            >
-              <Link
-                href="/productos"
-                className="bg-accent text-white px-8 py-3 rounded-full font-semibold text-base hover:brightness-95 hover:scale-105 transition-all duration-300 shadow-xl"
-              >
-                Explorar Productos
-              </Link>
-            </div>
+              Solicitar cotización
+            </Link>
           </div>
         </div>
+      </div>
 
-        {/* Carousel Indicators */}
-        <div className="pb-8 flex justify-center space-x-2">
+      {/* Controles */}
+      <div className="absolute bottom-8 right-6 z-20 hidden items-center gap-3 rounded-full bg-white/15 p-1.5 ring-1 ring-white/25 backdrop-blur-md sm:right-10 sm:bottom-10 md:flex lg:right-14 lg:bottom-14">
+        <button
+          type="button"
+          aria-label="Diapositiva anterior"
+          onClick={() => goToSlide((currentImage - 1 + images.length) % images.length)}
+          className="grid size-9 place-items-center rounded-full bg-white text-ink transition-colors hover:bg-accent hover:text-white"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <div className="flex items-center gap-1.5">
           {images.map((image, index) => (
             <button
               key={image.src}
               type="button"
               aria-label={`Ir a la diapositiva ${index + 1}`}
               onClick={() => goToSlide(index)}
-              className={`h-2 rounded-full transition-all duration-300 hover:scale-110 ${
-                index === currentImage
-                  ? "w-8 bg-accent shadow-md"
-                  : "w-2 bg-white/40 hover:bg-white/60"
+              className={`h-2 rounded-full transition-all duration-300 ${
+                index === currentImage ? "w-7 bg-accent" : "w-2 bg-white/50 hover:bg-white/80"
               }`}
             />
           ))}
         </div>
+        <button
+          type="button"
+          aria-label="Diapositiva siguiente"
+          onClick={() => goToSlide((currentImage + 1) % images.length)}
+          className="grid size-9 place-items-center rounded-full bg-white text-ink transition-colors hover:bg-accent hover:text-white"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
       </div>
-
-      {/* Navigation Arrows */}
-      <button
-        type="button"
-        aria-label="Diapositiva anterior"
-        onClick={() =>
-          goToSlide((currentImage - 1 + images.length) % images.length)
-        }
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:scale-110 transition-all duration-300"
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
-      <button
-        type="button"
-        aria-label="Diapositiva siguiente"
-        onClick={() => goToSlide((currentImage + 1) % images.length)}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:scale-110 transition-all duration-300"
-      >
-        <ChevronRight className="w-5 h-5" />
-      </button>
-    </div>
+    </section>
   );
 }
 

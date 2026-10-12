@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Hero from "../../components/catalog/Hero";
-import Productos from "../../components/shared/Productos";
+import Lineas from "../../components/catalog/Lineas";
+import Cta from "../../components/shared/Cta";
 
 export const metadata: Metadata = {
   title: "Catálogo | Compipro S.A.C.",
@@ -10,7 +11,8 @@ export default function CatalogoPage() {
   return (
     <>
       <Hero />
-      <Productos />
+      <Lineas />
+      <Cta />
     </>
   );
 }

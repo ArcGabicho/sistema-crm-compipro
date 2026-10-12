@@ -1,62 +1,35 @@
-import { ArrowUpRight, LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 
 type Proyecto = {
   id: number;
   title: string;
-  description: string;
+  tags: string[];
   image: string;
 };
 
 const proyectos: Proyecto[] = [
-  {
-    id: 1,
-    title: "Product Design",
-    description: "UI/UX, Design",
-    image: "/web/imagencarrusel1.webp",
-  },
-  {
-    id: 2,
-    title: "Custom Website",
-    description: "UI/UX, Design",
-    image: "/web/imagencarrusel2.webp",
-  },
-  {
-    id: 3,
-    title: "Digital Marketing",
-    description: "UI/UX, Design",
-    image: "/web/imagencarrusel3.webp",
-  },
-  {
-    id: 4,
-    title: "Branding",
-    description: "Marketing, Identity",
-    image: "/web/imagencarrusel4.webp",
-  },
-  {
-    id: 5,
-    title: "App Design",
-    description: "Mobile, UI",
-    image: "/web/imagencarrusel5.webp",
-  },
-  {
-    id: 6,
-    title: "SEO Strategy",
-    description: "Optimization, Growth",
-    image: "/web/imagencarrusel6.webp",
-  },
+  { id: 1, title: "Kit corporativo", tags: ["Libretas", "Tazas"], image: "/web/imagencarrusel1.webp" },
+  { id: 2, title: "Tomatodos personalizados", tags: ["Botellas", "Logo"], image: "/web/imagencarrusel2.webp" },
+  { id: 3, title: "Tarjeta y caja navideña", tags: ["Imprenta", "Navidad"], image: "/web/imagencarrusel3.webp" },
+  { id: 4, title: "Bolsa y lapiceros", tags: ["Textil", "Escritura"], image: "/web/imagencarrusel4.webp" },
+  { id: 5, title: "Juego de mesa educativo", tags: ["Lúdicos", "Imprenta"], image: "/web/imagencarrusel5.webp" },
+  { id: 6, title: "Libreta corporativa", tags: ["Cuadernos", "Accesorios"], image: "/web/imagencarrusel6.webp" },
+  { id: 7, title: "Kit para eventos", tags: ["Botellas", "Lanyards"], image: "/web/imagencarrusel7.webp" },
+  { id: 8, title: "Lapiceros ecológicos", tags: ["Ecológicos", "Escritura"], image: "/web/imagencarrusel8.webp" },
+  { id: 9, title: "Pack de regalo", tags: ["Bolsas", "Empaque"], image: "/web/imagencarrusel9.webp" },
 ];
 
 export default function Carrusel() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20 sm:py-24">
+    <section className="mx-auto max-w-7xl px-4 pb-20 sm:pb-24">
       {/* Encabezado */}
       <div className="mx-auto max-w-2xl text-center">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-700">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-600">
           <LayoutGrid className="h-3.5 w-3.5" />
           Portafolio
         </span>
         <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-          Proyectos Desarrollados
+          Proyectos desarrollados
         </h2>
         <p className="mt-3 text-base leading-relaxed text-neutral-500">
           Una muestra de los trabajos que hemos realizado para marcas de
@@ -66,37 +39,36 @@ export default function Carrusel() {
       </div>
 
       {/* Grid de proyectos */}
-      <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
+      <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {proyectos.map((proyecto, index) => (
           <article
             key={proyecto.id}
-            style={{ animationDelay: `${index * 80}ms` }}
-            className="animate-fade-in-up group relative flex aspect-4/3 flex-col justify-end overflow-hidden rounded-2xl bg-ink shadow-sm ring-1 ring-white transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:ring-amber-300/60"
+            style={{ animationDelay: `${index * 60}ms` }}
+            className="animate-fade-in-up group flex flex-col overflow-hidden rounded-[1.75rem] bg-panel p-2 shadow-sm ring-1 ring-white transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:ring-accent/50"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={proyecto.image}
-              alt={proyecto.title}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/35 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
-
-            {/* Contenido superpuesto */}
-            <div className="relative p-5 text-left">
-              <div className="mb-2 flex flex-wrap gap-1.5">
-                {proyecto.description.split(",").map((tag) => (
+            <div className="aspect-4/3 overflow-hidden rounded-[1.4rem] bg-white">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={proyecto.image}
+                alt={proyecto.title}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+              />
+            </div>
+            <div className="flex items-center justify-between gap-3 px-3 pb-2 pt-4">
+              <h3 className="truncate text-base font-semibold text-ink">
+                {proyecto.title}
+              </h3>
+              <div className="flex shrink-0 gap-1.5">
+                {proyecto.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-white/15 px-2 py-0.5 text-xs font-medium text-white/90 backdrop-blur-sm"
+                    className="rounded-full bg-frame px-2.5 py-0.5 text-[11px] font-medium text-neutral-600"
                   >
-                    {tag.trim()}
+                    {tag}
                   </span>
                 ))}
               </div>
-              <h3 className="flex items-center gap-1.5 text-lg font-bold text-white">
-                {proyecto.title}
-                <ArrowUpRight className="h-4 w-4 shrink-0 -translate-x-1 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
-              </h3>
             </div>
           </article>
         ))}
