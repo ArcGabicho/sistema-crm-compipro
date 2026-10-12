@@ -1,9 +1,11 @@
+using Server.Config;
 using Microsoft.AspNetCore.Mvc;
 using Server.Domain;
 using Server.Services;
 
 namespace Server.Controllers;
 
+[Modulo(Modulos.Inventario)]
 [Route("api/productos")]
 public sealed class ProductosController(ICrudService<Producto> service)
     : CrudControllerBase<Producto>(service)

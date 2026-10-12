@@ -1,3 +1,4 @@
+using Server.Config;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Domain;
@@ -95,7 +96,7 @@ public sealed class AttendanceService(AppDbContext db, IAuditService audit) : IA
         var registro = await db.RegistrosAsistencia.FirstOrDefaultAsync(r => r.Id == id, ct);
         if (registro is null) return (null, null);
 
-        bool esAdmin = string.Equals(actorRole, "admin", StringComparison.OrdinalIgnoreCase);
+        bool esAdmin = Roles.Es(actorRole, Roles.Admin);
         if (registro.UserId != actorUserId && !esAdmin)
             return (null, "Solo puedes justificar tus propias tardanzas.");
         if (!registro.Tarde)

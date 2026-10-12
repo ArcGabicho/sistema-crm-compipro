@@ -1,3 +1,4 @@
+using Server.Config;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ public sealed class AuthController(IAuthService auth) : ControllerBase
     }
 
     [Authorize]
+    [Modulo(Modulos.Cuenta)]
     [HttpGet("me")]
     public ActionResult<CurrentUserResponse> Me()
         => Ok(new CurrentUserResponse(

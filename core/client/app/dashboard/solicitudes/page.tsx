@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { ChevronDown, LoaderCircle, Mail, Phone, UserPlus } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
+import { usePermiso } from "@/app/lib/permisos";
 import { badge, date } from "@/app/components/dashboard/cells";
 
 type Solicitud = {
@@ -229,6 +230,7 @@ function FragmentRow({
   onConvertir: () => void;
   onEliminar: () => void;
 }) {
+  const permiso = usePermiso("solicitudes");
   return (
     <>
       <tr className="align-top hover:bg-white/60">
@@ -273,7 +275,7 @@ function FragmentRow({
         <td className="px-4 py-3">
           <select
             value={s.estado}
-            disabled={busy}
+            disabled={busy || !permiso.escribir}
             onChange={(e) => onEstado(e.target.value)}
             className={selCls}
           >
@@ -284,7 +286,7 @@ function FragmentRow({
         </td>
         <td className="px-4 py-3">
           <div className="flex items-center justify-end gap-1">
-            {s.estado !== "Convertida" && (
+            {permiso.escribir && s.estado !== "Convertida" && (
               <button
                 type="button"
                 onClick={onConvertir}
@@ -348,6 +350,7 @@ function FragmentRow({
                     {s.notas}
                   </p>
                 )}
+                {permiso.eliminar && (
                 <button
                   type="button"
                   onClick={onEliminar}
@@ -356,6 +359,7 @@ function FragmentRow({
                 >
                   Eliminar solicitud
                 </button>
+                )}
               </div>
             </div>
           </td>

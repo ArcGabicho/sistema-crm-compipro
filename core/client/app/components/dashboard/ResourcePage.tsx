@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 import { toast } from "react-hot-toast";
 import { LoaderCircle, Pencil, Plus, Trash2, X } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
+import { useAuth } from "@/app/hooks/useAuth";
+import { MODULO_POR_RECURSO, puede } from "@/app/lib/permisos";
 
 export type FieldType =
   | "text"
@@ -73,9 +75,13 @@ export default function ResourcePage<T extends WithId>({
   config: ResourceConfig<T>;
 }) {
   const pageSize = config.pageSize ?? 15;
-  const canCreate = config.canCreate ?? true;
-  const canEdit = config.canEdit ?? true;
-  const canDelete = config.canDelete ?? true;
+  const { user } = useAuth();
+  const modulo = MODULO_POR_RECURSO[config.resource];
+  const permite = (acceso: "escribir" | "eliminar") => !modulo || puede(user?.role, modulo, acceso);
+  const canCreate = (config.canCreate ?? true) && permite("escribir");
+  const canEdit = (config.canEdit ?? true) && permite("escribir");
+  const canDelete = (config.canDelete ?? true) && permite("eliminar");
+  const rowActions = permite("escribir") ? config.rowActions : undefined;
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -280,7 +286,7 @@ export default function ResourcePage<T extends WithId>({
                   ))}
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
-                      {config.rowActions?.map((a) => (
+                      {rowActions?.map((a) => (
                         <button
                           key={a.label}
                           type="button"

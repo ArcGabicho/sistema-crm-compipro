@@ -1,3 +1,4 @@
+using Server.Config;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Domain;
@@ -8,6 +9,7 @@ namespace Server.Controllers;
 
 [ApiController]
 [Authorize]
+[Modulo(Modulos.Auditoria)]
 [Route("api/audit")]
 public sealed class AuditController(IAuditService audit) : ControllerBase
 {

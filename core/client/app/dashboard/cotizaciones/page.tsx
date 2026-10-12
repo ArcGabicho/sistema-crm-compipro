@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { LoaderCircle, Plus, Trash2, X } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
+import { usePermiso } from "@/app/lib/permisos";
 import { badge, date, estadoTone, money } from "@/app/components/dashboard/cells";
 
 type Ref = { id: number; nombre?: string; name?: string } | null;
@@ -46,6 +47,7 @@ const inp =
   "w-full rounded-2xl border border-neutral-200 bg-white px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25";
 
 export default function CotizacionesPage() {
+  const permiso = usePermiso("cotizaciones");
   const [data, setData] = useState<Paged<Cotizacion> | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -103,6 +105,7 @@ export default function CotizacionesPage() {
             el pedido.
           </p>
         </div>
+        {permiso.escribir && (
         <button
           type="button"
           onClick={() => setEditing("new")}
@@ -110,6 +113,7 @@ export default function CotizacionesPage() {
         >
           <Plus className="h-4 w-4" /> Nueva cotización
         </button>
+        )}
       </header>
 
       <div className="mb-4 flex flex-wrap gap-2">
@@ -180,6 +184,8 @@ export default function CotizacionesPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1 text-xs font-medium">
+                      {permiso.escribir && (
+                      <>
                       {c.estado === "Borrador" && (
                         <button
                           type="button"
@@ -230,6 +236,9 @@ export default function CotizacionesPage() {
                       >
                         Editar
                       </button>
+                      </>
+                      )}
+                      {permiso.eliminar && (
                       <button
                         type="button"
                         onClick={() =>
@@ -243,6 +252,7 @@ export default function CotizacionesPage() {
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
+                      )}
                     </div>
                   </td>
                 </tr>

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { LoaderCircle } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
+import { usePermiso } from "@/app/lib/permisos";
 import { badge, date, estadoTone, money } from "@/app/components/dashboard/cells";
 
 type Pedido = {
@@ -26,6 +27,7 @@ const inp =
   "rounded-2xl border border-neutral-200 bg-white px-2 py-1 text-xs focus:border-accent focus:outline-none";
 
 export default function PedidosPage() {
+  const permiso = usePermiso("pedidos");
   const [data, setData] = useState<Paged<Pedido> | null>(null);
   const [loading, setLoading] = useState(true);
   const [estado, setEstado] = useState("");
@@ -159,6 +161,7 @@ export default function PedidosPage() {
                   <td className="px-4 py-3">
                     <select
                       value={p.estadoProduccion}
+                      disabled={!permiso.escribir}
                       onChange={(e) => changeEstado(p, e.target.value)}
                       className={inp}
                     >
@@ -176,6 +179,7 @@ export default function PedidosPage() {
                     )}
                   </td>
                   <td className="px-4 py-3 text-right">
+                    {permiso.escribir && (
                     <button
                       type="button"
                       onClick={() => setPago(p)}
@@ -184,6 +188,7 @@ export default function PedidosPage() {
                     >
                       Registrar pago
                     </button>
+                    )}
                   </td>
                 </tr>
               ))}

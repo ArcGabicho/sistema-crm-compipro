@@ -1,3 +1,4 @@
+using Server.Config;
 using Microsoft.EntityFrameworkCore;
 using Server.Domain;
 using Server.Services;
@@ -16,10 +17,10 @@ public static class SeedData
         {
             (string name, string email, string role, int h, int m)[] staff =
             [
-                ("Ana Quispe", "ana.quispe@compipro.net", "user", 9, 0),
-                ("Luis Torres", "luis.torres@compipro.net", "user", 9, 0),
-                ("Marta Ríos", "marta.rios@compipro.net", "user", 8, 30),
-                ("Diego Flores", "diego.flores@compipro.net", "user", 9, 0),
+                ("Ana Quispe", "ana.quispe@compipro.net", Roles.Ventas, 9, 0),
+                ("Luis Torres", "luis.torres@compipro.net", Roles.Operaciones, 9, 0),
+                ("Marta Ríos", "marta.rios@compipro.net", Roles.Ventas, 8, 30),
+                ("Diego Flores", "diego.flores@compipro.net", Roles.Gerencia, 9, 0),
             ];
             foreach (var s in staff)
             {

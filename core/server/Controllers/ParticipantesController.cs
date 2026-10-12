@@ -1,9 +1,11 @@
+using Server.Config;
 using Microsoft.AspNetCore.Mvc;
 using Server.Domain;
 using Server.Services;
 
 namespace Server.Controllers;
 
+[Modulo(Modulos.Eventos)]
 [Route("api/participantes")]
 public sealed class ParticipantesController(ICrudService<ParticipanteEvento> service)
     : CrudControllerBase<ParticipanteEvento>(service)

@@ -1,3 +1,4 @@
+using Server.Config;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace Server.Controllers;
 /// <summary>Bandeja de solicitudes web dentro del CRM (requiere sesión).</summary>
 [ApiController]
 [Authorize]
+[Modulo(Modulos.Solicitudes)]
 [Route("api/solicitudes")]
 public sealed class SolicitudesController(ISolicitudService solicitudes) : ControllerBase
 {

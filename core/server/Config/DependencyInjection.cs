@@ -20,7 +20,7 @@ public static class DependencyInjection
 
         services.AddOpenApi();
 
-        services.AddControllers().AddJsonOptions(o =>
+        services.AddControllers(o => o.Filters.Add<PermisosFilter>()).AddJsonOptions(o =>
         {
             o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             o.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;

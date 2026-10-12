@@ -1,3 +1,4 @@
+using Server.Config;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace Server.Controllers;
 
 [ApiController]
 [Authorize]
+[Modulo(Modulos.Inventario)]
 [Route("api/movimientos-inventario")]
 public sealed class MovimientosInventarioController(IInventoryService inventory) : ControllerBase
 {

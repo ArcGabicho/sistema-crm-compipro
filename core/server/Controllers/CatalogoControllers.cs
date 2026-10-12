@@ -1,3 +1,4 @@
+using Server.Config;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Domain;
@@ -5,6 +6,7 @@ using Server.Services;
 
 namespace Server.Controllers;
 
+[Modulo(Modulos.TiposCliente)]
 [Route("api/tipos-cliente")]
 public sealed class TiposClienteController(ICrudService<TipoCliente> service)
     : CrudControllerBase<TipoCliente>(service)
@@ -13,6 +15,7 @@ public sealed class TiposClienteController(ICrudService<TipoCliente> service)
         => Query("search") is { } s ? q.Where(t => t.Nombre.Contains(s)) : q;
 }
 
+[Modulo(Modulos.Ventas)]
 [Route("api/ventas")]
 public sealed class VentasController(ICrudService<Venta> service)
     : CrudControllerBase<Venta>(service)
@@ -26,6 +29,7 @@ public sealed class VentasController(ICrudService<Venta> service)
     }
 }
 
+[Modulo(Modulos.Proveedores)]
 [Route("api/proveedores")]
 public sealed class ProveedoresController(ICrudService<Proveedor> service)
     : CrudControllerBase<Proveedor>(service)
@@ -40,6 +44,7 @@ public sealed class ProveedoresController(ICrudService<Proveedor> service)
     }
 }
 
+[Modulo(Modulos.Documentos)]
 [Route("api/documentos")]
 public sealed class DocumentosController(ICrudService<Documento> service)
     : CrudControllerBase<Documento>(service)
@@ -52,6 +57,7 @@ public sealed class DocumentosController(ICrudService<Documento> service)
     }
 }
 
+[Modulo(Modulos.Configuracion)]
 [Route("api/configuracion")]
 public sealed class ConfiguracionController(ICrudService<Configuracion> service)
     : CrudControllerBase<Configuracion>(service)
@@ -60,10 +66,12 @@ public sealed class ConfiguracionController(ICrudService<Configuracion> service)
         => Query("search") is { } s ? q.Where(c => c.Clave.Contains(s)) : q;
 }
 
+[Modulo(Modulos.Eventos)]
 [Route("api/eventos")]
 public sealed class EventosController(ICrudService<Evento> service)
     : CrudControllerBase<Evento>(service);
 
+[Modulo(Modulos.Email)]
 [Route("api/plantillas-email")]
 public sealed class PlantillasEmailController(ICrudService<PlantillaEmail> service)
     : CrudControllerBase<PlantillaEmail>(service)

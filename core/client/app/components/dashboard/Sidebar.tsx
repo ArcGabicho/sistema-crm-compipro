@@ -28,6 +28,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "@/app/hooks/useAuth";
+import { MODULO_POR_RUTA, puede } from "@/app/lib/permisos";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -145,7 +146,10 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
 
           {/* Cada ítem crece para repartir el alto libre del panel (con tope), sin generar scroll */}
           <nav className="-mx-1 flex flex-1 flex-col overflow-y-auto px-1 py-1">
-            {NAV.map(({ href, label, icon: Icon }) => {
+            {NAV.filter(({ href }) => {
+              const modulo = MODULO_POR_RUTA[href];
+              return !modulo || puede(user?.role, modulo, "leer");
+            }).map(({ href, label, icon: Icon }) => {
               const active = pathname === href;
               return (
                 <div key={href} className="flex max-h-16 flex-[1_0_auto] items-center">

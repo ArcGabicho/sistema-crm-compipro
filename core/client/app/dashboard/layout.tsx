@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { LoaderCircle, Menu } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { LoaderCircle, Lock, Menu } from "lucide-react";
 import { useAuth } from "@/app/hooks/useAuth";
 import Sidebar from "../components/dashboard/Sidebar";
 import WelcomeModal from "@/app/components/dashboard/WelcomeModal";
 import AttendanceGate from "@/app/components/dashboard/AttendanceGate";
+import { MODULO_POR_RUTA, puede } from "@/app/lib/permisos";
 
 // Altura mínima (px) para la que está diseñado el panel de escritorio sin scroll.
 // Si la ventana útil es más baja (barra del navegador, barra de tareas), el panel
@@ -42,8 +44,11 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { status } = useAuth();
+  const { status, user } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const modulo = MODULO_POR_RUTA[pathname];
+  const sinAcceso = !!modulo && !puede(user?.role, modulo, "leer");
   const [navOpen, setNavOpen] = useState(false);
   const zoom = useShellZoom();
 
@@ -84,11 +89,36 @@ export default function DashboardLayout({
         <Sidebar mobileOpen={navOpen} onClose={() => setNavOpen(false)} />
 
         <main className="min-w-0 flex-1 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6 lg:overflow-y-auto lg:rounded-[1.75rem] lg:p-2">
-          {children}
+          {sinAcceso ? <SinAcceso /> : children}
         </main>
       </div>
       <WelcomeModal />
       <AttendanceGate />
+    </div>
+  );
+}
+
+function SinAcceso() {
+  return (
+    <div className="flex h-full min-h-[60vh] items-center justify-center p-4">
+      <div className="max-w-md rounded-[1.75rem] bg-panel p-8 text-center shadow-sm ring-1 ring-white">
+        <span className="mx-auto grid size-14 place-items-center rounded-full bg-ink text-white">
+          <Lock className="size-6" />
+        </span>
+        <h1 className="mt-5 text-2xl font-semibold tracking-tight text-ink">
+          No tienes acceso a este módulo
+        </h1>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-500">
+          Tu rol no incluye esta sección. Si la necesitas, pide a un
+          administrador que actualice tu rol.
+        </p>
+        <Link
+          href="/dashboard"
+          className="mt-6 inline-flex items-center justify-center rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:brightness-95"
+        >
+          Volver a Estadísticas
+        </Link>
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { LoaderCircle } from "lucide-react";
 import { crm } from "@/app/lib/crm";
+import { usePermiso } from "@/app/lib/permisos";
 
 type PipelinePunto = { etapa: string; cantidad: number; orden: number };
 
@@ -29,6 +30,7 @@ const ETAPAS_BASE = [
 ];
 
 export default function PipelinePage() {
+  const permiso = usePermiso("clientes");
   const [columnas, setColumnas] = useState<PipelinePunto[]>([]);
   const [porEtapa, setPorEtapa] = useState<Record<string, Cliente[]>>({});
   const [loading, setLoading] = useState(true);
@@ -148,7 +150,7 @@ export default function PipelinePage() {
                       </p>
                       <select
                         value={cli.etapa ?? ""}
-                        disabled={moving === cli.id}
+                        disabled={moving === cli.id || !permiso.escribir}
                         onChange={(e) => mover(cli, e.target.value)}
                         className="mt-2 w-full rounded-2xl border border-neutral-200/70 bg-frame px-2 py-1 text-xs focus:border-accent focus:outline-none disabled:opacity-50"
                       >

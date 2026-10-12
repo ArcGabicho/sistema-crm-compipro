@@ -1,3 +1,4 @@
+using Server.Config;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Models;
@@ -7,6 +8,7 @@ namespace Server.Controllers;
 
 [ApiController]
 [Authorize]
+[Modulo(Modulos.Estadisticas)]
 [Route("api/stats")]
 public sealed class StatsController(IStatsService stats) : ControllerBase
 {

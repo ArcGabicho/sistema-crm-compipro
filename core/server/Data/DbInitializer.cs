@@ -90,7 +90,7 @@ public static class DbInitializer
         {
             Email = seed.Admin.Email.Trim(),
             Name = string.IsNullOrWhiteSpace(seed.Admin.Name) ? "Administrador" : seed.Admin.Name,
-            Role = "admin",
+            Role = Roles.Admin,
             PasswordHash = PasswordHasher.Hash(seed.Admin.Password),
             CreatedAt = DateTimeOffset.UtcNow,
         });

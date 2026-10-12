@@ -1,3 +1,4 @@
+using Server.Config;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Domain;
@@ -5,6 +6,7 @@ using Server.Services;
 
 namespace Server.Controllers;
 
+[Modulo(Modulos.Logistica)]
 [Route("api/envios")]
 public sealed class EnviosController(ICrudService<Envio> service)
     : CrudControllerBase<Envio>(service)

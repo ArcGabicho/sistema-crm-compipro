@@ -1,3 +1,4 @@
+using Server.Config;
 using System.Globalization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ namespace Server.Controllers;
 /// <summary>Control de asistencia y tardanzas del personal.</summary>
 [ApiController]
 [Authorize]
+[Modulo(Modulos.Asistencia)]
 [Route("api/asistencia")]
 public sealed class AsistenciaController(IAttendanceService asistencia) : ControllerBase
 {
@@ -18,7 +20,8 @@ public sealed class AsistenciaController(IAttendanceService asistencia) : Contro
         int.TryParse(User.FindFirstValue("sub"), out int id) ? id : 0;
     private string? CurrentRole => User.FindFirstValue("role");
     private string? CurrentEmail => User.FindFirstValue("email");
-    private bool IsAdmin => string.Equals(CurrentRole, "admin", StringComparison.OrdinalIgnoreCase);
+    private bool IsAdmin => Roles.Es(CurrentRole, Roles.Admin);
+    private bool VeTodos => IsAdmin || Roles.Es(CurrentRole, Roles.Gerencia);
 
     /// <summary>Registra el ingreso del usuario actual (idempotente por día).</summary>
     [HttpPost("check-in")]
@@ -35,8 +38,8 @@ public sealed class AsistenciaController(IAttendanceService asistencia) : Contro
         string? desde = null, string? hasta = null, bool soloTarde = false,
         CancellationToken ct = default)
     {
-        // Un usuario no-admin solo ve sus propios registros.
-        int? scope = IsAdmin ? userId : CurrentUserId;
+        // Admin y gerencia ven a todo el equipo; el resto solo sus propios registros.
+        int? scope = VeTodos ? userId : CurrentUserId;
         return asistencia.ListAsync(page, pageSize, scope, ParseDate(desde), ParseDate(hasta), soloTarde, ct);
     }
 
@@ -45,7 +48,7 @@ public sealed class AsistenciaController(IAttendanceService asistencia) : Contro
     {
         var r = await asistencia.GetAsync(id, ct);
         if (r is null) return NotFound();
-        if (!IsAdmin && r.UserId != CurrentUserId) return Forbid();
+        if (!VeTodos && r.UserId != CurrentUserId) return Forbid();
         return Ok(r);
     }
 

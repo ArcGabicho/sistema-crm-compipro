@@ -27,7 +27,7 @@ const hhmm = (t: string) => (t ? t.slice(0, 5) : "—");
 
 export default function AsistenciaPage() {
   const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
+  const veTodos = user?.role === "admin" || user?.role === "gerencia";
 
   const [data, setData] = useState<Paged<Registro> | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,7 @@ export default function AsistenciaPage() {
   const reload = useCallback(() => setTick((t) => t + 1), []);
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!veTodos) return;
     let cancel = false;
     void (async () => {
       try {
@@ -53,7 +53,7 @@ export default function AsistenciaPage() {
     return () => {
       cancel = true;
     };
-  }, [isAdmin]);
+  }, [veTodos]);
 
   useEffect(() => {
     let cancel = false;
@@ -105,7 +105,7 @@ export default function AsistenciaPage() {
           />
           Solo tardanzas
         </label>
-        {isAdmin && (
+        {veTodos && (
           <select
             value={userId}
             onChange={(e) => setUserId(e.target.value)}

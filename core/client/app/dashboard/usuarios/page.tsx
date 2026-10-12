@@ -4,6 +4,7 @@ import ResourcePage, {
   type ResourceConfig,
 } from "@/app/components/dashboard/ResourcePage";
 import { badge, date } from "@/app/components/dashboard/cells";
+import { ROLES as ROLES_SISTEMA } from "@/app/lib/permisos";
 
 type Usuario = {
   id: number;
@@ -16,7 +17,13 @@ type Usuario = {
   createdAt: string;
 };
 
-const ROLES = ["admin", "user"].map((v) => ({ value: v, label: v }));
+const ROLES = ROLES_SISTEMA.map((r) => ({ value: r.value, label: r.label }));
+
+const rolBadge = (role: string) => {
+  const rol = ROLES_SISTEMA.find((r) => r.value === role);
+  if (!rol) return badge("Sin rol asignado", "red");
+  return badge(rol.label, role === "admin" ? "yellow" : role === "gerencia" ? "blue" : "gray");
+};
 
 const config: ResourceConfig<Usuario> = {
   resource: "usuarios",
@@ -31,7 +38,7 @@ const config: ResourceConfig<Usuario> = {
     {
       key: "role",
       label: "Rol",
-      render: (r) => badge(r.role, r.role === "admin" ? "purple" : "gray"),
+      render: (r) => rolBadge(r.role),
     },
     {
       key: "activo",
@@ -53,7 +60,7 @@ const config: ResourceConfig<Usuario> = {
   fields: [
     { name: "name", label: "Nombre", required: true, colSpan: 1 },
     { name: "email", label: "Email", type: "email", required: true, colSpan: 1 },
-    { name: "role", label: "Rol", type: "select", options: ROLES, colSpan: 1 },
+    { name: "role", label: "Rol", type: "select", options: ROLES, required: true, colSpan: 1 },
     {
       name: "horaEntrada",
       label: "Hora de entrada",
