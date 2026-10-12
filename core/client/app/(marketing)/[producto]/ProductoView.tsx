@@ -20,7 +20,7 @@ type ProductoViewProps = {
   productos: Producto[];
 };
 
-const WHATSAPP_NUMBER = "973644878";
+const WHATSAPP_NUMBER = "51973644878";
 
 const faqs = [
   {

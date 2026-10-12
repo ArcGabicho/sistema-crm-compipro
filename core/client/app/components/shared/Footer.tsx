@@ -12,9 +12,12 @@ const lineasPrincipales = [
 ];
 
 const contactoInfo = [
-  { text: "contacto@merchmaster.com", href: "mailto:contacto@merchmaster.com" },
-  { text: "+51 123 456 789", href: "tel:+51123456789" },
-  { text: "Av. Principal 123, Lima", href: "#" },
+  { text: "ventas@compipro.net", href: "mailto:ventas@compipro.net" },
+  { text: "(51) 932 230 880", href: "tel:+51932230880" },
+  {
+    text: "Av. Las Flores de Primavera 184, San Juan de Lurigancho",
+    href: "/contacto",
+  },
 ];
 
 const redesSociales = [Facebook, Instagram, Linkedin, Pinterest];

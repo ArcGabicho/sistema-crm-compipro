@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight, ChevronDown, MessageCircle, Search, X } from "lucide-react";
 import { categorias } from "@/app/api/products/data";
 
-const WHATSAPP_URL = "https://wa.me/973644878";
+const WHATSAPP_URL = "https://wa.me/51973644878";
 const PAGE_SIZE = 12;
 const CHIPS_VISIBLES = 8;
 
