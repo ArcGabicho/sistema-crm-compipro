@@ -11,7 +11,12 @@ env_flag=()
 [ -f "$ROOT/.env" ] && env_flag=(--env-file "$ROOT/.env")
 
 echo "==> Eliminando stack (contenedores + red + volúmenes + imágenes locales)..."
-docker compose "${env_flag[@]}" -f "$COMPOSE_FILE" down --volumes --rmi local --remove-orphans || true
+# Compose exige DB_CONNECTION_STRING al leer el archivo aunque "down" no la use.
+DB_CONNECTION_STRING="${DB_CONNECTION_STRING:-no-se-usa-al-limpiar}" \
+  docker compose "${env_flag[@]}" -f "$COMPOSE_FILE" down --volumes --rmi local --remove-orphans || true
+
+# Volumen de la versión anterior con SQL Server local (hoy la base está en Azure SQL).
+docker volume rm sistema-crm-compipro_mssql-data >/dev/null 2>&1 || true
 
 docker image rm -f sistema-crm-compina-server sistema-crm-compina-client >/dev/null 2>&1 || true
 

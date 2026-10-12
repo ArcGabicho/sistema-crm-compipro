@@ -50,15 +50,6 @@ public static class DbInitializer
 
         try
         {
-            await SeedClients.SeedComplementoAsync(db, logger, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger.LogWarning(ex, "No se pudieron importar los clientes complementarios.");
-        }
-
-        try
-        {
             await SeedData.SeedAsync(db, cancellationToken);
             logger.LogInformation("Datos de ejemplo verificados/sembrados.");
         }

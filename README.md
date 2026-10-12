@@ -12,12 +12,6 @@ Este repositorio contiene el ecosistema de servicios y aplicaciones de Compipro.
 curl -fsSL https://raw.githubusercontent.com/ArcGabicho/sistema-crm-compipro/master/setup.sh | bash
 ```
 
-#### Deployar el proyecto en Azure:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/ArcGabicho/sistema-crm-compipro/master/deploy.sh | bash
-```
-
 ----
 
 Este proyecto está bajo la licencia MIT. Consulta el archivo [LICENSE.md](LICENSE.md) para más detalles.

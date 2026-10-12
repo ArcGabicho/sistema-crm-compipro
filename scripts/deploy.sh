@@ -25,7 +25,7 @@ set +a
 : "${AZ_RESOURCE_GROUP:=rg-sistema-crm-compina}"
 : "${AZ_NAME_PREFIX:=crmcompina}"
 : "${SQL_ADMIN_LOGIN:=crmadmin}"
-: "${SQL_ADMIN_PASSWORD:=${MSSQL_SA_PASSWORD}}"
+: "${SQL_ADMIN_PASSWORD:?Define SQL_ADMIN_PASSWORD en .env}"
 
 if [ -z "${AZ_ACR_NAME:-}" ]; then
   AZ_ACR_NAME="acr${AZ_NAME_PREFIX}$(printf '%s' "$AZ_RESOURCE_GROUP" | md5sum | cut -c1-8)"

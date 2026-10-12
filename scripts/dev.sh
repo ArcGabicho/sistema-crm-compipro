@@ -47,7 +47,7 @@ EOF
 
 cat > "$ROOT/core/server/appsettings.Development.json" <<EOF
 {
-  "ConnectionStrings": { "Default": "Server=localhost,1433;Database=SistemaCrmCompipro;User Id=crm_app;Password=$(je "$CRM_APP_PASSWORD");Encrypt=True;TrustServerCertificate=True" },
+  "ConnectionStrings": { "Default": "$(je "$DB_CONNECTION_STRING")" },
   "Jwt": { "Key": "$(je "$JWT_KEY")" },
   "Seed": { "Admin": { "Email": "$(je "$SEED_ADMIN_EMAIL")", "Name": "$(je "$SEED_ADMIN_NAME")", "Password": "$(je "$SEED_ADMIN_PASSWORD")" } }
 }

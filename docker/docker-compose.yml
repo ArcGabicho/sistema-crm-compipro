@@ -8,52 +8,16 @@ name: sistema-crm-compipro
 
 services:
   # ---------------------------------------------------------------------------
-  # Base de datos
-  # ---------------------------------------------------------------------------
-  db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_PID: "Developer"
-      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-Compipro2025!}"
-    ports:
-      - "1433:1433"
-    volumes:
-      - mssql-data:/var/opt/mssql
-    restart: unless-stopped
-
-  # ---------------------------------------------------------------------------
-  # Inicialización de la BD: crea SistemaCrmCompipro, el login crm_app y roles.
-  # Corre una sola vez y termina.
-  # ---------------------------------------------------------------------------
-  db-init:
-    image: mcr.microsoft.com/mssql-tools:latest
-    depends_on:
-      db:
-        condition: service_started
-    environment:
-      DB_HOST: db
-      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-Compipro2025!}"
-      CRM_APP_PASSWORD: "${CRM_APP_PASSWORD:-Compipro2025!}"
-    volumes:
-      - ./database:/database:ro
-    entrypoint: ["/bin/bash", "/database/init.sh"]
-    restart: "no"
-
-  # ---------------------------------------------------------------------------
-  # Backend .NET (EF Core + SQL Server). Crea la tabla Users y siembra el admin.
+  # Backend .NET (EF Core + Azure SQL). Crea el esquema y siembra el admin y la demo.
   # ---------------------------------------------------------------------------
   server:
     build:
       context: ..
       dockerfile: docker/Dockerfile.server
-    depends_on:
-      db-init:
-        condition: service_completed_successfully
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       ASPNETCORE_URLS: "http://+:8080"
-      ConnectionStrings__Default: "Server=db,1433;Database=SistemaCrmCompipro;User Id=crm_app;Password=${CRM_APP_PASSWORD:-Compipro2025!};Encrypt=True;TrustServerCertificate=True"
+      ConnectionStrings__Default: "${DB_CONNECTION_STRING:?Define DB_CONNECTION_STRING en el .env (cadena de Azure SQL)}"
       Jwt__Key: "${JWT_KEY:-fg9H65NPCIzoiY_4zmozOWfcVNmGZFsfSkp9EQUMNBw}"
       Cors__AllowedOrigins__0: "http://localhost:3000"
       Seed__Admin__Email: "${SEED_ADMIN_EMAIL:-admin@compipro.net}"
@@ -82,6 +46,3 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
-
-volumes:
-  mssql-data:
