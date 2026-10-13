@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { sileo } from "sileo";
+import { confirmar } from "@/app/components/dashboard/Confirmar";
 import { FlaskConical, LoaderCircle, Send, X } from "lucide-react";
 import ResourcePage, {
   type ResourceConfig,
@@ -114,7 +115,12 @@ export default function EmailPage() {
         label: "Enviar",
         visible: (r) => r.estado !== "Enviada",
         onClick: async (r, reload) => {
-          if (!window.confirm(`¿Enviar «${r.nombre}» ahora a todos los clientes activos con email?`)) return;
+          const ok = await confirmar({
+            titulo: "¿Enviar la campaña ahora?",
+            mensaje: `«${r.nombre}» se enviará a todos los clientes activos con email.`,
+            confirmar: "Enviar",
+          });
+          if (!ok) return;
           await sileo
             .promise(crm.action<ResultadoEnvio>(`campanas-email/${r.id}/enviar`), {
               loading: { title: "Enviando campaña…" },

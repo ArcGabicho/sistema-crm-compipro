@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { sileo } from "sileo";
+import { confirmar } from "@/app/components/dashboard/Confirmar";
 import { FileDown, LoaderCircle, Plus, Send, Trash2, X } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
 import { usePermiso } from "@/app/lib/permisos";
@@ -251,13 +252,16 @@ export default function CotizacionesPage() {
                       {permiso.eliminar && (
                       <button
                         type="button"
-                        onClick={() =>
-                          window.confirm(`¿Eliminar ${c.codigo}?`) &&
-                          act(
-                            () => crm.remove("cotizaciones", c.id),
-                            "Eliminada",
-                          )
-                        }
+                        onClick={async () => {
+                          const ok = await confirmar({
+                            titulo: "¿Eliminar esta cotización?",
+                            mensaje: `${c.codigo} (${money(c.total)}) se eliminará y no se puede deshacer.`,
+                            confirmar: "Eliminar",
+                            peligro: true,
+                          });
+                          if (ok) await act(() => crm.remove("cotizaciones", c.id), "Eliminada");
+                        }}
+                        aria-label={`Eliminar ${c.codigo}`}
                         className="rounded-full p-1.5 text-neutral-400 hover:bg-red-50 hover:text-red-600"
                       >
                         <Trash2 className="h-4 w-4" />

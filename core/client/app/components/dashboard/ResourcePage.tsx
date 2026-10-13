@@ -5,6 +5,7 @@ import { sileo } from "sileo";
 import { LoaderCircle, Pencil, Plus, Trash2, X } from "lucide-react";
 import { crm, type Paged, type QueryParams } from "@/app/lib/crm";
 import ExportMenu from "./ExportMenu";
+import { confirmar } from "./Confirmar";
 import { useAuth } from "@/app/hooks/useAuth";
 import { MODULO_POR_RECURSO, puede } from "@/app/lib/permisos";
 
@@ -178,7 +179,20 @@ export default function ResourcePage<T extends WithId>({
   const lastPage = Math.max(1, Math.ceil(total / pageSize));
 
   const handleDelete = async (row: T) => {
-    if (!window.confirm(`¿Eliminar el registro #${row.id}?`)) return;
+    const fila = row as Record<string, unknown>;
+    const nombre = fila.nombre ?? fila.codigo ?? fila.name ?? fila.clave;
+    const ok = await confirmar({
+      titulo: "¿Eliminar este registro?",
+      mensaje: (
+        <>
+          Se eliminará {nombre ? <strong className="text-ink">«{String(nombre)}»</strong> : `el registro #${row.id}`}.
+          Esta acción no se puede deshacer.
+        </>
+      ),
+      confirmar: "Eliminar",
+      peligro: true,
+    });
+    if (!ok) return;
     try {
       await crm.remove(config.resource, row.id);
       sileo.success({ title: "Eliminado" });

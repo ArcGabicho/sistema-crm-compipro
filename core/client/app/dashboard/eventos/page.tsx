@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { sileo } from "sileo";
+import { confirmar } from "@/app/components/dashboard/Confirmar";
 import { CalendarDays, LoaderCircle, MapPin, Pencil, Plus, Trash2, X } from "lucide-react";
 import ResourcePage, {
   type ResourceConfig,
@@ -78,7 +79,13 @@ export default function EventosPage() {
   const evento = eventos?.find((e) => e.id === seleccion) ?? null;
 
   const eliminar = async (e: Evento) => {
-    if (!window.confirm(`¿Eliminar el evento «${e.nombre}» y sus participantes?`)) return;
+    const ok = await confirmar({
+      titulo: "¿Eliminar este evento?",
+      mensaje: `«${e.nombre}» y todos sus participantes se eliminarán. Esta acción no se puede deshacer.`,
+      confirmar: "Eliminar",
+      peligro: true,
+    });
+    if (!ok) return;
     try {
       await crm.remove("eventos", e.id);
       sileo.success({ title: "Evento eliminado" });

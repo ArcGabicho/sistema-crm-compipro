@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { sileo } from "sileo";
+import { confirmar } from "@/app/components/dashboard/Confirmar";
 import { ChevronDown, LoaderCircle, Mail, Phone, UserPlus } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
 import { usePermiso } from "@/app/lib/permisos";
@@ -83,12 +84,12 @@ export default function SolicitudesPage() {
   };
 
   const convertir = async (s: Solicitud) => {
-    if (
-      !window.confirm(
-        `¿Crear un cliente a partir de la solicitud de ${s.empresa || s.nombre}?`,
-      )
-    )
-      return;
+    const ok = await confirmar({
+      titulo: "¿Convertir en cliente?",
+      mensaje: `Se creará un cliente a partir de la solicitud de ${s.empresa || s.nombre}.`,
+      confirmar: "Crear cliente",
+    });
+    if (!ok) return;
     setBusy(s.id);
     try {
       const cliente = await crm.action<{ id: number; nombre: string }>(
@@ -104,7 +105,13 @@ export default function SolicitudesPage() {
   };
 
   const eliminar = async (s: Solicitud) => {
-    if (!window.confirm("¿Eliminar esta solicitud?")) return;
+    const ok = await confirmar({
+      titulo: "¿Eliminar esta solicitud?",
+      mensaje: `La solicitud de ${s.empresa || s.nombre} se eliminará y no se puede deshacer.`,
+      confirmar: "Eliminar",
+      peligro: true,
+    });
+    if (!ok) return;
     setBusy(s.id);
     try {
       await crm.remove("solicitudes", s.id);

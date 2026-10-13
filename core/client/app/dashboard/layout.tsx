@@ -8,6 +8,7 @@ import { useAuth } from "@/app/hooks/useAuth";
 import Sidebar from "../components/dashboard/Sidebar";
 import WelcomeModal from "@/app/components/dashboard/WelcomeModal";
 import AttendanceGate from "@/app/components/dashboard/AttendanceGate";
+import { ConfirmarHost } from "@/app/components/dashboard/Confirmar";
 import { MODULO_POR_RUTA, puede } from "@/app/lib/permisos";
 
 // Altura mínima (px) para la que está diseñado el panel de escritorio sin scroll.
@@ -96,6 +97,7 @@ export default function DashboardLayout({
       </div>
       <WelcomeModal />
       <AttendanceGate />
+      <ConfirmarHost />
     </div>
   );
 }
