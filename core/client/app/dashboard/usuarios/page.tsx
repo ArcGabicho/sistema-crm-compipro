@@ -27,6 +27,7 @@ const rolBadge = (role: string) => {
 
 const config: ResourceConfig<Usuario> = {
   resource: "usuarios",
+  exportable: false,
   title: "Usuarios",
   subtitle:
     "Cuentas del sistema, roles y estado. Eliminar = desactivar (baja lógica).",

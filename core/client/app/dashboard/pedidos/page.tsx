@@ -6,6 +6,7 @@ import { LoaderCircle } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
 import { usePermiso } from "@/app/lib/permisos";
 import { badge, date, estadoTone, money } from "@/app/components/dashboard/cells";
+import ExportMenu from "@/app/components/dashboard/ExportMenu";
 
 type Pedido = {
   id: number;
@@ -107,6 +108,12 @@ export default function PedidosPage() {
           />
           Solo atrasados
         </label>
+        <div className="ml-auto">
+          <ExportMenu
+            resource="pedidos"
+            params={{ search: search || undefined, estado: estado || undefined, atrasados: atrasados || undefined }}
+          />
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white lg:min-h-0 lg:flex-1 lg:overflow-y-auto">

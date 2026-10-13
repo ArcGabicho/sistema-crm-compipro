@@ -24,6 +24,18 @@ public sealed class AuthController(IAuthService auth) : ControllerBase
             : Ok(result);
     }
 
+    /// <summary>El usuario cambia su propia contraseña (requiere la actual).</summary>
+    [Authorize]
+    [Modulo(Modulos.Cuenta)]
+    [HttpPost("cambiar-contrasena")]
+    public async Task<IActionResult> CambiarContrasena([FromBody] CambiarContrasenaRequest request, CancellationToken ct)
+    {
+        if (!int.TryParse(User.FindFirstValue("sub"), out int userId)) return Unauthorized();
+
+        string? error = await auth.CambiarContrasenaAsync(userId, request, ct);
+        return error is null ? NoContent() : BadRequest(new { message = error });
+    }
+
     [Authorize]
     [Modulo(Modulos.Cuenta)]
     [HttpGet("me")]

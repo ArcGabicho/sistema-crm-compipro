@@ -6,6 +6,7 @@ import { ChevronDown, LoaderCircle, Mail, Phone, UserPlus } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
 import { usePermiso } from "@/app/lib/permisos";
 import { badge, date } from "@/app/components/dashboard/cells";
+import ExportMenu from "@/app/components/dashboard/ExportMenu";
 
 type Solicitud = {
   id: number;
@@ -161,6 +162,12 @@ export default function SolicitudesPage() {
             <option key={s}>{s}</option>
           ))}
         </select>
+        <div className="ml-auto">
+          <ExportMenu
+            resource="solicitudes"
+            params={{ search: search || undefined, tipo: tipo || undefined, estado: estado || undefined }}
+          />
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white lg:min-h-0 lg:flex-1 lg:overflow-y-auto">

@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using QuestPDF.Infrastructure;
 using Server.Data;
 using Server.Services;
 
@@ -29,6 +30,8 @@ public static class DependencyInjection
         // --- Opciones ---------------------------------------------------
         services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
         services.Configure<SeedOptions>(config.GetSection(SeedOptions.SectionName));
+        services.Configure<EmailOptions>(config.GetSection(EmailOptions.SectionName));
+        services.Configure<AlmacenamientoOptions>(config.GetSection(AlmacenamientoOptions.SectionName));
 
         // --- Persistencia (EF Core + SQL Server) ---------------------
         string connectionString = config.GetConnectionString("Default")
@@ -50,6 +53,24 @@ public static class DependencyInjection
         services.AddScoped<ISolicitudService, SolicitudService>();
         services.AddScoped<IAttendanceService, AttendanceService>();
         services.AddSingleton<ITokenService, TokenService>();
+
+        // --- Correo, archivos, exportación y PDF ---------------------
+        services.AddSingleton<IEmailSender, EmailSender>();
+        services.AddSingleton<SeguimientoEmail>();
+        services.AddSingleton<ProgramadorCampanas>();
+        services.AddHostedService(sp => sp.GetRequiredService<ProgramadorCampanas>());
+        services.AddSingleton<IExportService, ExportService>();
+        services.AddScoped<IDocumentoService, DocumentoService>();
+        services.AddScoped<ICotizacionDocumentoService, CotizacionDocumentoService>();
+
+        string proveedor = config.GetSection(AlmacenamientoOptions.SectionName).Get<AlmacenamientoOptions>()?.Proveedor ?? "Local";
+        if (proveedor.Equals("S3", StringComparison.OrdinalIgnoreCase))
+            services.AddSingleton<IAlmacenamientoArchivos, AlmacenamientoS3>();
+        else
+            services.AddSingleton<IAlmacenamientoArchivos, AlmacenamientoLocal>();
+
+        // QuestPDF es gratuito para personas y empresas con ingresos < 1 M USD/año.
+        QuestPDF.Settings.License = LicenseType.Community;
 
         // --- Autenticación / Autorización -------------------------
         var jwt = config.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();

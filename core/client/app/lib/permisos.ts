@@ -123,6 +123,6 @@ export const MODULO_POR_RUTA: Record<string, Modulo> = {
   "/dashboard/asistencia": "asistencia",
   "/dashboard/documentos": "documentos",
   "/dashboard/email": "email",
-  "/dashboard/feria-resmine-2024": "eventos",
+  "/dashboard/eventos": "eventos",
   "/dashboard/inventario": "inventario",
 };

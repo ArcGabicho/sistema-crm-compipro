@@ -22,6 +22,16 @@ public sealed class PedidosController(IPedidoService pedidos) : ControllerBase
         string? search = null, CancellationToken ct = default)
         => pedidos.ListAsync(page, pageSize, estado, atrasados, search, ct);
 
+    [HttpGet("exportar")]
+    public async Task<IActionResult> Exportar(
+        [FromServices] IExportService export, string? formato = "xlsx", string? estado = null,
+        bool atrasados = false, string? search = null, CancellationToken ct = default)
+    {
+        var filas = await ExportService.TodasLasPaginas(p => pedidos.ListAsync(p, 200, estado, atrasados, search, ct));
+        var archivo = export.Exportar(filas, formato, "pedidos");
+        return File(archivo.Contenido, archivo.ContentType, archivo.Nombre);
+    }
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Pedido>> Get(int id, CancellationToken ct)
         => await pedidos.GetAsync(id, ct) is { } p ? Ok(p) : NotFound();

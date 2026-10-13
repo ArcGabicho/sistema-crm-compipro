@@ -3,8 +3,12 @@ import { SESSION_COOKIE } from "@/app/lib/session";
 
 const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:5008";
 
+// Cabeceras de la respuesta del backend que llegan al navegador (descargas incluidas).
+const RESPONSE_HEADERS = ["content-type", "content-disposition", "cache-control"];
+
 // Proxy autenticado: /api/crm/<lo-que-sea>  ->  <BACKEND_URL>/api/<lo-que-sea>
 // Añade el JWT de la cookie HttpOnly como Bearer. El navegador nunca ve el token.
+// Pasa tal cual los cuerpos binarios: subidas multipart y descargas (Excel, PDF…).
 async function forward(req: Request, path: string[]): Promise<Response> {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) {
@@ -16,10 +20,20 @@ async function forward(req: Request, path: string[]): Promise<Response> {
 
   const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
   const method = req.method.toUpperCase();
-  let body: string | undefined;
+  let body: BodyInit | undefined;
   if (method !== "GET" && method !== "HEAD" && method !== "DELETE") {
-    body = await req.text();
-    if (body) headers["Content-Type"] = "application/json";
+    const contentType = req.headers.get("content-type") ?? "";
+    if (contentType.startsWith("multipart/form-data")) {
+      // Conserva el boundary del multipart.
+      body = await req.arrayBuffer();
+      headers["Content-Type"] = contentType;
+    } else {
+      const text = await req.text();
+      if (text) {
+        body = text;
+        headers["Content-Type"] = "application/json";
+      }
+    }
   }
 
   let res: Response;
@@ -29,10 +43,17 @@ async function forward(req: Request, path: string[]): Promise<Response> {
     return Response.json({ message: "Backend no disponible." }, { status: 502 });
   }
 
-  const text = await res.text();
-  return new Response(text || null, {
+  const outHeaders = new Headers();
+  for (const name of RESPONSE_HEADERS) {
+    const value = res.headers.get(name);
+    if (value) outHeaders.set(name, value);
+  }
+  if (!outHeaders.has("content-type")) outHeaders.set("content-type", "application/json");
+
+  const sinCuerpo = res.status === 204 || res.status === 304;
+  return new Response(sinCuerpo ? null : await res.arrayBuffer(), {
     status: res.status,
-    headers: { "Content-Type": res.headers.get("content-type") ?? "application/json" },
+    headers: outHeaders,
   });
 }
 

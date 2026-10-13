@@ -11,6 +11,10 @@ public interface ICrudService<TEntity> where TEntity : BaseEntity
     Task<PagedResult<TEntity>> ListAsync(int page, int pageSize,
         Func<IQueryable<TEntity>, IQueryable<TEntity>>? shape, CancellationToken ct);
 
+    /// <summary>Todos los registros que pasan el filtro (hasta <paramref name="max"/>), para exportar.</summary>
+    Task<List<TEntity>> ListAllAsync(
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? shape, int max, CancellationToken ct);
+
     Task<TEntity?> GetAsync(int id,
         Func<IQueryable<TEntity>, IQueryable<TEntity>>? shape, CancellationToken ct);
 
@@ -43,6 +47,14 @@ public sealed class CrudService<TEntity>(AppDbContext db, IAuditService audit)
             .ToListAsync(ct);
 
         return new PagedResult<TEntity>(total, page, pageSize, items);
+    }
+
+    public Task<List<TEntity>> ListAllAsync(
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? shape, int max, CancellationToken ct)
+    {
+        IQueryable<TEntity> q = db.Set<TEntity>().AsNoTracking();
+        if (shape is not null) q = shape(q);
+        return q.OrderByDescending(e => e.Id).Take(max).ToListAsync(ct);
     }
 
     public Task<TEntity?> GetAsync(int id,

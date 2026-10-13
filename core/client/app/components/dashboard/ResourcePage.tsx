@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "react-hot-toast";
 import { LoaderCircle, Pencil, Plus, Trash2, X } from "lucide-react";
-import { crm, type Paged } from "@/app/lib/crm";
+import { crm, type Paged, type QueryParams } from "@/app/lib/crm";
+import ExportMenu from "./ExportMenu";
 import { useAuth } from "@/app/hooks/useAuth";
 import { MODULO_POR_RECURSO, puede } from "@/app/lib/permisos";
 
@@ -15,6 +16,7 @@ export type FieldType =
   | "select"
   | "date"
   | "time"
+  | "datetime"
   | "checkbox";
 
 export type Option = { value: string | number; label: string };
@@ -45,6 +47,10 @@ export type Filter = { name: string; label: string; options: Option[] };
 export type RowAction<T> = {
   label: string;
   onClick: (row: T, reload: () => void) => void | Promise<void>;
+  /** Permiso que exige la acción (por defecto "escribir"; "leer" para descargas). */
+  acceso?: "leer" | "escribir";
+  /** Muestra la acción solo en ciertas filas. */
+  visible?: (row: T) => boolean;
 };
 
 export type ResourceConfig<T> = {
@@ -60,6 +66,12 @@ export type ResourceConfig<T> = {
   canDelete?: boolean;
   rowActions?: RowAction<T>[];
   pageSize?: number;
+  /** Botón Exportar (Excel/CSV) con los filtros activos. Por defecto true. */
+  exportable?: boolean;
+  /** Filtros fijos: se envían en el listado, la exportación y al crear. */
+  fixedParams?: QueryParams;
+  /** Botones extra junto a "Nuevo" (reciben reload para refrescar la tabla). */
+  headerActions?: (reload: () => void) => ReactNode;
 };
 
 type WithId = { id: number };
@@ -81,7 +93,12 @@ export default function ResourcePage<T extends WithId>({
   const canCreate = (config.canCreate ?? true) && permite("escribir");
   const canEdit = (config.canEdit ?? true) && permite("escribir");
   const canDelete = (config.canDelete ?? true) && permite("eliminar");
-  const rowActions = permite("escribir") ? config.rowActions : undefined;
+  const puedeEscribir = permite("escribir");
+  const rowActions = config.rowActions?.filter(
+    (a) => (a.acceso ?? "escribir") === "leer" || puedeEscribir,
+  );
+  // Clave estable de los filtros fijos (el objeto cambia de identidad en cada render).
+  const fixedKey = JSON.stringify(config.fixedParams ?? {});
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -112,6 +129,7 @@ export default function ResourcePage<T extends WithId>({
           pageSize,
           search: debounced || undefined,
           ...filterValues,
+          ...(JSON.parse(fixedKey) as QueryParams),
         });
         if (!cancelled) setData(res);
       } catch (e) {
@@ -124,7 +142,7 @@ export default function ResourcePage<T extends WithId>({
     return () => {
       cancelled = true;
     };
-  }, [config.resource, page, pageSize, debounced, filterValues, reloadTick]);
+  }, [config.resource, page, pageSize, debounced, filterValues, fixedKey, reloadTick]);
 
   // Opciones asíncronas de los campos del formulario
   useEffect(() => {
@@ -181,15 +199,20 @@ export default function ResourcePage<T extends WithId>({
             <p className="text-sm text-neutral-500">{config.subtitle}</p>
           )}
         </div>
-        {canCreate && (
-          <button
-            type="button"
-            onClick={() => setEditing("new")}
-            className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:brightness-95"
-          >
-            <Plus className="h-4 w-4" />
-            Nuevo
-          </button>
+        {(canCreate || config.headerActions) && (
+          <div className="flex flex-wrap items-center gap-2">
+            {config.headerActions?.(reload)}
+            {canCreate && (
+              <button
+                type="button"
+                onClick={() => setEditing("new")}
+                className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:brightness-95"
+              >
+                <Plus className="h-4 w-4" />
+                Nuevo
+              </button>
+            )}
+          </div>
         )}
       </header>
 
@@ -222,6 +245,18 @@ export default function ResourcePage<T extends WithId>({
             ))}
           </select>
         ))}
+        {(config.exportable ?? true) && (
+          <div className="ml-auto">
+            <ExportMenu
+              resource={config.resource}
+              params={{
+                search: debounced || undefined,
+                ...filterValues,
+                ...config.fixedParams,
+              }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Tabla */}
@@ -286,7 +321,7 @@ export default function ResourcePage<T extends WithId>({
                   ))}
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
-                      {rowActions?.map((a) => (
+                      {rowActions?.filter((a) => a.visible?.(row) ?? true).map((a) => (
                         <button
                           key={a.label}
                           type="button"
@@ -388,6 +423,7 @@ function FormModal<T extends WithId>({
       else if (current === null || current === undefined) base[f.name] = "";
       else if (f.type === "date")
         base[f.name] = String(current).slice(0, 10);
+      else if (f.type === "datetime") base[f.name] = aInputLocal(String(current));
       else base[f.name] = current;
     }
     return base;
@@ -402,14 +438,22 @@ function FormModal<T extends WithId>({
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const payload: Record<string, unknown> = {};
+    // Al editar se parte del registro completo: el backend reemplaza la entidad
+    // entera y los campos que no están en el formulario no deben perderse.
+    const payload: Record<string, unknown> = record
+      ? { ...(record as Record<string, unknown>) }
+      : { ...config.fixedParams };
     for (const f of config.fields) {
       const v = form[f.name];
       if (f.type === "checkbox") payload[f.name] = Boolean(v);
       else if (f.type === "number" || f.optionsResource)
         payload[f.name] = v === "" || v === null ? null : Number(v);
+      else if (f.type === "datetime")
+        payload[f.name] = v ? new Date(String(v)).toISOString() : null;
       else payload[f.name] = v === "" ? null : v;
     }
+    // En edición se conservan los filtros fijos (p. ej. el evento del participante).
+    if (record) Object.assign(payload, config.fixedParams);
     try {
       if (record) await crm.update<T>(config.resource, record.id, payload);
       else await crm.create<T>(config.resource, payload);
@@ -494,7 +538,7 @@ function FormModal<T extends WithId>({
                   </label>
                 ) : (
                   <input
-                    type={f.type ?? "text"}
+                    type={f.type === "datetime" ? "datetime-local" : (f.type ?? "text")}
                     step={f.step}
                     value={String(form[f.name] ?? "")}
                     onChange={(e) => set(f.name, e.target.value)}
@@ -528,4 +572,12 @@ function FormModal<T extends WithId>({
       </div>
     </div>
   );
+}
+
+/** ISO (UTC) → valor de <input type="datetime-local"> en la hora local del navegador. */
+function aInputLocal(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60_000);
+  return local.toISOString().slice(0, 16);
 }

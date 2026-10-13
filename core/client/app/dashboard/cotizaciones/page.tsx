@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
-import { LoaderCircle, Plus, Trash2, X } from "lucide-react";
+import { FileDown, LoaderCircle, Plus, Send, Trash2, X } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
 import { usePermiso } from "@/app/lib/permisos";
 import { badge, date, estadoTone, money } from "@/app/components/dashboard/cells";
+import ExportMenu from "@/app/components/dashboard/ExportMenu";
 
-type Ref = { id: number; nombre?: string; name?: string } | null;
+type Ref = { id: number; nombre?: string; name?: string; email?: string | null } | null;
 type Item = {
   id?: number;
   productoId: number | null;
@@ -55,6 +56,7 @@ export default function CotizacionesPage() {
   const [page, setPage] = useState(1);
   const [tick, setTick] = useState(0);
   const [editing, setEditing] = useState<Cotizacion | "new" | null>(null);
+  const [enviando, setEnviando] = useState<Cotizacion | null>(null);
 
   const reload = useCallback(() => setTick((t) => t + 1), []);
   const pageSize = 15;
@@ -139,6 +141,12 @@ export default function CotizacionesPage() {
             <option key={s}>{s}</option>
           ))}
         </select>
+        <div className="ml-auto">
+          <ExportMenu
+            resource="cotizaciones"
+            params={{ search: search || undefined, estado: estado || undefined }}
+          />
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-[1.75rem] bg-panel shadow-sm ring-1 ring-white lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
@@ -184,25 +192,27 @@ export default function CotizacionesPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1 text-xs font-medium">
+                      <a
+                        href={`/api/crm/cotizaciones/${c.id}/pdf`}
+                        target="_blank"
+                        rel="noopener"
+                        title="Ver PDF"
+                        className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-neutral-700 hover:bg-white"
+                      >
+                        <FileDown className="h-3.5 w-3.5" />
+                        PDF
+                      </a>
                       {permiso.escribir && (
                       <>
-                      {c.estado === "Borrador" && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            act(
-                              () =>
-                                crm.action(`cotizaciones/${c.id}/estado`, {
-                                  estado: "Enviada",
-                                }),
-                              "Enviada al cliente",
-                            )
-                          }
-                          className="rounded-full px-2 py-1 text-neutral-700 hover:bg-white"
-                        >
-                          Enviar
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => setEnviando(c)}
+                        title="Enviar por email con el PDF adjunto"
+                        className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-neutral-700 hover:bg-white"
+                      >
+                        <Send className="h-3.5 w-3.5" />
+                        {c.estado === "Borrador" ? "Enviar" : "Reenviar"}
+                      </button>
                       {c.estado !== "Aprobada" && (
                         <button
                           type="button"
@@ -293,6 +303,120 @@ export default function CotizacionesPage() {
           }}
         />
       )}
+
+      {enviando && (
+        <EnviarEmailModal
+          cotizacion={enviando}
+          onClose={() => setEnviando(null)}
+          onSent={() => {
+            setEnviando(null);
+            reload();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+/** Envía la cotización por email con el PDF adjunto. */
+function EnviarEmailModal({
+  cotizacion,
+  onClose,
+  onSent,
+}: {
+  cotizacion: Cotizacion;
+  onClose: () => void;
+  onSent: () => void;
+}) {
+  const [para, setPara] = useState(cotizacion.cliente?.email ?? "");
+  const [mensaje, setMensaje] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const res = await crm.action<{ para: string; simulado: boolean; estado: string }>(
+        `cotizaciones/${cotizacion.id}/enviar-email`,
+        { para, mensaje: mensaje || null },
+      );
+      toast.success(
+        res.simulado
+          ? `Envío simulado a ${res.para} (dirección de demostración)`
+          : `Cotización enviada a ${res.para}`,
+      );
+      onSent();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "No se pudo enviar");
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <form
+        onSubmit={submit}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md rounded-[1.75rem] bg-panel shadow-2xl"
+      >
+        <div className="flex items-center justify-between border-b border-neutral-200/70 px-5 py-4">
+          <h2 className="text-lg font-semibold text-ink">
+            Enviar {cotizacion.codigo}
+          </h2>
+          <button type="button" onClick={onClose} aria-label="Cerrar" className="p-1 text-neutral-400">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="space-y-4 p-5">
+          <p className="text-sm text-neutral-500">
+            Se adjunta el PDF de la cotización ({money(cotizacion.total)}).
+            {cotizacion.estado === "Borrador" && " Pasará a estado Enviada."}
+          </p>
+          <label className="block">
+            <span className="mb-1 block text-xs font-medium text-neutral-600">Para</span>
+            <input
+              type="email"
+              required
+              value={para}
+              onChange={(e) => setPara(e.target.value)}
+              placeholder="cliente@empresa.com"
+              className={inp}
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-xs font-medium text-neutral-600">
+              Mensaje (opcional)
+            </span>
+            <textarea
+              rows={3}
+              value={mensaje}
+              onChange={(e) => setMensaje(e.target.value)}
+              placeholder="Agrega una nota para el cliente…"
+              className={`${inp} resize-y`}
+            />
+          </label>
+        </div>
+        <div className="flex justify-end gap-2 px-5 pb-5">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-white"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            disabled={saving}
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:brightness-95 disabled:opacity-60"
+          >
+            {saving ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            Enviar
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

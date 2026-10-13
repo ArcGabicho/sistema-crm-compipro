@@ -11,7 +11,7 @@ import {
   Factory,
   FileText,
   Files,
-  Funnel,
+  CalendarDays,
   Gauge,
   Headset,
   IdCard,
@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/app/hooks/useAuth";
 import { MODULO_POR_RUTA, puede } from "@/app/lib/permisos";
+import CuentaModal from "./CuentaModal";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -48,7 +49,7 @@ const NAV: NavItem[] = [
   { href: "/dashboard/asistencia", label: "Asistencia", icon: Clock },
   { href: "/dashboard/documentos", label: "Documentos", icon: Files },
   { href: "/dashboard/email", label: "Programar - Enviar Email", icon: Mail },
-  { href: "/dashboard/feria-resmine-2024", label: "Feria Resmine 2024", icon: Funnel },
+  { href: "/dashboard/eventos", label: "Eventos", icon: CalendarDays },
   { href: "/dashboard/inventario", label: "Inventario", icon: Package },
 ];
 
@@ -61,6 +62,7 @@ type SidebarProps = {
 export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [cuenta, setCuenta] = useState(false);
   const pathname = usePathname();
   const { user, logout } = useAuth();
 
@@ -97,9 +99,12 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         } ${collapsed ? "lg:w-[4.5rem]" : "lg:w-64"}`}
       >
-        {/* Usuario */}
-        <div
-          className={`flex items-center gap-3 rounded-full bg-panel p-1.5 shadow-sm ring-1 ring-white ${
+        {/* Usuario (abre "Mi cuenta") */}
+        <button
+          type="button"
+          onClick={() => setCuenta(true)}
+          title="Mi cuenta · cambiar contraseña"
+          className={`flex items-center gap-3 rounded-full bg-panel p-1.5 text-left shadow-sm ring-1 ring-white transition-colors hover:bg-white ${
             collapsed ? "lg:justify-center" : ""
           }`}
         >
@@ -117,7 +122,7 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
           >
             {displayName}
           </span>
-        </div>
+        </button>
 
         {/* Navegación */}
         <div className="relative flex min-h-0 flex-1 flex-col rounded-[1.75rem] bg-panel p-3 shadow-sm ring-1 ring-white">
@@ -205,6 +210,7 @@ export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
           </span>
         </button>
       </aside>
+      {cuenta && <CuentaModal onClose={() => setCuenta(false)} />}
     </>
   );
 }

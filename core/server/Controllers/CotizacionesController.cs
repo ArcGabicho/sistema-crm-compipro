@@ -12,7 +12,9 @@ namespace Server.Controllers;
 [Authorize]
 [Modulo(Modulos.Cotizaciones)]
 [Route("api/cotizaciones")]
-public sealed class CotizacionesController(ICotizacionService cotizaciones) : ControllerBase
+public sealed class CotizacionesController(
+    ICotizacionService cotizaciones,
+    ICotizacionDocumentoService documentos) : ControllerBase
 {
     private string? Actor => User.FindFirstValue("email");
 
@@ -21,6 +23,37 @@ public sealed class CotizacionesController(ICotizacionService cotizaciones) : Co
         int page = 1, int pageSize = 20, string? estado = null, int? clienteId = null,
         string? search = null, CancellationToken ct = default)
         => cotizaciones.ListAsync(page, pageSize, estado, clienteId, search, ct);
+
+    [HttpGet("exportar")]
+    public async Task<IActionResult> Exportar(
+        [FromServices] IExportService export, string? formato = "xlsx", string? estado = null,
+        int? clienteId = null, string? search = null, CancellationToken ct = default)
+    {
+        var filas = await ExportService.TodasLasPaginas(p => cotizaciones.ListAsync(p, 200, estado, clienteId, search, ct));
+        var archivo = export.Exportar(filas, formato, "cotizaciones");
+        return File(archivo.Contenido, archivo.ContentType, archivo.Nombre);
+    }
+
+    /// <summary>PDF de la cotización; <c>descargar=true</c> lo baja como adjunto en vez de abrirlo.</summary>
+    [HttpGet("{id:int}/pdf")]
+    public async Task<IActionResult> Pdf(int id, bool descargar = false, CancellationToken ct = default)
+    {
+        var pdf = await documentos.GenerarPdfAsync(id, ct);
+        if (pdf is null) return NotFound();
+        if (descargar) return File(pdf.Contenido, "application/pdf", pdf.Nombre);
+
+        Response.Headers.ContentDisposition = $"inline; filename=\"{pdf.Nombre}\"";
+        return File(pdf.Contenido, "application/pdf");
+    }
+
+    /// <summary>Envía el PDF por email y, si estaba en borrador, la marca como Enviada.</summary>
+    [HttpPost("{id:int}/enviar-email")]
+    public async Task<IActionResult> EnviarEmail(int id, [FromBody] EnviarCotizacionInput input, CancellationToken ct)
+    {
+        var (resultado, error) = await documentos.EnviarPorEmailAsync(id, input.Para, input.Mensaje, Actor, ct);
+        if (error is not null) return BadRequest(new { message = error });
+        return resultado is null ? NotFound() : Ok(resultado);
+    }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Cotizacion>> Get(int id, CancellationToken ct)

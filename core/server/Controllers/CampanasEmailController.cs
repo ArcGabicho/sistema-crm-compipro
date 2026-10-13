@@ -2,6 +2,7 @@ using Server.Config;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Domain;
+using Server.Models;
 using Server.Services;
 
 namespace Server.Controllers;
@@ -10,7 +11,8 @@ namespace Server.Controllers;
 [Route("api/campanas-email")]
 public sealed class CampanasEmailController(
     ICrudService<CampanaEmail> service,
-    IEmailCampaignService campaigns) : CrudControllerBase<CampanaEmail>(service)
+    IEmailCampaignService campaigns,
+    ProgramadorCampanas programador) : CrudControllerBase<CampanaEmail>(service)
 {
     protected override IQueryable<CampanaEmail> Shape(IQueryable<CampanaEmail> q)
     {
@@ -20,8 +22,34 @@ public sealed class CampanasEmailController(
         return q;
     }
 
-    /// <summary>Envía la campaña (simulado): calcula destinatarios y métricas.</summary>
+    // Una campaña nueva o reprogramada puede adelantar el próximo envío.
+    protected override void AlCambiar() => programador.Reprogramar();
+
+    /// <summary>Envía la campaña a los clientes activos con email.</summary>
     [HttpPost("{id:int}/enviar")]
-    public async Task<ActionResult<CampanaEmail>> Enviar(int id, CancellationToken ct)
-        => await campaigns.SendAsync(id, Actor, ct) is { } campana ? Ok(campana) : NotFound();
+    public async Task<IActionResult> Enviar(int id, CancellationToken ct)
+    {
+        var (resultado, error) = await campaigns.SendAsync(id, Actor, ct);
+        if (error is not null) return BadRequest(new { message = error });
+        if (resultado is null) return NotFound();
+
+        programador.Reprogramar();
+        return Ok(new
+        {
+            campana = resultado.Campana,
+            reales = resultado.Reales,
+            simulados = resultado.Simulados,
+            fallidos = resultado.Fallidos,
+        });
+    }
+
+    /// <summary>Envía la campaña solo a <c>para</c> (no cuenta en las métricas).</summary>
+    [HttpPost("{id:int}/prueba")]
+    public async Task<IActionResult> Prueba(int id, [FromBody] EnviarPruebaInput input, CancellationToken ct)
+    {
+        var (resultado, error) = await campaigns.EnviarPruebaAsync(id, input.Para ?? string.Empty, Actor, ct);
+        if (error is not null) return BadRequest(new { message = error });
+        if (resultado is null) return NotFound();
+        return Ok(new { para = resultado.Para, simulado = resultado.Estado == EstadosEmail.Simulado });
+    }
 }

@@ -23,6 +23,21 @@ services:
       Seed__Admin__Email: "${SEED_ADMIN_EMAIL:-admin@compipro.net}"
       Seed__Admin__Name: "${SEED_ADMIN_NAME:-Administrador}"
       Seed__Admin__Password: "${SEED_ADMIN_PASSWORD:-Compipro2025!}"
+      # Correo: sin SMTP_HOST el envío es simulado.
+      Email__Remitente: "${EMAIL_REMITENTE:-crm@compipro.net}"
+      Email__UrlPublica: "${EMAIL_URL_PUBLICA:-}"
+      Email__Smtp__Host: "${SMTP_HOST:-}"
+      Email__Smtp__Puerto: "${SMTP_PUERTO:-587}"
+      Email__Smtp__Usuario: "${SMTP_USUARIO:-}"
+      Email__Smtp__Contrasena: "${SMTP_CONTRASENA:-}"
+      # Archivos: Local (volumen de abajo) o S3 (Cloudflare R2, AWS S3, MinIO).
+      Almacenamiento__Proveedor: "${ALMACENAMIENTO:-Local}"
+      Almacenamiento__S3__Endpoint: "${S3_ENDPOINT:-}"
+      Almacenamiento__S3__Bucket: "${S3_BUCKET:-}"
+      Almacenamiento__S3__AccessKey: "${S3_ACCESS_KEY:-}"
+      Almacenamiento__S3__SecretKey: "${S3_SECRET_KEY:-}"
+    volumes:
+      - archivos:/app/storage
     ports:
       - "5008:8080"
     restart: unless-stopped
@@ -46,3 +61,7 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
+
+volumes:
+  # Documentos subidos con el almacenamiento Local.
+  archivos:

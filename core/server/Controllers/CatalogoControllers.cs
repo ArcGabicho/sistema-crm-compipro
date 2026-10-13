@@ -44,19 +44,6 @@ public sealed class ProveedoresController(ICrudService<Proveedor> service)
     }
 }
 
-[Modulo(Modulos.Documentos)]
-[Route("api/documentos")]
-public sealed class DocumentosController(ICrudService<Documento> service)
-    : CrudControllerBase<Documento>(service)
-{
-    protected override IQueryable<Documento> Shape(IQueryable<Documento> q)
-    {
-        if (Query("search") is { } s) q = q.Where(d => d.Nombre.Contains(s));
-        if (Query("carpeta") is { } c) q = q.Where(d => d.Carpeta == c);
-        return q;
-    }
-}
-
 [Modulo(Modulos.Configuracion)]
 [Route("api/configuracion")]
 public sealed class ConfiguracionController(ICrudService<Configuracion> service)
@@ -69,7 +56,11 @@ public sealed class ConfiguracionController(ICrudService<Configuracion> service)
 [Modulo(Modulos.Eventos)]
 [Route("api/eventos")]
 public sealed class EventosController(ICrudService<Evento> service)
-    : CrudControllerBase<Evento>(service);
+    : CrudControllerBase<Evento>(service)
+{
+    protected override IQueryable<Evento> Shape(IQueryable<Evento> q)
+        => Query("search") is { } s ? q.Where(e => e.Nombre.Contains(s) || (e.Ubicacion != null && e.Ubicacion.Contains(s))) : q;
+}
 
 [Modulo(Modulos.Email)]
 [Route("api/plantillas-email")]

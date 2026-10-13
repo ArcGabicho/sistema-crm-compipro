@@ -10,3 +10,5 @@ public sealed record LoginResponse(
     DateTimeOffset ExpiresAt);
 
 public sealed record CurrentUserResponse(string? Email, string? Name, string? Role);
+
+public sealed record CambiarContrasenaRequest(string? Actual, string? Nueva);
