@@ -60,7 +60,7 @@ export default function Form() {
         <input
           id="email"
           type="email"
-          placeholder="user123@gmail.com"
+          placeholder="admin@compipro.net"
           className="rounded-full bg-white px-5 py-3 [@media(max-height:620px)]:py-2 text-sm text-ink shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent"
           autoComplete="email"
           value={email}
@@ -74,7 +74,7 @@ export default function Form() {
         <input
           id="password"
           type="password"
-          placeholder="user123"
+          placeholder="Compipro2025!"
           className="rounded-full bg-white px-5 py-3 [@media(max-height:620px)]:py-2 text-sm text-ink shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent"
           autoComplete="current-password"
           value={password}
