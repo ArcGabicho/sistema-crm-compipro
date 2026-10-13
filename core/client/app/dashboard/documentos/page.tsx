@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { LoaderCircle, Upload, X } from "lucide-react";
 import ResourcePage, {
   type ResourceConfig,
@@ -35,7 +35,9 @@ const CARPETAS = [
 const MAX_BYTES = 4 * 1024 * 1024;
 
 const kb = (b: number) =>
-  b > 1_000_000 ? `${(b / 1_000_000).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1000))} KB`;
+  b > 1_000_000
+    ? `${(b / 1_000_000).toFixed(1)} MB`
+    : `${b > 0 ? Math.max(1, Math.round(b / 1000)) : 0} KB`;
 
 const tieneArchivo = (d: Documento) => !!d.url?.startsWith("archivo:");
 const esEnlace = (d: Documento) => /^https?:\/\//i.test(d.url ?? "");
@@ -48,7 +50,7 @@ async function descargar(d: Documento) {
   try {
     await crm.download(`documentos/${d.id}/descargar`, d.nombre);
   } catch (e) {
-    toast.error(e instanceof Error ? e.message : "No se pudo descargar");
+    sileo.error({ title: "No se pudo descargar", description: e instanceof Error ? e.message : undefined });
   }
 }
 
@@ -126,16 +128,18 @@ export default function DocumentosPage() {
       {
         label: "Nueva versión",
         onClick: (r, reload) =>
-          elegirArchivo(async (file) => {
-            const id = toast.loading(`Subiendo ${file.name}…`);
-            try {
-              const doc = await subir(file, { documentoId: String(r.id) });
-              toast.success(`Versión ${doc.version} subida`, { id });
-              reload();
-            } catch (e) {
-              toast.error(e instanceof Error ? e.message : "No se pudo subir", { id });
-            }
-          }),
+          elegirArchivo((file) =>
+            sileo
+              .promise(subir(file, { documentoId: String(r.id) }), {
+                loading: { title: "Subiendo archivo…", description: file.name },
+                success: (doc) => ({ title: `Versión ${doc.version} subida`, description: doc.nombre }),
+                error: (e) => ({
+                  title: "No se pudo subir",
+                  description: e instanceof Error ? e.message : undefined,
+                }),
+              })
+              .then(reload, () => {}),
+          ),
       },
     ],
   };
@@ -166,7 +170,7 @@ function SubirModal({ onClose, onDone }: { onClose: () => void; onDone: () => vo
   const elegir = (f: File | undefined) => {
     if (!f) return;
     if (f.size > MAX_BYTES) {
-      toast.error("El archivo supera el máximo de 4 MB.");
+      sileo.error({ title: "El archivo supera el máximo de 4 MB." });
       return;
     }
     setFile(f);
@@ -178,10 +182,10 @@ function SubirModal({ onClose, onDone }: { onClose: () => void; onDone: () => vo
     setSaving(true);
     try {
       await subir(file, { carpeta });
-      toast.success("Archivo subido");
+      sileo.success({ title: "Archivo subido" });
       onDone();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "No se pudo subir");
+      sileo.error({ title: "No se pudo subir", description: err instanceof Error ? err.message : undefined });
       setSaving(false);
     }
   };

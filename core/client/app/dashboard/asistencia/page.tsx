@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { LoaderCircle } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
 import { useAuth } from "@/app/hooks/useAuth";
@@ -67,7 +67,7 @@ export default function AsistenciaPage() {
         });
         if (!cancel) setData(d);
       } catch (e) {
-        if (!cancel) toast.error(e instanceof Error ? e.message : "Error");
+        if (!cancel) sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
       } finally {
         if (!cancel) setLoading(false);
       }
@@ -232,11 +232,11 @@ function JustificarModal({
       await crm.action(`asistencia/${registro.id}/justificar`, {
         texto: texto.trim(),
       });
-      toast.success("Tardanza justificada");
+      sileo.success({ title: "Tardanza justificada" });
       onDone();
     } catch (err) {
       setSaving(false);
-      toast.error(err instanceof Error ? err.message : "Error");
+      sileo.error({ title: "Error", description: err instanceof Error ? err.message : undefined });
     }
   };
 

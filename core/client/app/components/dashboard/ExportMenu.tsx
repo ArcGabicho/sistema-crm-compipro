@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { Download, FileSpreadsheet, FileText, LoaderCircle } from "lucide-react";
 import { crm, type QueryParams } from "@/app/lib/crm";
 
@@ -42,7 +42,7 @@ export default function ExportMenu({
     try {
       await crm.exportar(resource, formato, params);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "No se pudo exportar");
+      sileo.error({ title: "No se pudo exportar", description: e instanceof Error ? e.message : undefined });
     } finally {
       setBusy(false);
     }

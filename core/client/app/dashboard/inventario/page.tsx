@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import ResourcePage, {
   type ResourceConfig,
 } from "@/app/components/dashboard/ResourcePage";
@@ -114,10 +114,10 @@ function MovimientoModal({
         cantidad: Number(cantidad),
         motivo: motivo || null,
       });
-      toast.success("Movimiento registrado");
+      sileo.success({ title: "Movimiento registrado" });
       onDone();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Error");
+      sileo.error({ title: "Error", description: err instanceof Error ? err.message : undefined });
       setSaving(false);
     }
   };

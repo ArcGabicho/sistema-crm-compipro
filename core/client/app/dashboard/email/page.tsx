@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { FlaskConical, LoaderCircle, Send, X } from "lucide-react";
 import ResourcePage, {
   type ResourceConfig,
@@ -115,14 +115,16 @@ export default function EmailPage() {
         visible: (r) => r.estado !== "Enviada",
         onClick: async (r, reload) => {
           if (!window.confirm(`¿Enviar «${r.nombre}» ahora a todos los clientes activos con email?`)) return;
-          const id = toast.loading("Enviando campaña…");
-          try {
-            const res = await crm.action<ResultadoEnvio>(`campanas-email/${r.id}/enviar`);
-            toast.success(`Campaña enviada: ${resumen(res)}`, { id });
-            reload();
-          } catch (e) {
-            toast.error(e instanceof Error ? e.message : "Error", { id });
-          }
+          await sileo
+            .promise(crm.action<ResultadoEnvio>(`campanas-email/${r.id}/enviar`), {
+              loading: { title: "Enviando campaña…" },
+              success: (res) => ({ title: "Campaña enviada", description: resumen(res) }),
+              error: (e) => ({
+                title: "No se pudo enviar",
+                description: e instanceof Error ? e.message : undefined,
+              }),
+            })
+            .then(reload, () => {});
         },
       },
       { label: "Probar", onClick: (r) => setPrueba(r) },
@@ -227,12 +229,13 @@ function PruebaModal({ campana, onClose }: { campana: Campana; onClose: () => vo
         `campanas-email/${campana.id}/prueba`,
         { para },
       );
-      toast.success(
-        res.simulado ? `Prueba simulada para ${res.para}` : `Prueba enviada a ${res.para}`,
-      );
+      sileo.success({
+        title: res.simulado ? "Prueba simulada" : "Prueba enviada",
+        description: res.para,
+      });
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "No se pudo enviar");
+      sileo.error({ title: "No se pudo enviar", description: err instanceof Error ? err.message : undefined });
       setEnviando(false);
     }
   };

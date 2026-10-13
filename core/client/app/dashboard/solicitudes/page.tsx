@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { ChevronDown, LoaderCircle, Mail, Phone, UserPlus } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
 import { usePermiso } from "@/app/lib/permisos";
@@ -59,7 +59,7 @@ export default function SolicitudesPage() {
         });
         if (!cancel) setData(d);
       } catch (e) {
-        if (!cancel) toast.error(e instanceof Error ? e.message : "Error");
+        if (!cancel) sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
       } finally {
         if (!cancel) setLoading(false);
       }
@@ -73,10 +73,10 @@ export default function SolicitudesPage() {
     setBusy(s.id);
     try {
       await crm.action(`solicitudes/${s.id}/estado`, { estado: next });
-      toast.success(`${s.nombre} → ${next}`);
+      sileo.success({ title: `${s.nombre} → ${next}` });
       reload();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Error");
+      sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
     } finally {
       setBusy(null);
     }
@@ -94,10 +94,10 @@ export default function SolicitudesPage() {
       const cliente = await crm.action<{ id: number; nombre: string }>(
         `solicitudes/${s.id}/convertir`,
       );
-      toast.success(`Cliente creado: ${cliente.nombre}`);
+      sileo.success({ title: `Cliente creado: ${cliente.nombre}` });
       reload();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Error");
+      sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
     } finally {
       setBusy(null);
     }
@@ -108,10 +108,10 @@ export default function SolicitudesPage() {
     setBusy(s.id);
     try {
       await crm.remove("solicitudes", s.id);
-      toast.success("Solicitud eliminada");
+      sileo.success({ title: "Solicitud eliminada" });
       reload();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Error");
+      sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
     } finally {
       setBusy(null);
     }

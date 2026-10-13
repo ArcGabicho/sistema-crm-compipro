@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "react-hot-toast";
-import { Toaster as SileoToaster } from "sileo";
+import { Toaster } from "sileo";
 
 import { AuthProvider } from "./hooks/useAuth";
 import { EMPRESA, SITE_URL } from "./lib/site";
@@ -72,8 +71,7 @@ export default function RootLayout({
     >
       <body className="min-h-full">
         <AuthProvider>{children}</AuthProvider>
-        <Toaster position="top-center" />
-        <SileoToaster position="bottom-right" theme="light" />
+        <Toaster position="bottom-right" theme="light" />
       </body>
     </html>
   );

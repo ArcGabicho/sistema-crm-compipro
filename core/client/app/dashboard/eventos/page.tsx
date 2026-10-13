@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { CalendarDays, LoaderCircle, MapPin, Pencil, Plus, Trash2, X } from "lucide-react";
 import ResourcePage, {
   type ResourceConfig,
@@ -69,7 +69,7 @@ export default function EventosPage() {
           actual && res.items.some((e) => e.id === actual) ? actual : (res.items[0]?.id ?? null),
         );
       })
-      .catch((e) => toast.error(e instanceof Error ? e.message : "No se pudieron cargar los eventos"));
+      .catch((e) => sileo.error({ title: "No se pudieron cargar los eventos", description: e instanceof Error ? e.message : undefined }));
     return () => {
       activo = false;
     };
@@ -81,11 +81,11 @@ export default function EventosPage() {
     if (!window.confirm(`¿Eliminar el evento «${e.nombre}» y sus participantes?`)) return;
     try {
       await crm.remove("eventos", e.id);
-      toast.success("Evento eliminado");
+      sileo.success({ title: "Evento eliminado" });
       setSeleccion(null);
       recargar();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "No se pudo eliminar");
+      sileo.error({ title: "No se pudo eliminar", description: err instanceof Error ? err.message : undefined });
     }
   };
 
@@ -249,7 +249,7 @@ function EventoModal({
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (form.fechaInicio && form.fechaFin && form.fechaFin < form.fechaInicio) {
-      toast.error("La fecha de fin no puede ser anterior al inicio.");
+      sileo.error({ title: "La fecha de fin no puede ser anterior al inicio." });
       return;
     }
     setSaving(true);
@@ -264,10 +264,10 @@ function EventoModal({
       const guardado = evento
         ? await crm.update<Evento>("eventos", evento.id, payload)
         : await crm.create<Evento>("eventos", payload);
-      toast.success(evento ? "Evento actualizado" : "Evento creado");
+      sileo.success({ title: evento ? "Evento actualizado" : "Evento creado" });
       onSaved(guardado);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "No se pudo guardar");
+      sileo.error({ title: "No se pudo guardar", description: err instanceof Error ? err.message : undefined });
       setSaving(false);
     }
   };

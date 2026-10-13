@@ -86,3 +86,9 @@
 .animate-scroll {
   animation: scroll 20s linear infinite;
 }
+
+/* Sileo pone en mayúscula cada palabra del título ("No Se Pudo Subir");
+   en español se escribe solo la primera. */
+:root [data-sileo-title] {
+  text-transform: none;
+}

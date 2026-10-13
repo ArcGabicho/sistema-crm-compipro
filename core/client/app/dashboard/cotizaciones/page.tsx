@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { FileDown, LoaderCircle, Plus, Send, Trash2, X } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
 import { usePermiso } from "@/app/lib/permisos";
@@ -74,7 +74,7 @@ export default function CotizacionesPage() {
         });
         if (!cancel) setData(d);
       } catch (e) {
-        if (!cancel) toast.error(e instanceof Error ? e.message : "Error");
+        if (!cancel) sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
       } finally {
         if (!cancel) setLoading(false);
       }
@@ -87,10 +87,10 @@ export default function CotizacionesPage() {
   const act = async (fn: () => Promise<unknown>, msg: string) => {
     try {
       await fn();
-      toast.success(msg);
+      sileo.success({ title: msg });
       reload();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Error");
+      sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
     }
   };
 
@@ -340,14 +340,13 @@ function EnviarEmailModal({
         `cotizaciones/${cotizacion.id}/enviar-email`,
         { para, mensaje: mensaje || null },
       );
-      toast.success(
-        res.simulado
-          ? `Envío simulado a ${res.para} (dirección de demostración)`
-          : `Cotización enviada a ${res.para}`,
-      );
+      sileo.success({
+        title: res.simulado ? "Envío simulado" : "Cotización enviada",
+        description: res.simulado ? `${res.para} es una dirección de demostración` : res.para,
+      });
       onSent();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "No se pudo enviar");
+      sileo.error({ title: "No se pudo enviar", description: err instanceof Error ? err.message : undefined });
       setSaving(false);
     }
   };
@@ -491,9 +490,9 @@ function CotizacionForm({
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!clienteId) return toast.error("Selecciona un cliente");
+    if (!clienteId) return sileo.error({ title: "Selecciona un cliente" });
     const clean = items.filter((i) => i.descripcion.trim() && Number(i.cantidad) > 0);
-    if (clean.length === 0) return toast.error("Agrega al menos una línea");
+    if (clean.length === 0) return sileo.error({ title: "Agrega al menos una línea" });
     setSaving(true);
     const payload = {
       clienteId: Number(clienteId),
@@ -511,10 +510,10 @@ function CotizacionForm({
     try {
       if (record) await crm.update("cotizaciones", record.id, payload);
       else await crm.create("cotizaciones", payload);
-      toast.success(record ? "Cotización actualizada" : "Cotización creada");
+      sileo.success({ title: record ? "Cotización actualizada" : "Cotización creada" });
       onSaved();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "No se pudo guardar");
+      sileo.error({ title: "No se pudo guardar", description: err instanceof Error ? err.message : undefined });
       setSaving(false);
     }
   };

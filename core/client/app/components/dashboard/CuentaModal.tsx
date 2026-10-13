@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { Eye, EyeOff, KeyRound, LoaderCircle, X } from "lucide-react";
 import { crm } from "@/app/lib/crm";
 import { useAuth } from "@/app/hooks/useAuth";
@@ -34,10 +34,10 @@ export default function CuentaModal({ onClose }: { onClose: () => void }) {
     setSaving(true);
     try {
       await crm.action("auth/cambiar-contrasena", { actual, nueva });
-      toast.success("Contraseña actualizada");
+      sileo.success({ title: "Contraseña actualizada" });
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "No se pudo cambiar la contraseña");
+      sileo.error({ title: "No se pudo cambiar la contraseña", description: err instanceof Error ? err.message : undefined });
       setSaving(false);
     }
   };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { LoaderCircle } from "lucide-react";
 import { crm } from "@/app/lib/crm";
 import { usePermiso } from "@/app/lib/permisos";
@@ -73,7 +73,7 @@ export default function PipelinePage() {
         setColumnas(cols);
         setPorEtapa(mapa);
       } catch (e) {
-        if (!cancel) toast.error(e instanceof Error ? e.message : "Error");
+        if (!cancel) sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
       } finally {
         if (!cancel) setLoading(false);
       }
@@ -88,10 +88,10 @@ export default function PipelinePage() {
     setMoving(cliente.id);
     try {
       await crm.update("clientes", cliente.id, { ...cliente, etapa });
-      toast.success(`${cliente.nombre} → ${etapa}`);
+      sileo.success({ title: `${cliente.nombre} → ${etapa}` });
       reload();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Error");
+      sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
       setMoving(null);
     }
   };

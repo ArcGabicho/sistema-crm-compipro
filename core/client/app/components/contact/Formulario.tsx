@@ -12,7 +12,7 @@ import {
   MessageCircle,
   User,
 } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { submitLead } from "@/app/lib/leads";
 
 type FormData = {
@@ -74,12 +74,10 @@ const Formulario = () => {
       });
       setStatus("sent");
       setFormData(initialFormData);
-      toast.success("¡Solicitud enviada! Te contactaremos pronto.");
+      sileo.success({ title: "¡Solicitud enviada! Te contactaremos pronto." });
     } catch (error) {
       setStatus("idle");
-      toast.error(
-        error instanceof Error ? error.message : "No se pudo enviar.",
-      );
+      sileo.error({ title: "No se pudo enviar.", description: error instanceof Error ? error.message : undefined });
     }
   };
 

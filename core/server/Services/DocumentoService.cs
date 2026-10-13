@@ -38,7 +38,8 @@ public sealed class DocumentoService(
     public async Task<(Documento? Documento, string? Error)> SubirAsync(
         IFormFile? archivo, string? carpeta, int? documentoId, string? actor, CancellationToken ct)
     {
-        if (archivo is null || archivo.Length == 0) return (null, "Selecciona un archivo.");
+        if (archivo is null) return (null, "Selecciona un archivo.");
+        if (archivo.Length == 0) return (null, "El archivo está vacío.");
 
         long max = options.Value.MaxBytes;
         if (archivo.Length > max) return (null, $"El archivo supera el máximo de {max / (1024 * 1024)} MB.");

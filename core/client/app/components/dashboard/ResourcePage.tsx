@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { LoaderCircle, Pencil, Plus, Trash2, X } from "lucide-react";
 import { crm, type Paged, type QueryParams } from "@/app/lib/crm";
 import ExportMenu from "./ExportMenu";
@@ -181,10 +181,10 @@ export default function ResourcePage<T extends WithId>({
     if (!window.confirm(`¿Eliminar el registro #${row.id}?`)) return;
     try {
       await crm.remove(config.resource, row.id);
-      toast.success("Eliminado");
+      sileo.success({ title: "Eliminado" });
       reload();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "No se pudo eliminar");
+      sileo.error({ title: "No se pudo eliminar", description: e instanceof Error ? e.message : undefined });
     }
   };
 
@@ -457,10 +457,10 @@ function FormModal<T extends WithId>({
     try {
       if (record) await crm.update<T>(config.resource, record.id, payload);
       else await crm.create<T>(config.resource, payload);
-      toast.success(record ? "Actualizado" : "Creado");
+      sileo.success({ title: record ? "Actualizado" : "Creado" });
       onSaved();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "No se pudo guardar");
+      sileo.error({ title: "No se pudo guardar", description: err instanceof Error ? err.message : undefined });
       setSaving(false);
     }
   };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import { sileo } from "sileo";
 import { LoaderCircle } from "lucide-react";
 import { crm, type Paged } from "@/app/lib/crm";
 import { usePermiso } from "@/app/lib/permisos";
@@ -52,7 +52,7 @@ export default function PedidosPage() {
         });
         if (!cancel) setData(d);
       } catch (e) {
-        if (!cancel) toast.error(e instanceof Error ? e.message : "Error");
+        if (!cancel) sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
       } finally {
         if (!cancel) setLoading(false);
       }
@@ -65,10 +65,10 @@ export default function PedidosPage() {
   const changeEstado = async (p: Pedido, next: string) => {
     try {
       await crm.action(`pedidos/${p.id}/estado`, { estadoProduccion: next });
-      toast.success(`${p.codigo} → ${next}`);
+      sileo.success({ title: `${p.codigo} → ${next}` });
       reload();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Error");
+      sileo.error({ title: "Error", description: e instanceof Error ? e.message : undefined });
     }
   };
 
@@ -234,10 +234,10 @@ function PagoModal({
     setSaving(true);
     try {
       await crm.action(`pedidos/${pedido.id}/pago`, { monto: Number(monto) });
-      toast.success("Pago registrado");
+      sileo.success({ title: "Pago registrado" });
       onDone();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Error");
+      sileo.error({ title: "Error", description: err instanceof Error ? err.message : undefined });
       setSaving(false);
     }
   };
