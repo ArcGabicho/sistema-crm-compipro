@@ -70,7 +70,8 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   } catch {
     throw new ServidorNoDisponible();
   }
-  if (response.status >= 500) throw new ServidorNoDisponible();
+  // 429 (límite de peticiones) tampoco invalida la sesión: se reintenta.
+  if (response.status >= 500 || response.status === 429) throw new ServidorNoDisponible();
   if (!response.ok) return null;
   return (await response.json()) as CurrentUser;
 }

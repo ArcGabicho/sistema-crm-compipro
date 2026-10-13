@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:5008";
+import { BACKEND_URL, cabecerasCliente } from "@/app/lib/backend";
 
 // POST /api/leads — formularios públicos del sitio (sin autenticación).
 // Reenvía al backend .NET: POST /api/public/solicitudes
@@ -31,7 +30,7 @@ export async function POST(request: Request) {
   try {
     backendRes = await fetch(`${BACKEND_URL}/api/public/solicitudes`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...cabecerasCliente(request) },
       body: JSON.stringify(body),
       cache: "no-store",
     });

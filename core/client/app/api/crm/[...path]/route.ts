@@ -1,10 +1,9 @@
 import { cookies } from "next/headers";
 import { SESSION_COOKIE } from "@/app/lib/session";
-
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:5008";
+import { BACKEND_URL, cabecerasCliente } from "@/app/lib/backend";
 
 // Cabeceras de la respuesta del backend que llegan al navegador (descargas incluidas).
-const RESPONSE_HEADERS = ["content-type", "content-disposition", "cache-control"];
+const RESPONSE_HEADERS = ["content-type", "content-disposition", "cache-control", "retry-after"];
 
 // Proxy autenticado: /api/crm/<lo-que-sea>  ->  <BACKEND_URL>/api/<lo-que-sea>
 // Añade el JWT de la cookie HttpOnly como Bearer. El navegador nunca ve el token.
@@ -18,7 +17,10 @@ async function forward(req: Request, path: string[]): Promise<Response> {
   const { search } = new URL(req.url);
   const target = `${BACKEND_URL}/api/${path.map(encodeURIComponent).join("/")}${search}`;
 
-  const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${token}`,
+    ...cabecerasCliente(req),
+  };
   const method = req.method.toUpperCase();
   let body: BodyInit | undefined;
   if (method !== "GET" && method !== "HEAD" && method !== "DELETE") {

@@ -33,6 +33,12 @@ public static class DependencyInjection
         services.Configure<EmailOptions>(config.GetSection(EmailOptions.SectionName));
         services.Configure<AlmacenamientoOptions>(config.GetSection(AlmacenamientoOptions.SectionName));
 
+        // --- Límites contra abuso (por IP y bloqueo de cuentas) ---------
+        services.AddLimites(config);
+        services.AddMemoryCache(o => o.SizeLimit = 50_000);
+        services.AddSingleton(TimeProvider.System);
+        services.AddSingleton<BloqueoLogin>();
+
         // --- Persistencia (EF Core + SQL Server) ---------------------
         string connectionString = config.GetConnectionString("Default")
             ?? throw new InvalidOperationException(
@@ -122,6 +128,7 @@ public static class DependencyInjection
         }
 
         app.UseCors(CorsPolicyName);
+        app.UseRateLimiter();
         app.UseAuthentication();
         app.UseAuthorization();
 

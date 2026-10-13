@@ -23,6 +23,8 @@ services:
       Seed__Admin__Email: "${SEED_ADMIN_EMAIL:-admin@compipro.net}"
       Seed__Admin__Name: "${SEED_ADMIN_NAME:-Administrador}"
       Seed__Admin__Password: "${SEED_ADMIN_PASSWORD:-Compipro2025!}"
+      # Secreto compartido con el BFF para conocer la IP real del visitante (límites).
+      Limites__ClaveBff: "${BFF_CLAVE:-}"
       # Correo: por defecto al Mailpit de abajo (bandeja en http://localhost:8025;
       # nada sale a internet). SMTP real: SMTP_HOST=… y EMAIL_SANDBOX=false.
       Email__Remitente: "${EMAIL_REMITENTE:-crm@compipro.net}"
@@ -64,6 +66,7 @@ services:
       NODE_ENV: "production"
       BACKEND_URL: "http://server:8080"
       AUTH_JWT_SECRET: "${JWT_KEY:-fg9H65NPCIzoiY_4zmozOWfcVNmGZFsfSkp9EQUMNBw}"
+      BFF_CLAVE: "${BFF_CLAVE:-}"
     ports:
       - "3000:3000"
     restart: unless-stopped

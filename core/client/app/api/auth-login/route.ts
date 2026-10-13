@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE } from "@/app/lib/session";
-
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:5008";
+import { BACKEND_URL, cabecerasCliente } from "@/app/lib/backend";
 
 // POST /api/auth-login  { email, password }
 // Reenvía al backend .NET, y si autentica, guarda el JWT en una cookie HttpOnly.
@@ -23,7 +22,7 @@ export async function POST(request: Request) {
   try {
     backendRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...cabecerasCliente(request) },
       body: JSON.stringify({ email: body.email, password: body.password }),
       cache: "no-store",
     });

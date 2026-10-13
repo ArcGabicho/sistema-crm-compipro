@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Server.Config;
 using Server.Models;
 using Server.Services;
 
@@ -14,6 +16,7 @@ namespace Server.Controllers;
 [Route("api/public")]
 public sealed class PublicController(ISolicitudService solicitudes) : ControllerBase
 {
+    [EnableRateLimiting(RateLimiting.Publico)]
     [HttpPost("solicitudes")]
     public async Task<IActionResult> CrearSolicitud([FromBody] SolicitudPublicInput input, CancellationToken ct)
     {

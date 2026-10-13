@@ -54,12 +54,14 @@ cat > "$ROOT/core/client/.env.local" <<EOF
 # Generado por scripts/run.sh desde el .env de la raíz. No editar a mano.
 BACKEND_URL=http://localhost:5008
 AUTH_JWT_SECRET=${JWT_KEY}
+BFF_CLAVE=${BFF_CLAVE:-}
 EOF
 
 cat > "$ROOT/core/server/appsettings.Development.json" <<EOF
 {
   "ConnectionStrings": { "Default": "$(je "$DB_CONNECTION_STRING")" },
   "Jwt": { "Key": "$(je "$JWT_KEY")" },
+  "Limites": { "ClaveBff": "$(je "${BFF_CLAVE:-}")" },
   "Seed": { "Admin": { "Email": "$(je "$SEED_ADMIN_EMAIL")", "Name": "$(je "$SEED_ADMIN_NAME")", "Password": "$(je "$SEED_ADMIN_PASSWORD")" } }
 }
 EOF
