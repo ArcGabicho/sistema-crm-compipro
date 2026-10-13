@@ -13,7 +13,12 @@ export function money(value: unknown): string {
 
 export function date(value: unknown): string {
   if (!value) return "—";
-  const d = new Date(String(value));
+  // "YYYY-MM-DD" (DateOnly) es un día de calendario: leerlo como hora local, no
+  // como medianoche UTC, que en Perú (UTC-5) lo movería al día anterior.
+  const soloFecha = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value));
+  const d = soloFecha
+    ? new Date(Number(soloFecha[1]), Number(soloFecha[2]) - 1, Number(soloFecha[3]))
+    : new Date(String(value));
   return Number.isNaN(d.getTime())
     ? String(value)
     : d.toLocaleDateString("es-PE");
