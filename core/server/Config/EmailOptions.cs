@@ -17,9 +17,24 @@ public sealed class EmailOptions
     /// </summary>
     public string? UrlPublica { get; set; }
 
+    /// <summary>
+    /// El SMTP es un servidor de pruebas (Mailpit, Mailtrap…): nada sale a internet,
+    /// así que también se envían los correos a los dominios de demostración (.example).
+    /// </summary>
+    public bool Sandbox { get; set; }
+
+    /// <summary>Bandeja web del sandbox (p. ej. https://correo.gabicho.dev). Con Mailpit, cada envío enlaza a su mensaje.</summary>
+    public string? UrlBandeja { get; set; }
+
+    /// <summary>Etiqueta (cabecera X-Tags) para filtrar los correos de este proyecto en una bandeja compartida.</summary>
+    public string? Etiqueta { get; set; } = "compipro";
+
     public SmtpOptions Smtp { get; set; } = new();
 
     public bool SmtpConfigurado => !string.IsNullOrWhiteSpace(Smtp.Host);
+
+    /// <summary>simulado | sandbox | smtp</summary>
+    public string Modo => !SmtpConfigurado ? "simulado" : Sandbox ? "sandbox" : "smtp";
 }
 
 /// <summary>Servidor SMTP: Gmail, Brevo, Resend, SendGrid, Mailgun… todos lo ofrecen.</summary>

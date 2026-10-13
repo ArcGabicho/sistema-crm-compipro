@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { sileo } from "sileo";
 import { confirmar } from "@/app/components/dashboard/Confirmar";
-import { FlaskConical, LoaderCircle, Send, X } from "lucide-react";
+import { ExternalLink, FlaskConical, Inbox, LoaderCircle, Send, X } from "lucide-react";
 import ResourcePage, {
   type ResourceConfig,
 } from "@/app/components/dashboard/ResourcePage";
 import { badge, estadoTone } from "@/app/components/dashboard/cells";
 import { crm } from "@/app/lib/crm";
 import { useAuth } from "@/app/hooks/useAuth";
+import { abrirEnPestana, useEstadoEmail } from "@/app/hooks/useEstadoEmail";
 
 type Campana = {
   id: number;
@@ -32,9 +33,7 @@ type Plantilla = {
   createdAt: string;
 };
 
-type EstadoEmail = { real: boolean; remitente: string; seguimiento: boolean };
-
-type ResultadoEnvio = { reales: number; simulados: number; fallidos: number };
+type ResultadoEnvio = { reales: number; simulados: number; fallidos: number; bandeja: string | null };
 
 const ESTADOS = ["Borrador", "Programada", "Enviada"].map((v) => ({ value: v, label: v }));
 
@@ -55,12 +54,8 @@ function resumen({ reales, simulados, fallidos }: ResultadoEnvio): string {
 
 export default function EmailPage() {
   const [tab, setTab] = useState<"campanas" | "plantillas">("campanas");
-  const [estado, setEstado] = useState<EstadoEmail | null>(null);
+  const estado = useEstadoEmail();
   const [prueba, setPrueba] = useState<Campana | null>(null);
-
-  useEffect(() => {
-    crm.consulta<EstadoEmail>("email/estado").then(setEstado).catch(() => setEstado(null));
-  }, []);
 
   const campanas: ResourceConfig<Campana> = {
     resource: "campanas-email",
@@ -124,7 +119,13 @@ export default function EmailPage() {
           await sileo
             .promise(crm.action<ResultadoEnvio>(`campanas-email/${r.id}/enviar`), {
               loading: { title: "Enviando campaña…" },
-              success: (res) => ({ title: "Campaña enviada", description: resumen(res) }),
+              success: (res) => ({
+                title: "Campaña enviada",
+                description: resumen(res),
+                button: res.bandeja
+                  ? { title: "Ver bandeja", onClick: () => abrirEnPestana(res.bandeja!) }
+                  : undefined,
+              }),
               error: (e) => ({
                 title: "No se pudo enviar",
                 description: e instanceof Error ? e.message : undefined,
@@ -190,21 +191,39 @@ export default function EmailPage() {
             </button>
           ))}
         </div>
-        {estado && (
+        {estado?.modo === "sandbox" && (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-ink px-3 py-1.5 text-xs text-white">
+            <Inbox className="h-3.5 w-3.5 text-accent" />
+            Modo demostración: los correos llegan a la bandeja de pruebas
+            {estado.bandeja && (
+              <a
+                href={estado.bandeja}
+                target="_blank"
+                rel="noopener"
+                className="ml-1 inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 font-medium hover:bg-white/25"
+              >
+                Abrir bandeja <ExternalLink className="h-3 w-3" />
+              </a>
+            )}
+          </span>
+        )}
+        {estado?.modo === "smtp" && (
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs ${
-              estado.real ? "bg-emerald-100 text-emerald-700" : "hatch-accent text-orange-800"
-            }`}
-            title={
-              estado.real
-                ? "Los clientes de demostración (.example) se simulan; los emails reales salen por SMTP."
-                : "Configura SMTP en el backend para enviar correos reales."
-            }
+            className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1.5 text-xs text-emerald-700"
+            title="Los clientes de demostración (.example) se simulan; los emails reales salen por SMTP."
           >
-            {estado.real ? <Send className="h-3.5 w-3.5" /> : <FlaskConical className="h-3.5 w-3.5" />}
-            {estado.real
-              ? `Envío real desde ${estado.remitente}${estado.seguimiento ? " · con seguimiento" : ""}`
-              : "Modo simulado: los correos no salen del servidor"}
+            <Send className="h-3.5 w-3.5" />
+            Envío real desde {estado.remitente}
+            {estado.seguimiento && " · con seguimiento"}
+          </span>
+        )}
+        {estado?.modo === "simulado" && (
+          <span
+            className="hatch-accent inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs text-orange-800"
+            title="Configura SMTP en el backend para enviar correos."
+          >
+            <FlaskConical className="h-3.5 w-3.5" />
+            Modo simulado: los correos no salen del servidor
           </span>
         )}
       </div>
@@ -224,6 +243,7 @@ export default function EmailPage() {
 
 function PruebaModal({ campana, onClose }: { campana: Campana; onClose: () => void }) {
   const { user } = useAuth();
+  const estado = useEstadoEmail();
   const [para, setPara] = useState(user?.email ?? "");
   const [enviando, setEnviando] = useState(false);
 
@@ -231,13 +251,14 @@ function PruebaModal({ campana, onClose }: { campana: Campana; onClose: () => vo
     e.preventDefault();
     setEnviando(true);
     try {
-      const res = await crm.action<{ para: string; simulado: boolean }>(
+      const res = await crm.action<{ para: string; simulado: boolean; url: string | null }>(
         `campanas-email/${campana.id}/prueba`,
         { para },
       );
       sileo.success({
-        title: res.simulado ? "Prueba simulada" : "Prueba enviada",
+        title: res.simulado ? "Prueba simulada" : res.url ? "Prueba en la bandeja" : "Prueba enviada",
         description: res.para,
+        button: res.url ? { title: "Ver correo", onClick: () => abrirEnPestana(res.url!) } : undefined,
       });
       onClose();
     } catch (err) {
@@ -272,6 +293,14 @@ function PruebaModal({ campana, onClose }: { campana: Campana; onClose: () => vo
             Envía «{campana.nombre}» a una sola dirección para revisarla. No cuenta en las
             métricas de la campaña.
           </p>
+          {estado?.modo === "sandbox" && (
+            <p className="rounded-2xl bg-white px-3.5 py-2.5 text-xs leading-relaxed text-neutral-500">
+              <Inbox className="mr-1 inline h-3.5 w-3.5 text-accent" />
+              Es una demo: el correo no sale a internet, llega a la{" "}
+              <strong className="font-medium text-ink">bandeja de pruebas</strong>. Al enviarlo
+              podrás abrirlo desde el aviso.
+            </p>
+          )}
           <input
             type="email"
             required

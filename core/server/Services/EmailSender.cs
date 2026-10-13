@@ -15,8 +15,11 @@ public sealed record MensajeEmail(string Para, string Asunto, string Html, strin
     public IReadOnlyList<AdjuntoEmail> Adjuntos { get; init; } = [];
 }
 
-/// <summary>Resultado por destinatario: Enviado (salió por SMTP), Simulado o Fallido.</summary>
-public sealed record ResultadoEmail(string Para, string Estado, string? Error = null)
+/// <summary>
+/// Resultado por destinatario: Enviado (salió por SMTP), Simulado o Fallido.
+/// <c>Url</c> enlaza al mensaje en la bandeja del sandbox, si la hay.
+/// </summary>
+public sealed record ResultadoEmail(string Para, string Estado, string? Error = null, string? Url = null)
 {
     public bool Ok => Estado != EstadosEmail.Fallido;
 }
@@ -30,8 +33,17 @@ public static class EstadosEmail
 
 public interface IEmailSender
 {
-    /// <summary>true si hay SMTP configurado (envío real); false = todo se simula.</summary>
+    /// <summary>true si hay SMTP configurado (envío real o sandbox); false = todo se simula.</summary>
     bool EsReal { get; }
+
+    /// <summary>simulado | sandbox | smtp</summary>
+    string Modo { get; }
+
+    /// <summary>Bandeja web del sandbox, si está configurada.</summary>
+    string? UrlBandeja { get; }
+
+    /// <summary>La bandeja filtrada por la etiqueta de este proyecto (X-Tags).</summary>
+    string? UrlBandejaProyecto { get; }
 
     string Remitente { get; }
 
@@ -53,6 +65,7 @@ public static class EmailSenderExtensions
 /// Envío por SMTP con MailKit. Sin servidor configurado, o si el destinatario es
 /// de un dominio reservado (los clientes de demostración usan <c>.example</c>),
 /// el mensaje se simula: se registra en el log y se cuenta como entregado.
+/// En modo sandbox (Mailpit) se envía todo: nada sale a internet.
 /// </summary>
 public sealed partial class EmailSender(IOptions<EmailOptions> options, ILogger<EmailSender> logger)
     : IEmailSender
@@ -67,7 +80,15 @@ public sealed partial class EmailSender(IOptions<EmailOptions> options, ILogger<
 
     public string Remitente => opt.Remitente;
 
-    public bool EnviaDeVerdad(string email) => EsReal && !EsDominioReservado(email);
+    public string Modo => opt.Modo;
+
+    public string? UrlBandeja => string.IsNullOrWhiteSpace(opt.UrlBandeja) ? null : opt.UrlBandeja.Trim().TrimEnd('/');
+
+    public string? UrlBandejaProyecto => UrlBandeja is not { } bandeja ? null
+        : string.IsNullOrWhiteSpace(opt.Etiqueta) ? bandeja
+        : $"{bandeja}/search?q={Uri.EscapeDataString("tag:" + opt.Etiqueta)}";
+
+    public bool EnviaDeVerdad(string email) => EsReal && (opt.Sandbox || !EsDominioReservado(email));
 
     public static bool EsEmailValido(string? email)
         => !string.IsNullOrWhiteSpace(email)
@@ -130,8 +151,8 @@ public sealed partial class EmailSender(IOptions<EmailOptions> options, ILogger<
         {
             try
             {
-                await smtp.SendAsync(Construir(mensajes[i]), ct);
-                resultados[i] = new(mensajes[i].Para, EstadosEmail.Enviado);
+                string respuesta = await smtp.SendAsync(Construir(mensajes[i]), ct);
+                resultados[i] = new(mensajes[i].Para, EstadosEmail.Enviado, Url: UrlMensaje(respuesta));
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -151,6 +172,7 @@ public sealed partial class EmailSender(IOptions<EmailOptions> options, ILogger<
         mensaje.From.Add(new MailboxAddress(opt.NombreRemitente, opt.Remitente));
         mensaje.To.Add(new MailboxAddress(m.NombrePara ?? string.Empty, m.Para.Trim()));
         mensaje.Subject = m.Asunto;
+        if (!string.IsNullOrWhiteSpace(opt.Etiqueta)) mensaje.Headers.Add("X-Tags", opt.Etiqueta);
 
         var cuerpo = new BodyBuilder { HtmlBody = m.Html, TextBody = HtmlATexto(m.Html) };
         foreach (var adjunto in m.Adjuntos)
@@ -159,6 +181,15 @@ public sealed partial class EmailSender(IOptions<EmailOptions> options, ILogger<
         mensaje.Body = cuerpo.ToMessageBody();
         return mensaje;
     }
+
+    /// <summary>Mailpit responde "Ok: queued as &lt;id&gt;"; ese id abre el mensaje en su bandeja.</summary>
+    private string? UrlMensaje(string respuestaSmtp)
+        => opt.Sandbox && UrlBandeja is { } bandeja && IdEnCola().Match(respuestaSmtp) is { Success: true } m
+            ? $"{bandeja}/view/{m.Groups[1].Value}"
+            : null;
+
+    [GeneratedRegex(@"queued as ([A-Za-z0-9]+)")]
+    private static partial Regex IdEnCola();
 
     private SecureSocketOptions Seguridad() => opt.Smtp.Seguridad.Trim().ToLowerInvariant() switch
     {

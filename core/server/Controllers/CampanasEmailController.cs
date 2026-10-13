@@ -12,7 +12,8 @@ namespace Server.Controllers;
 public sealed class CampanasEmailController(
     ICrudService<CampanaEmail> service,
     IEmailCampaignService campaigns,
-    ProgramadorCampanas programador) : CrudControllerBase<CampanaEmail>(service)
+    ProgramadorCampanas programador,
+    IEmailSender email) : CrudControllerBase<CampanaEmail>(service)
 {
     protected override IQueryable<CampanaEmail> Shape(IQueryable<CampanaEmail> q)
     {
@@ -40,6 +41,8 @@ public sealed class CampanasEmailController(
             reales = resultado.Reales,
             simulados = resultado.Simulados,
             fallidos = resultado.Fallidos,
+            // En modo sandbox: la bandeja filtrada por la etiqueta del proyecto.
+            bandeja = email.UrlBandejaProyecto,
         });
     }
 
@@ -50,6 +53,6 @@ public sealed class CampanasEmailController(
         var (resultado, error) = await campaigns.EnviarPruebaAsync(id, input.Para ?? string.Empty, Actor, ct);
         if (error is not null) return BadRequest(new { message = error });
         if (resultado is null) return NotFound();
-        return Ok(new { para = resultado.Para, simulado = resultado.Estado == EstadosEmail.Simulado });
+        return Ok(new { para = resultado.Para, simulado = resultado.Estado == EstadosEmail.Simulado, url = resultado.Url });
     }
 }

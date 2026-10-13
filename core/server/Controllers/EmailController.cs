@@ -14,7 +14,14 @@ public sealed class EmailController(IEmailSender email, SeguimientoEmail seguimi
 {
     [HttpGet("estado")]
     public IActionResult Estado()
-        => Ok(new { real = email.EsReal, remitente = email.Remitente, seguimiento = seguimiento.Activo });
+        => Ok(new
+        {
+            real = email.EsReal,
+            modo = email.Modo,
+            remitente = email.Remitente,
+            seguimiento = seguimiento.Activo,
+            bandeja = email.UrlBandejaProyecto,
+        });
 }
 
 /// <summary>

@@ -11,7 +11,7 @@ namespace Server.Services;
 
 public sealed record PdfCotizacion(byte[] Contenido, string Nombre);
 
-public sealed record ResultadoEnvioCotizacion(string Para, bool Simulado, string Estado);
+public sealed record ResultadoEnvioCotizacion(string Para, bool Simulado, string Estado, string? Url);
 
 public interface ICotizacionDocumentoService
 {
@@ -81,7 +81,7 @@ public sealed class CotizacionDocumentoService(
         }
 
         await audit.LogAsync(actor, "EnviarEmail", nameof(Cotizacion), id, $"{destino}: {resultado.Estado}", ct);
-        return (new ResultadoEnvioCotizacion(destino!, resultado.Estado == EstadosEmail.Simulado, estado), null);
+        return (new ResultadoEnvioCotizacion(destino!, resultado.Estado == EstadosEmail.Simulado, estado, resultado.Url), null);
     }
 
     private sealed record Empresa(string Nombre, string? Ruc, string? Direccion, string? Telefono, string? Email, string? Web);

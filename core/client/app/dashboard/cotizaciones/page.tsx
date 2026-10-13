@@ -8,6 +8,7 @@ import { crm, type Paged } from "@/app/lib/crm";
 import { usePermiso } from "@/app/lib/permisos";
 import { badge, date, estadoTone, money } from "@/app/components/dashboard/cells";
 import ExportMenu from "@/app/components/dashboard/ExportMenu";
+import { abrirEnPestana, useEstadoEmail } from "@/app/hooks/useEstadoEmail";
 
 type Ref = { id: number; nombre?: string; name?: string; email?: string | null } | null;
 type Item = {
@@ -332,6 +333,7 @@ function EnviarEmailModal({
   onClose: () => void;
   onSent: () => void;
 }) {
+  const estado = useEstadoEmail();
   const [para, setPara] = useState(cotizacion.cliente?.email ?? "");
   const [mensaje, setMensaje] = useState("");
   const [saving, setSaving] = useState(false);
@@ -340,13 +342,14 @@ function EnviarEmailModal({
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await crm.action<{ para: string; simulado: boolean; estado: string }>(
+      const res = await crm.action<{ para: string; simulado: boolean; estado: string; url: string | null }>(
         `cotizaciones/${cotizacion.id}/enviar-email`,
         { para, mensaje: mensaje || null },
       );
       sileo.success({
-        title: res.simulado ? "Envío simulado" : "Cotización enviada",
+        title: res.simulado ? "Envío simulado" : res.url ? "Cotización en la bandeja" : "Cotización enviada",
         description: res.simulado ? `${res.para} es una dirección de demostración` : res.para,
+        button: res.url ? { title: "Ver correo", onClick: () => abrirEnPestana(res.url!) } : undefined,
       });
       onSent();
     } catch (err) {
@@ -378,6 +381,13 @@ function EnviarEmailModal({
             Se adjunta el PDF de la cotización ({money(cotizacion.total)}).
             {cotizacion.estado === "Borrador" && " Pasará a estado Enviada."}
           </p>
+          {estado?.modo === "sandbox" && (
+            <p className="rounded-2xl bg-white px-3.5 py-2.5 text-xs leading-relaxed text-neutral-500">
+              Es una demo: el correo no sale a internet, llega a la{" "}
+              <strong className="font-medium text-ink">bandeja de pruebas</strong> con el PDF
+              adjunto. Podrás abrirlo desde el aviso.
+            </p>
+          )}
           <label className="block">
             <span className="mb-1 block text-xs font-medium text-neutral-600">Para</span>
             <input
