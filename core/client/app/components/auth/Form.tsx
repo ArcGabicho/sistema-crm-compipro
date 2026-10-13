@@ -51,7 +51,7 @@ export default function Form() {
         ¡Bienvenido!
       </h1>
       <span className="text-center text-neutral-500 text-sm [@media(max-height:620px)]:hidden">
-        Ingrese sus credenciales para acceder al sistema CRM de Compina S.A.C.
+        Ingrese sus credenciales para acceder al sistema CRM de Compipro S.A.C.
       </span>
       <div className="flex flex-col gap-1">
         <label htmlFor="email" className="text-neutral-700 text-sm font-medium pl-1">
