@@ -1,4 +1,6 @@
 // Cliente tipado de la API del CRM (a través del proxy autenticado /api/crm).
+import { ServidorNoDisponible } from "./auth";
+import { mientrasDespierta } from "./despertar";
 
 export type Paged<T> = {
   total: number;
@@ -34,26 +36,52 @@ async function errorDe(res: Response): Promise<Error> {
           : res.status >= 502 && res.status <= 504
             ? "El servidor no responde en este momento. Inténtalo de nuevo en unos minutos."
             : `Error ${res.status}`;
-  return new Error(message);
+  return res.status >= 502 && res.status <= 504
+    ? new ServidorNoDisponible(message, res.status)
+    : new Error(message);
 }
 
-async function request<T>(
+// Tras ~5 min sin peticiones el backend escala a cero: la siguiente lo despierta.
+const DORMIDO_TRAS_MS = 4.5 * 60_000;
+let ultimaRespuesta = Date.now();
+
+/**
+ * Hace la petición y, si el servidor está despertando, reintenta con un aviso.
+ * Un 503 llega antes de procesar nada; un 502/504 puede llegar después, así que
+ * solo se repite en las lecturas (GET).
+ */
+function pedir<T>(method: string, intento: () => Promise<T>): Promise<T> {
+  const dormido = Date.now() - ultimaRespuesta > DORMIDO_TRAS_MS;
+  return mientrasDespierta(
+    intento,
+    (e) => e instanceof ServidorNoDisponible && (method === "GET" || e.status === 503),
+    dormido ? undefined : null,
+  );
+}
+
+async function fetchCrm(path: string, init: RequestInit): Promise<Response> {
+  const res = await fetch(`/api/crm/${path}`, { ...init, cache: "no-store" });
+  ultimaRespuesta = Date.now();
+  if (!res.ok) throw await errorDe(res);
+  return res;
+}
+
+function request<T>(
   method: string,
   path: string,
   body?: unknown,
 ): Promise<T> {
   const isForm = body instanceof FormData;
-  const res = await fetch(`/api/crm/${path}`, {
-    method,
-    headers:
-      body !== undefined && !isForm ? { "Content-Type": "application/json" } : undefined,
-    body: isForm ? body : body !== undefined ? JSON.stringify(body) : undefined,
-    cache: "no-store",
+  return pedir(method, async () => {
+    const res = await fetchCrm(path, {
+      method,
+      headers:
+        body !== undefined && !isForm ? { "Content-Type": "application/json" } : undefined,
+      body: isForm ? body : body !== undefined ? JSON.stringify(body) : undefined,
+    });
+    if (res.status === 204) return undefined as T;
+    return (await res.json().catch(() => null)) as T;
   });
-
-  if (!res.ok) throw await errorDe(res);
-  if (res.status === 204) return undefined as T;
-  return (await res.json().catch(() => null)) as T;
 }
 
 /** Nombre del archivo según Content-Disposition (prefiere filename*=UTF-8''…). */
@@ -67,8 +95,7 @@ function nombreArchivo(res: Response, fallback: string): string {
 
 /** Descarga un archivo del CRM (Excel, CSV, PDF, documentos) y lo guarda en el equipo. */
 async function download(path: string, fallback = "archivo"): Promise<void> {
-  const res = await fetch(`/api/crm/${path}`, { cache: "no-store" });
-  if (!res.ok) throw await errorDe(res);
+  const res = await pedir("GET", () => fetchCrm(path, {}));
 
   const url = URL.createObjectURL(await res.blob());
   const a = document.createElement("a");

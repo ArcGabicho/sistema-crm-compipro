@@ -37,7 +37,7 @@ export async function login(
 
   const data = await parseJson(response);
   if (response.status >= 500) {
-    throw new ServidorNoDisponible(messageOf(data, "El servidor no responde en este momento."));
+    throw new ServidorNoDisponible(messageOf(data, "El servidor no responde en este momento."), response.status);
   }
   if (!response.ok) {
     throw new Error(messageOf(data, "No se pudo iniciar sesión."));
@@ -56,8 +56,12 @@ export async function logout(): Promise<void> {
 
 /** El backend no respondió (arrancando, caído o con la base de datos en pausa). */
 export class ServidorNoDisponible extends Error {
-  constructor(message = "No se pudo conectar con el servidor.") {
+  /** Código HTTP (502, 503, 504), o 0 si ni siquiera hubo respuesta. */
+  readonly status: number;
+
+  constructor(message = "No se pudo conectar con el servidor.", status = 0) {
     super(message);
+    this.status = status;
   }
 }
 

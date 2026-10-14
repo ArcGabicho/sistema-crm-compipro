@@ -1,12 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { sileo } from "sileo";
 import { LoaderCircle } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { ServidorNoDisponible } from "../../lib/auth";
+import { despertarServidor, mientrasDespierta } from "../../lib/despertar";
 
 export default function Form() {
   const [email, setEmail] = useState("");
@@ -15,11 +16,19 @@ export default function Form() {
   const router = useRouter();
   const { login } = useAuth();
 
+  // Despierta el servidor mientras se escriben las credenciales (escala a cero en Azure).
+  useEffect(() => {
+    void despertarServidor();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const session = await login(email, password);
+      const session = await mientrasDespierta(
+        () => login(email, password),
+        (error) => error instanceof ServidorNoDisponible,
+      );
       sileo.success({ title: `Bienvenido, ${session.name || session.email}` });
       router.push("/dashboard");
     } catch (error) {

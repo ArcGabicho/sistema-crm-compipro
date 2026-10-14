@@ -32,4 +32,12 @@ public sealed class LimitesOptions
     /// sin ella, todos los visitantes compartirían la IP de Vercel.
     /// </summary>
     public string? ClaveBff { get; set; }
+
+    /// <summary>
+    /// Cabecera con la IP real que pone el proxy de delante: <c>X-Forwarded-For</c>
+    /// (Azure Container Apps; se usa la última IP, la única que pone Azure) o
+    /// <c>CF-Connecting-IP</c> (Cloudflare). Vacía = IP de la conexión. Sin ese proxy
+    /// delante, el cliente podría falsificarla: configúrala solo si existe.
+    /// </summary>
+    public string? CabeceraIpProxy { get; set; }
 }

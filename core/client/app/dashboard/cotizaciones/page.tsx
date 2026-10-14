@@ -9,6 +9,7 @@ import { usePermiso } from "@/app/lib/permisos";
 import { badge, date, estadoTone, money } from "@/app/components/dashboard/cells";
 import ExportMenu from "@/app/components/dashboard/ExportMenu";
 import { abrirEnPestana, useEstadoEmail } from "@/app/hooks/useEstadoEmail";
+import { despertarCorreo } from "@/app/lib/despertar";
 
 type Ref = { id: number; nombre?: string; name?: string; email?: string | null } | null;
 type Item = {
@@ -337,6 +338,11 @@ function EnviarEmailModal({
   const [para, setPara] = useState(cotizacion.cliente?.email ?? "");
   const [mensaje, setMensaje] = useState("");
   const [saving, setSaving] = useState(false);
+
+  // Mailpit escala a cero en Azure: se despierta mientras se completa el envío.
+  useEffect(() => {
+    void despertarCorreo();
+  }, []);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

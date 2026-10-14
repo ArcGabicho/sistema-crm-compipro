@@ -50,23 +50,29 @@ public static class RateLimiting
 
     /// <summary>
     /// IP real del visitante: la que reenvía el BFF (solo con la clave correcta),
-    /// la que pone Cloudflare (el cliente no puede falsificarla) o la de la conexión.
+    /// la que pone el proxy de delante (Azure o Cloudflare; el cliente no puede
+    /// falsificarla) o la de la conexión.
     /// </summary>
     public static string IpCliente(HttpContext ctx)
     {
         var headers = ctx.Request.Headers;
-        string? clave = ctx.RequestServices.GetRequiredService<IOptions<LimitesOptions>>().Value.ClaveBff;
+        LimitesOptions limites = ctx.RequestServices.GetRequiredService<IOptions<LimitesOptions>>().Value;
 
-        if (!string.IsNullOrWhiteSpace(clave)
+        if (!string.IsNullOrWhiteSpace(limites.ClaveBff)
             && headers[CabeceraIp].ToString() is { Length: > 0 } reenviada
-            && Iguales(headers[CabeceraClave].ToString(), clave))
+            && Iguales(headers[CabeceraClave].ToString(), limites.ClaveBff))
         {
             return reenviada;
         }
 
-        return headers["CF-Connecting-IP"].ToString() is { Length: > 0 } cloudflare
-            ? cloudflare
-            : ctx.Connection.RemoteIpAddress?.ToString() ?? "desconocida";
+        // X-Forwarded-For acumula IPs; el proxy agrega la que vio al final.
+        if (!string.IsNullOrWhiteSpace(limites.CabeceraIpProxy)
+            && headers[limites.CabeceraIpProxy].ToString().Split(',')[^1].Trim() is { Length: > 0 } delProxy)
+        {
+            return delProxy;
+        }
+
+        return ctx.Connection.RemoteIpAddress?.ToString() ?? "desconocida";
     }
 
     private static RateLimitPartition<string> PorMinuto(string ip, int permitidas)

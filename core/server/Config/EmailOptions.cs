@@ -29,12 +29,26 @@ public sealed class EmailOptions
     /// <summary>Etiqueta (cabecera X-Tags) para filtrar los correos de este proyecto en una bandeja compartida.</summary>
     public string? Etiqueta { get; set; } = "compipro";
 
+    /// <summary>
+    /// URL de Mailpit para enviar por su API HTTP en vez de SMTP. En Azure Container Apps
+    /// el SMTP no despierta una app escalada a cero y HTTP sí. Implica modo sandbox.
+    /// </summary>
+    public string? MailpitApi { get; set; }
+
     public SmtpOptions Smtp { get; set; } = new();
+
+    public bool ApiConfigurada => !string.IsNullOrWhiteSpace(MailpitApi);
 
     public bool SmtpConfigurado => !string.IsNullOrWhiteSpace(Smtp.Host);
 
+    /// <summary>Hay a dónde enviar (Mailpit por HTTP o un SMTP); si no, todo se simula.</summary>
+    public bool Configurado => ApiConfigurada || SmtpConfigurado;
+
+    /// <summary>Nada sale a internet: se envía también a los dominios de demostración.</summary>
+    public bool EsSandbox => Sandbox || ApiConfigurada;
+
     /// <summary>simulado | sandbox | smtp</summary>
-    public string Modo => !SmtpConfigurado ? "simulado" : Sandbox ? "sandbox" : "smtp";
+    public string Modo => !Configurado ? "simulado" : EsSandbox ? "sandbox" : "smtp";
 }
 
 /// <summary>Servidor SMTP: Gmail, Brevo, Resend, SendGrid, Mailgun… todos lo ofrecen.</summary>

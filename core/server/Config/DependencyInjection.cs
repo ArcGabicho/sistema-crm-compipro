@@ -46,6 +46,10 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(o =>
             o.UseSqlServer(connectionString, sql => sql.EnableRetryOnFailure()));
 
+        // Esquema + siembra en segundo plano: el servidor atiende apenas arranca.
+        services.AddSingleton<EstadoArranque>();
+        services.AddHostedService<InicializadorBaseDatos>();
+
         // --- Servicios de dominio -----------------------------------
         services.AddScoped(typeof(ICrudService<>), typeof(CrudService<>));
         services.AddScoped<IAuditService, AuditService>();
@@ -61,6 +65,7 @@ public static class DependencyInjection
         services.AddSingleton<ITokenService, TokenService>();
 
         // --- Correo, archivos, exportación y PDF ---------------------
+        services.AddHttpClient(nameof(EmailSender), c => c.Timeout = TimeSpan.FromSeconds(90));
         services.AddSingleton<IEmailSender, EmailSender>();
         services.AddSingleton<SeguimientoEmail>();
         services.AddSingleton<ProgramadorCampanas>();
@@ -116,11 +121,24 @@ public static class DependencyInjection
         return builder;
     }
 
-    public static async Task<WebApplication> UseCrmAsync(this WebApplication app)
+    public static WebApplication UseCrm(this WebApplication app)
     {
-        // Esquema + siembra al arrancar.
-        var seed = app.Configuration.GetSection(SeedOptions.SectionName).Get<SeedOptions>() ?? new SeedOptions();
-        await DbInitializer.InitializeAsync(app.Services, seed, app.Logger);
+        // Mientras InicializadorBaseDatos prepara la base, la API responde 503 (el BFF reintenta).
+        app.Use(async (ctx, next) =>
+        {
+            if (ctx.Request.Path == "/" || ctx.RequestServices.GetRequiredService<EstadoArranque>().Listo)
+            {
+                await next(ctx);
+                return;
+            }
+            ctx.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+            ctx.Response.Headers.RetryAfter = "5";
+            await ctx.Response.WriteAsJsonAsync(new
+            {
+                message = "La demo se está iniciando. Vuelve a intentarlo en unos segundos.",
+                reintentarEn = 5,
+            });
+        });
 
         if (app.Environment.IsDevelopment())
         {
@@ -132,7 +150,8 @@ public static class DependencyInjection
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapGet("/", () => Results.Ok(new { service = "compipro-crm-api", status = "ok" }))
+        app.MapGet("/", (EstadoArranque estado) =>
+                Results.Ok(new { service = "compipro-crm-api", status = estado.Listo ? "ok" : "iniciando" }))
             .ExcludeFromDescription();
         app.MapControllers();
 

@@ -6,7 +6,8 @@ namespace Server.Services;
 /// su cuota gratuita): calcula la próxima fecha al arrancar y espera hasta ella.
 /// Cada alta o cambio de campaña llama a <see cref="Reprogramar"/>.
 /// </summary>
-public sealed class ProgramadorCampanas(IServiceScopeFactory scopes, ILogger<ProgramadorCampanas> logger)
+public sealed class ProgramadorCampanas(
+    IServiceScopeFactory scopes, EstadoArranque arranque, ILogger<ProgramadorCampanas> logger)
     : BackgroundService
 {
     private static readonly TimeSpan EsperaMaxima = TimeSpan.FromDays(20); // límite de Task.Delay ≈ 24,8 días
@@ -25,6 +26,15 @@ public sealed class ProgramadorCampanas(IServiceScopeFactory scopes, ILogger<Pro
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        try
+        {
+            await arranque.EsperarAsync(stoppingToken); // la base se prepara en segundo plano
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
         while (!stoppingToken.IsCancellationRequested)
         {
             TimeSpan espera;

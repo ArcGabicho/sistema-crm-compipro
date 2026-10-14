@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { sileo } from "sileo";
 import { confirmar } from "@/app/components/dashboard/Confirmar";
 import { ExternalLink, FlaskConical, Inbox, LoaderCircle, Send, X } from "lucide-react";
@@ -11,6 +11,7 @@ import { badge, estadoTone } from "@/app/components/dashboard/cells";
 import { crm } from "@/app/lib/crm";
 import { useAuth } from "@/app/hooks/useAuth";
 import { abrirEnPestana, useEstadoEmail } from "@/app/hooks/useEstadoEmail";
+import { despertarCorreo } from "@/app/lib/despertar";
 
 type Campana = {
   id: number;
@@ -56,6 +57,11 @@ export default function EmailPage() {
   const [tab, setTab] = useState<"campanas" | "plantillas">("campanas");
   const estado = useEstadoEmail();
   const [prueba, setPrueba] = useState<Campana | null>(null);
+
+  // Mailpit escala a cero en Azure: se despierta al entrar, antes de enviar.
+  useEffect(() => {
+    void despertarCorreo();
+  }, []);
 
   const campanas: ResourceConfig<Campana> = {
     resource: "campanas-email",

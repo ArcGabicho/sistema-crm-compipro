@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LoaderCircle, Lock, Menu } from "lucide-react";
+import { sileo } from "sileo";
 import { useAuth } from "@/app/hooks/useAuth";
 import Sidebar from "../components/dashboard/Sidebar";
 import WelcomeModal from "@/app/components/dashboard/WelcomeModal";
 import AttendanceGate from "@/app/components/dashboard/AttendanceGate";
 import { ConfirmarHost } from "@/app/components/dashboard/Confirmar";
 import { MODULO_POR_RUTA, puede } from "@/app/lib/permisos";
+import { avisoDespertando } from "@/app/lib/despertar";
 
 // Altura mínima (px) para la que está diseñado el panel de escritorio sin scroll.
 // Si la ventana útil es más baja (barra del navegador, barra de tareas), el panel
@@ -40,6 +42,25 @@ function useShellZoom() {
   return zoom;
 }
 
+/** Toast mientras el backend despierta (escala a cero en Azure) y "listo" cuando vuelve. */
+function useAvisoDespertando(status: string) {
+  const anterior = useRef(status);
+
+  useEffect(() => {
+    if (status !== "unavailable") return;
+    const aviso = avisoDespertando();
+    aviso.mostrar();
+    return () => aviso.cerrar();
+  }, [status]);
+
+  useEffect(() => {
+    if (anterior.current === "unavailable" && status === "authenticated") {
+      sileo.success({ title: "Servidor listo" });
+    }
+    anterior.current = status;
+  }, [status]);
+}
+
 export default function DashboardLayout({
   children,
 }: {
@@ -52,6 +73,7 @@ export default function DashboardLayout({
   const sinAcceso = !!modulo && !puede(user?.role, modulo, "leer");
   const [navOpen, setNavOpen] = useState(false);
   const zoom = useShellZoom();
+  useAvisoDespertando(status);
 
   // Ruta protegida: sin sesión válida -> login.
   useEffect(() => {
@@ -115,11 +137,12 @@ function Reconectando() {
           <LoaderCircle className="size-6 animate-spin" />
         </span>
         <h1 className="mt-5 text-2xl font-semibold tracking-tight text-ink">
-          Conectando con el servidor…
+          Despertando la demo…
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-neutral-500">
-          El servidor está arrancando o la base de datos se está activando.
-          Puede tardar hasta un minuto; seguimos intentando automáticamente.
+          Tras un rato sin visitas, el servidor y la base de datos se apagan para
+          ahorrar recursos. Arrancar tarda hasta un minuto; seguimos intentando
+          automáticamente.
         </p>
       </div>
     </div>

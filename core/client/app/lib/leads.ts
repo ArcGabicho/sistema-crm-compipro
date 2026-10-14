@@ -1,5 +1,7 @@
 // Envío de los formularios públicos del sitio (cotización / contacto) al CRM.
 // Habla solo con la ruta same-origin /api/leads, que reenvía al backend .NET.
+import { ServidorNoDisponible } from "./auth";
+import { mientrasDespierta } from "./despertar";
 
 export type LeadInput = {
   tipo: "Cotizacion" | "Contacto";
@@ -15,7 +17,7 @@ export type LeadInput = {
   codigoPostal?: string;
 };
 
-export async function submitLead(input: LeadInput): Promise<void> {
+async function enviar(input: LeadInput): Promise<void> {
   let response: Response;
   try {
     response = await fetch("/api/leads", {
@@ -31,6 +33,12 @@ export async function submitLead(input: LeadInput): Promise<void> {
     const data = (await response.json().catch(() => null)) as {
       message?: string;
     } | null;
-    throw new Error(data?.message ?? "No se pudo enviar la solicitud.");
+    const message = data?.message ?? "No se pudo enviar la solicitud.";
+    // 5xx: el backend está despertando o caído; se reintenta un rato.
+    throw response.status >= 500 ? new ServidorNoDisponible(message, response.status) : new Error(message);
   }
+}
+
+export function submitLead(input: LeadInput): Promise<void> {
+  return mientrasDespierta(() => enviar(input), (error) => error instanceof ServidorNoDisponible);
 }

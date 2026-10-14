@@ -1,4 +1,6 @@
 using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -33,7 +35,7 @@ public static class EstadosEmail
 
 public interface IEmailSender
 {
-    /// <summary>true si hay SMTP configurado (envío real o sandbox); false = todo se simula.</summary>
+    /// <summary>true si hay a dónde enviar (SMTP o Mailpit por HTTP); false = todo se simula.</summary>
     bool EsReal { get; }
 
     /// <summary>simulado | sandbox | smtp</summary>
@@ -52,6 +54,12 @@ public interface IEmailSender
 
     /// <summary>Envía en lote reutilizando una sola conexión SMTP.</summary>
     Task<IReadOnlyList<ResultadoEmail>> EnviarAsync(IReadOnlyList<MensajeEmail> mensajes, CancellationToken ct);
+
+    /// <summary>
+    /// Despierta la bandeja de pruebas antes de enviar (Mailpit escala a cero en Azure).
+    /// true cuando responde, o si no hay bandeja que despertar.
+    /// </summary>
+    Task<bool> DespertarAsync(CancellationToken ct);
 }
 
 public static class EmailSenderExtensions
@@ -62,12 +70,13 @@ public static class EmailSenderExtensions
 }
 
 /// <summary>
-/// Envío por SMTP con MailKit. Sin servidor configurado, o si el destinatario es
-/// de un dominio reservado (los clientes de demostración usan <c>.example</c>),
-/// el mensaje se simula: se registra en el log y se cuenta como entregado.
+/// Envío por SMTP con MailKit, o por la API HTTP de Mailpit. Sin servidor configurado,
+/// o si el destinatario es de un dominio reservado (los clientes de demostración usan
+/// <c>.example</c>), el mensaje se simula: se registra en el log y se cuenta como entregado.
 /// En modo sandbox (Mailpit) se envía todo: nada sale a internet.
 /// </summary>
-public sealed partial class EmailSender(IOptions<EmailOptions> options, ILogger<EmailSender> logger)
+public sealed partial class EmailSender(
+    IOptions<EmailOptions> options, IHttpClientFactory httpClients, ILogger<EmailSender> logger)
     : IEmailSender
 {
     private readonly EmailOptions opt = options.Value;
@@ -76,7 +85,10 @@ public sealed partial class EmailSender(IOptions<EmailOptions> options, ILogger<
     private static readonly string[] SufijosReservados = [".example", ".test", ".invalid", ".localhost"];
     private static readonly string[] DominiosReservados = ["example.com", "example.net", "example.org"];
 
-    public bool EsReal => opt.SmtpConfigurado;
+    // La API de Mailpit usa los nombres tal cual (From, To, HTML…), sin camelCase.
+    private static readonly JsonSerializerOptions JsonMailpit = new();
+
+    public bool EsReal => opt.Configurado;
 
     public string Remitente => opt.Remitente;
 
@@ -88,7 +100,7 @@ public sealed partial class EmailSender(IOptions<EmailOptions> options, ILogger<
         : string.IsNullOrWhiteSpace(opt.Etiqueta) ? bandeja
         : $"{bandeja}/search?q={Uri.EscapeDataString("tag:" + opt.Etiqueta)}";
 
-    public bool EnviaDeVerdad(string email) => EsReal && (opt.Sandbox || !EsDominioReservado(email));
+    public bool EnviaDeVerdad(string email) => EsReal && (opt.EsSandbox || !EsDominioReservado(email));
 
     public static bool EsEmailValido(string? email)
         => !string.IsNullOrWhiteSpace(email)
@@ -125,9 +137,76 @@ public sealed partial class EmailSender(IOptions<EmailOptions> options, ILogger<
                 simulados, mensajes[0].Asunto);
         }
 
-        if (reales.Count > 0) await EnviarPorSmtpAsync(mensajes, reales, resultados, ct);
+        if (reales.Count > 0)
+        {
+            if (opt.ApiConfigurada) await EnviarPorApiAsync(mensajes, reales, resultados, ct);
+            else await EnviarPorSmtpAsync(mensajes, reales, resultados, ct);
+        }
         return resultados;
     }
+
+    public async Task<bool> DespertarAsync(CancellationToken ct)
+    {
+        if (!opt.ApiConfigurada) return true;
+        try
+        {
+            HttpClient http = httpClients.CreateClient(nameof(EmailSender));
+            using var respuesta = await http.GetAsync($"{opt.MailpitApi!.Trim().TrimEnd('/')}/api/v1/info", ct);
+            return respuesta.IsSuccessStatusCode;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException || !ct.IsCancellationRequested)
+        {
+            logger.LogWarning(ex, "Mailpit no respondió al despertarlo.");
+            return false;
+        }
+    }
+
+    /// <summary>Mailpit por HTTP (POST /api/v1/send): responde el ID del mensaje en su bandeja.</summary>
+    private async Task EnviarPorApiAsync(
+        IReadOnlyList<MensajeEmail> mensajes, List<int> indices, ResultadoEmail[] resultados, CancellationToken ct)
+    {
+        HttpClient http = httpClients.CreateClient(nameof(EmailSender));
+        string url = $"{opt.MailpitApi!.Trim().TrimEnd('/')}/api/v1/send";
+
+        await Parallel.ForEachAsync(indices, new ParallelOptions { MaxDegreeOfParallelism = 4, CancellationToken = ct },
+            async (i, token) =>
+            {
+                MensajeEmail m = mensajes[i];
+                try
+                {
+                    using var respuesta = await http.PostAsJsonAsync(url, CuerpoApi(m), JsonMailpit, token);
+                    respuesta.EnsureSuccessStatusCode();
+                    var enviado = await respuesta.Content.ReadFromJsonAsync<RespuestaMailpit>(JsonMailpit, token);
+                    string? enlace = enviado?.ID is { Length: > 0 } id && UrlBandeja is { } bandeja
+                        ? $"{bandeja}/view/{id}"
+                        : null;
+                    resultados[i] = new(m.Para, EstadosEmail.Enviado, Url: enlace);
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    logger.LogWarning(ex, "Falló el envío a {Para} por la API de Mailpit", m.Para);
+                    resultados[i] = new(m.Para, EstadosEmail.Fallido, "No se pudo enviar a la bandeja de pruebas.");
+                }
+            });
+
+        logger.LogInformation("Email Mailpit: {Enviados}/{Total} enviado(s) «{Asunto}»",
+            indices.Count(i => resultados[i].Estado == EstadosEmail.Enviado), indices.Count, mensajes[indices[0]].Asunto);
+    }
+
+    private object CuerpoApi(MensajeEmail m) => new
+    {
+        From = new { Email = opt.Remitente, Name = opt.NombreRemitente },
+        To = new[] { new { Email = m.Para.Trim(), Name = m.NombrePara ?? string.Empty } },
+        Subject = m.Asunto,
+        HTML = m.Html,
+        Text = HtmlATexto(m.Html),
+        Tags = string.IsNullOrWhiteSpace(opt.Etiqueta) ? Array.Empty<string>() : [opt.Etiqueta],
+        Attachments = m.Adjuntos
+            .Select(a => new { Content = Convert.ToBase64String(a.Contenido), Filename = a.Nombre, a.ContentType })
+            .ToArray(),
+    };
+
+    private sealed record RespuestaMailpit(string? ID);
 
     private async Task EnviarPorSmtpAsync(
         IReadOnlyList<MensajeEmail> mensajes, List<int> indices, ResultadoEmail[] resultados, CancellationToken ct)
@@ -184,7 +263,7 @@ public sealed partial class EmailSender(IOptions<EmailOptions> options, ILogger<
 
     /// <summary>Mailpit responde "Ok: queued as &lt;id&gt;"; ese id abre el mensaje en su bandeja.</summary>
     private string? UrlMensaje(string respuestaSmtp)
-        => opt.Sandbox && UrlBandeja is { } bandeja && IdEnCola().Match(respuestaSmtp) is { Success: true } m
+        => opt.EsSandbox && UrlBandeja is { } bandeja && IdEnCola().Match(respuestaSmtp) is { Success: true } m
             ? $"{bandeja}/view/{m.Groups[1].Value}"
             : null;
 

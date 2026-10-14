@@ -22,6 +22,14 @@ public sealed class EmailController(IEmailSender email, SeguimientoEmail seguimi
             seguimiento = seguimiento.Activo,
             bandeja = email.UrlBandejaProyecto,
         });
+
+    /// <summary>Despierta la bandeja de pruebas antes de enviar, para que el panel avise mientras arranca.</summary>
+    [HttpGet("despertar")]
+    public async Task<IActionResult> Despertar(CancellationToken ct)
+        => await email.DespertarAsync(ct)
+            ? Ok(new { listo = true })
+            : StatusCode(StatusCodes.Status503ServiceUnavailable,
+                new { listo = false, message = "El servidor de correo no responde en este momento." });
 }
 
 /// <summary>

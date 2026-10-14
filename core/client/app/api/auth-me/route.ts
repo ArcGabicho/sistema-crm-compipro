@@ -32,6 +32,14 @@ export async function GET(request: Request) {
     );
   }
 
+  // Backend despertando o caído (5xx): tampoco dice nada de la sesión.
+  if (backendRes.status >= 500) {
+    return NextResponse.json(
+      { message: "El servidor no responde en este momento." },
+      { status: 503 },
+    );
+  }
+
   if (!backendRes.ok) {
     // Token expirado o inválido: limpiamos la cookie.
     const response = NextResponse.json(
