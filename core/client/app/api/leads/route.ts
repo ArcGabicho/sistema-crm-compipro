@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 import { BACKEND_URL, cabecerasCliente } from "@/app/lib/backend";
 
+/** El backend no responde: el visitante aún puede escribir por WhatsApp. */
+function noDisponible() {
+  return NextResponse.json(
+    { message: "En este momento no podemos recibir tu solicitud. Inténtalo en unos minutos o escríbenos por WhatsApp." },
+    { status: 503 },
+  );
+}
+
 // POST /api/leads — formularios públicos del sitio (sin autenticación).
 // Reenvía al backend .NET: POST /api/public/solicitudes
 export async function POST(request: Request) {
@@ -35,11 +43,9 @@ export async function POST(request: Request) {
       cache: "no-store",
     });
   } catch {
-    return NextResponse.json(
-      { message: "No se pudo enviar. Inténtalo más tarde." },
-      { status: 502 },
-    );
+    return noDisponible();
   }
+  if (backendRes.status >= 500) return noDisponible();
 
   const data = (await backendRes.json().catch(() => null)) as {
     message?: string;

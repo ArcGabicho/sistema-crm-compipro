@@ -3,6 +3,14 @@ import { cookies } from "next/headers";
 import { SESSION_COOKIE } from "@/app/lib/session";
 import { BACKEND_URL, cabecerasCliente } from "@/app/lib/backend";
 
+/** El backend no responde (caído, reiniciando o detrás de un 502 de Cloudflare): no es un error de credenciales. */
+function noDisponible() {
+  return NextResponse.json(
+    { message: "El servidor de la demo no responde en este momento. Vuelve a intentarlo en unos minutos." },
+    { status: 503 },
+  );
+}
+
 // POST /api/auth-login  { email, password }
 // Reenvía al backend .NET, y si autentica, guarda el JWT en una cookie HttpOnly.
 export async function POST(request: Request) {
@@ -27,11 +35,9 @@ export async function POST(request: Request) {
       cache: "no-store",
     });
   } catch {
-    return NextResponse.json(
-      { message: "No se pudo contactar el servidor de autenticación." },
-      { status: 502 },
-    );
+    return noDisponible();
   }
+  if (backendRes.status >= 500) return noDisponible();
 
   const data = (await backendRes.json().catch(() => null)) as
     | {

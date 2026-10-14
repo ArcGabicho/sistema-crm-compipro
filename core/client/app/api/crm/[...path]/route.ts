@@ -42,7 +42,10 @@ async function forward(req: Request, path: string[]): Promise<Response> {
   try {
     res = await fetch(target, { method, headers, body, cache: "no-store" });
   } catch {
-    return Response.json({ message: "Backend no disponible." }, { status: 502 });
+    return Response.json(
+      { message: "El servidor no responde en este momento. Inténtalo de nuevo en unos minutos." },
+      { status: 502 },
+    );
   }
 
   const outHeaders = new Headers();

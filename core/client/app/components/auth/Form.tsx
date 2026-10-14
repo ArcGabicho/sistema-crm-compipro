@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { sileo } from "sileo";
 import { LoaderCircle } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
+import { ServidorNoDisponible } from "../../lib/auth";
 
 export default function Form() {
   const [email, setEmail] = useState("");
@@ -22,11 +23,18 @@ export default function Form() {
       sileo.success({ title: `Bienvenido, ${session.name || session.email}` });
       router.push("/dashboard");
     } catch (error) {
-      sileo.error({
-        title: "No se pudo iniciar sesión",
-        description:
-          error instanceof Error ? error.message : "Inténtalo de nuevo.",
-      });
+      if (error instanceof ServidorNoDisponible) {
+        sileo.warning({
+          title: "Servidor no disponible",
+          description: "La demo no responde en este momento. Vuelve a intentarlo en unos minutos.",
+        });
+      } else {
+        sileo.error({
+          title: "No se pudo iniciar sesión",
+          description:
+            error instanceof Error ? error.message : "Inténtalo de nuevo.",
+        });
+      }
       setIsLoading(false);
     }
   };

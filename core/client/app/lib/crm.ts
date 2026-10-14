@@ -31,7 +31,9 @@ async function errorDe(res: Response): Promise<Error> {
         ? "No tienes permiso para realizar esta acción."
         : res.status === 429
           ? "Demasiadas solicitudes. Espera un momento."
-          : `Error ${res.status}`;
+          : res.status >= 502 && res.status <= 504
+            ? "El servidor no responde en este momento. Inténtalo de nuevo en unos minutos."
+            : `Error ${res.status}`;
   return new Error(message);
 }
 

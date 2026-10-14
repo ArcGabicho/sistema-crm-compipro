@@ -32,10 +32,13 @@ export async function login(
       body: JSON.stringify({ email, password }),
     });
   } catch {
-    throw new Error("No se pudo conectar con el servidor.");
+    throw new ServidorNoDisponible();
   }
 
   const data = await parseJson(response);
+  if (response.status >= 500) {
+    throw new ServidorNoDisponible(messageOf(data, "El servidor no responde en este momento."));
+  }
   if (!response.ok) {
     throw new Error(messageOf(data, "No se pudo iniciar sesión."));
   }
@@ -53,8 +56,8 @@ export async function logout(): Promise<void> {
 
 /** El backend no respondió (arrancando, caído o con la base de datos en pausa). */
 export class ServidorNoDisponible extends Error {
-  constructor() {
-    super("No se pudo conectar con el servidor.");
+  constructor(message = "No se pudo conectar con el servidor.") {
+    super(message);
   }
 }
 
