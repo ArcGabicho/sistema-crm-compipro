@@ -12,7 +12,7 @@ public sealed class EmailOptions
     public string NombreRemitente { get; set; } = "Compipro CRM";
 
     /// <summary>
-    /// URL pública del backend (p. ej. https://compipro-api.gabicho.dev). Con ella
+    /// URL pública del backend (p. ej. https://compipro-api.{entorno}.azurecontainerapps.io). Con ella
     /// los correos reales llevan seguimiento de aperturas y clics.
     /// </summary>
     public string? UrlPublica { get; set; }
@@ -23,7 +23,7 @@ public sealed class EmailOptions
     /// </summary>
     public bool Sandbox { get; set; }
 
-    /// <summary>Bandeja web del sandbox (p. ej. https://correo.gabicho.dev). Con Mailpit, cada envío enlaza a su mensaje.</summary>
+    /// <summary>Bandeja web del sandbox (p. ej. https://compipro-mailpit.{entorno}.azurecontainerapps.io). Con Mailpit, cada envío enlaza a su mensaje.</summary>
     public string? UrlBandeja { get; set; }
 
     /// <summary>Etiqueta (cabecera X-Tags) para filtrar los correos de este proyecto en una bandeja compartida.</summary>
