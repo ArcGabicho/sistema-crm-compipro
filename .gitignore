@@ -49,6 +49,5 @@ obj/
 *.suo
 .vs/
 core/server/appsettings.Development.json
-# Local: caso de estudio y stack del laboratorio de pentesting (no van al repo)
+# Local: caso de estudio (no va al repo)
 /docs/
-docker/docker-compose.vm.yml
